@@ -1,0 +1,132 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Privacy Policy - CleanBoard">
+    <div class="container content">
+        <h1>Privacy Policy</h1>
+        <p class="last-updated">
+            Last updated: {
+                new Date().toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                })
+            }
+        </p>
+
+        <section>
+            <p>
+                At CleanBoard, we take your privacy seriously. This policy
+                explains how we handle your data—or more accurately, why we
+                don't handle it at all.
+            </p>
+        </section>
+
+        <section>
+            <h3>1. No Data Collection</h3>
+            <p>
+                CleanBoard is designed to be a completely offline keyboard. We
+                do not collect, store, or transmit any of your personal data,
+                keystrokes, or typing history. Everything you type remains on
+                your device and is never sent to any external server.
+            </p>
+        </section>
+
+        <section>
+            <h3>2. No Internet Permission</h3>
+            <p>
+                The CleanBoard app does not require and does not use the Android
+                "Internet" permission. This means the app is technically
+                incapable of sending any information from your device to the
+                internet.
+            </p>
+        </section>
+
+        <section>
+            <h3>3. Permissions Usage</h3>
+            <p>
+                CleanBoard may request the following permissions only for
+                essential functionality:
+            </p>
+            <ul>
+                <li>
+                    <strong>Vibration:</strong> To provide haptic feedback when you
+                    press a key (if enabled).
+                </li>
+            </ul>
+        </section>
+
+        <section>
+            <h3>4. Third-Party Services</h3>
+            <p>
+                CleanBoard does not use any third-party analytics, tracking, or
+                advertising SDKs. There is no hidden code that monitors your
+                usage.
+            </p>
+        </section>
+
+        <section>
+            <h3>5. Policy Updates</h3>
+            <p>
+                We may update this Privacy Policy from time to time. Any changes
+                will be posted on this page with an updated "Last updated" date.
+            </p>
+        </section>
+
+        <section>
+            <h3>6. Contact</h3>
+            <p>
+                If you have any questions about this Privacy Policy, you can
+                contact us at: <a href="mailto:privacy@heymeowcat.is-a.dev"
+                    >privacy@heymeowcat.is-a.dev</a>
+            </p>
+        </section>
+    </div>
+</Layout>
+
+<style>
+    .content {
+        padding: 8rem 0 4rem;
+        max-width: 700px;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .last-updated {
+        margin-bottom: 3rem;
+        font-size: 0.875rem;
+    }
+
+    section {
+        margin-bottom: 2.5rem;
+    }
+
+    h3 {
+        margin-bottom: 1rem;
+        color: var(--foreground);
+    }
+
+    p,
+    ul {
+        margin-bottom: 1rem;
+    }
+
+    ul {
+        padding-left: 1.5rem;
+    }
+
+    li {
+        margin-bottom: 0.5rem;
+        color: var(--muted-foreground);
+    }
+
+    @media (max-width: 640px) {
+        .content {
+            padding: 4rem 0 2rem;
+        }
+    }
+</style>

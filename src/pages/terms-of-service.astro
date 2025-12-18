@@ -1,0 +1,98 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Terms of Service - CleanBoard">
+    <div class="container content">
+        <h1>Terms of Service</h1>
+        <p class="last-updated">
+            Last updated: {
+                new Date().toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                })
+            }
+        </p>
+
+        <section>
+            <p>
+                By using the CleanBoard application, you agree to these simple
+                terms of service.
+            </p>
+        </section>
+
+        <section>
+            <h3>1. Use of the App</h3>
+            <p>
+                CleanBoard is a tool provided for personal, non-commercial use.
+                You are responsible for any text you type using the keyboard. We
+                do not monitor or control the content you create.
+            </p>
+        </section>
+
+        <section>
+            <h3>2. "As Is" Basis</h3>
+            <p>
+                The application is provided "as is" and "as available" without
+                warranties of any kind. While we strive for accuracy in our
+                transliteration and suggestions, we do not guarantee that the
+                app will always function perfectly or be error-free.
+            </p>
+        </section>
+
+        <section>
+            <h3>3. Privacy</h3>
+            <p>
+                Your use of the app is also governed by our <a
+                    href="/cleanboard-site/privacy-policy">Privacy Policy</a
+                >, which states that we do not collect any of your data.
+            </p>
+        </section>
+
+        <section>
+            <h3>4. Intellectual Property</h3>
+            <p>
+                The CleanBoard name, logo, and source code are the property of
+                heymeowcat. You may not decompile or attempt to extract the
+                source code of the app for commercial purposes without
+                permission.
+            </p>
+        </section>
+
+        <section>
+            <h3>5. Changes to Terms</h3>
+            <p>
+                We may update these terms from time to time. Your continued use
+                of the app after such changes constitutes acceptance of the new
+                terms.
+            </p>
+        </section>
+    </div>
+</Layout>
+
+<style>
+    .content {
+        padding: 8rem 0 4rem;
+        max-width: 700px;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .last-updated {
+        margin-bottom: 3rem;
+        font-size: 0.875rem;
+    }
+
+    section {
+        margin-bottom: 2.5rem;
+    }
+
+    h3 {
+        margin-bottom: 1rem;
+        color: var(--foreground);
+    }
+</style>

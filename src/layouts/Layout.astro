@@ -1,0 +1,124 @@
+---
+interface Props {
+    title: string;
+    description?: string;
+}
+
+const {
+    title,
+    description = "CleanBoard - Fast, Private, and Modern Singlish Keyboard for Android",
+} = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width" />
+        <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
+        <meta name="generator" content={Astro.generator} />
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+    </head>
+    <body>
+        <main>
+            <slot />
+        </main>
+        <footer>
+            <div class="container">
+                <p>
+                    &copy; {new Date().getFullYear()} heymeowcat. <a
+                        href={`${base}/privacy-policy`}>Privacy Policy</a
+                    > | <a href={`${base}/terms-of-service`}
+                        >Terms of Service</a>
+                </p>
+            </div>
+        </footer>
+    </body>
+</html>
+
+<style is:global>
+    :root {
+        --background: #ffffff;
+        --foreground: #111827;
+        --accent: #4caf50;
+        --accent-foreground: #ffffff;
+        --muted: #f3f4f6;
+        --muted-foreground: #6b7280;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --background: #111827;
+            --foreground: #f9fafb;
+            --muted: #1f2937;
+            --muted-foreground: #9ca3af;
+        }
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family:
+            "Inter",
+            system-ui,
+            -apple-system,
+            sans-serif;
+        background-color: var(--background);
+        color: var(--foreground);
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    main {
+        flex: 1;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+
+    footer {
+        padding: 4rem 0 2rem;
+        text-align: center;
+        font-size: 0.875rem;
+        color: var(--muted-foreground);
+    }
+
+    a {
+        color: var(--foreground);
+        text-decoration: none;
+        transition: opacity 0.2s;
+    }
+
+    a:hover {
+        opacity: 0.7;
+    }
+
+    h1,
+    h2,
+    h3 {
+        font-weight: 700;
+        letter-spacing: -0.025em;
+    }
+
+    p {
+        color: var(--muted-foreground);
+    }
+</style>
