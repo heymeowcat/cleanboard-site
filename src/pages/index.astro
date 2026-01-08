@@ -1,9 +1,18 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { translations } from "../data/translations";
 const base = import.meta.env.BASE_URL;
 ---
 
-<Layout title="CleanBoard - minimalist Keyboard for Android">
+<Layout
+    title="CleanBoard | සිංහල keyboard"
+    description="A minimalist Android keyboard designed for a seamless Sinhala and English typing experience."
+>
+    <div class="lang-toggle">
+        <button id="lang-en" class="active">EN</button>
+        <button id="lang-si">සිං</button>
+    </div>
+
     <div class="container hero">
         <div class="app-icon">
             <img
@@ -13,56 +22,153 @@ const base = import.meta.env.BASE_URL;
                 height="120"
             />
         </div>
-        <h1>CleanBoard</h1>
-        <p class="tagline">Fast. Private. Simple.</p>
-        <p class="description">
-            A minimalist Android keyboard designed for a seamless Sinhala and
-            English typing experience. Phonetic Singlish support, smart
-            suggestions, and no data tracking.
+        <h1 id="hero-title">{translations.en.title}</h1>
+        <p class="tagline" id="hero-tagline">{translations.en.tagline}</p>
+        <p class="description" id="hero-desc">
+            {translations.en.description}
         </p>
         <div class="actions">
-            <a href="#" class="button">Get it on Google Play</a>
+            <a
+                href="https://play.google.com/store/apps/details?id=com.heymeowcat.cleanboard"
+                class="play-store-badge"
+            >
+                <img
+                    src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+                    alt="Get it on Google Play"
+                    height="80"
+                />
+            </a>
         </div>
     </div>
 
     <section class="features">
         <div class="container grid">
             <div class="feature">
-                <h3>🚀 Lightweight</h3>
-                <p>
-                    Designed for speed with a tiny footprint. No bloat, just
-                    performance.
+                <h3 id="feat-sinhala-title">
+                    {translations.en.features.sinhala.title}
+                </h3>
+                <p id="feat-sinhala-desc">
+                    {translations.en.features.sinhala.desc}
                 </p>
             </div>
             <div class="feature">
-                <h3>🔒 Private</h3>
-                <p>
-                    No internet permissions. No data collection. Your typing
-                    stays on your device.
+                <h3 id="feat-offline-title">
+                    {translations.en.features.offline.title}
+                </h3>
+                <p id="feat-offline-desc">
+                    {translations.en.features.offline.desc}
                 </p>
             </div>
             <div class="feature">
-                <h3>⌨️ Singlish</h3>
-                <p>
-                    Phonetic Sinhala typing that actually works. Smart
-                    suggestions as you type.
+                <h3 id="feat-gestures-title">
+                    {translations.en.features.gestures.title}
+                </h3>
+                <p id="feat-gestures-desc">
+                    {translations.en.features.gestures.desc}
                 </p>
             </div>
             <div class="feature">
-                <h3>😊 Emoji Search</h3>
-                <p>
-                    Find the perfect emoji instantly with our advanced search
-                    functionality.
+                <h3 id="feat-smart-title">
+                    {translations.en.features.smart.title}
+                </h3>
+                <p id="feat-smart-desc">
+                    {translations.en.features.smart.desc}
+                </p>
+            </div>
+            <div class="feature">
+                <h3 id="feat-privacy-title">
+                    {translations.en.features.privacy.title}
+                </h3>
+                <p id="feat-privacy-desc">
+                    {translations.en.features.privacy.desc}
+                </p>
+            </div>
+            <div class="feature">
+                <h3 id="feat-custom-title">
+                    {translations.en.features.custom.title}
+                </h3>
+                <p id="feat-custom-desc">
+                    {translations.en.features.custom.desc}
                 </p>
             </div>
         </div>
     </section>
+
+    <script define:vars={{ translations }}>
+        const btnEn = document.getElementById("lang-en");
+        const btnSi = document.getElementById("lang-si");
+
+        function updateContent(lang) {
+            const t = translations[lang];
+
+            document.getElementById("hero-title").innerText = t.title;
+            document.getElementById("hero-tagline").innerText = t.tagline;
+            document.getElementById("hero-desc").innerText = t.description;
+
+            document.getElementById("feat-sinhala-title").innerText =
+                t.features.sinhala.title;
+            document.getElementById("feat-sinhala-desc").innerText =
+                t.features.sinhala.desc;
+            document.getElementById("feat-offline-title").innerText =
+                t.features.offline.title;
+            document.getElementById("feat-offline-desc").innerText =
+                t.features.offline.desc;
+            document.getElementById("feat-gestures-title").innerText =
+                t.features.gestures.title;
+            document.getElementById("feat-gestures-desc").innerText =
+                t.features.gestures.desc;
+            document.getElementById("feat-smart-title").innerText =
+                t.features.smart.title;
+            document.getElementById("feat-smart-desc").innerText =
+                t.features.smart.desc;
+            document.getElementById("feat-privacy-title").innerText =
+                t.features.privacy.title;
+            document.getElementById("feat-privacy-desc").innerText =
+                t.features.privacy.desc;
+            document.getElementById("feat-custom-title").innerText =
+                t.features.custom.title;
+            document.getElementById("feat-custom-desc").innerText =
+                t.features.custom.desc;
+
+            const privacyLink = document.getElementById("privacy-link");
+            const termsLink = document.getElementById("terms-link");
+            if (privacyLink) privacyLink.innerText = t.footer.privacy;
+            if (termsLink) termsLink.innerText = t.footer.terms;
+
+            if (lang === "en") {
+                btnEn.classList.add("active");
+                btnSi.classList.remove("active");
+                document.documentElement.lang = "en";
+            } else {
+                btnSi.classList.add("active");
+                btnEn.classList.remove("active");
+                document.documentElement.lang = "si";
+            }
+        }
+
+        btnEn?.addEventListener("click", () => updateContent("en"));
+        btnSi?.addEventListener("click", () => updateContent("si"));
+
+        updateContent("en");
+    </script>
 </Layout>
 
 <style>
     .hero {
         padding: 8rem 0 4rem;
         text-align: center;
+        animation: fadeUp 0.8s ease-out;
+    }
+
+    @keyframes fadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     .app-icon {
@@ -112,9 +218,77 @@ const base = import.meta.env.BASE_URL;
         opacity: 1;
     }
 
+    .play-store-badge {
+        display: inline-block;
+        transition: transform 0.2s;
+    }
+
+    .play-store-badge:hover {
+        transform: scale(1.05);
+    }
+
+    .play-store-badge img {
+        height: 60px;
+        width: auto;
+    }
+
+    .lang-toggle {
+        position: fixed;
+        top: 1.5rem;
+        right: 1.5rem;
+        display: flex;
+        gap: 0.5rem;
+        background: var(--muted);
+        padding: 0.25rem;
+        border-radius: 9999px;
+        z-index: 100;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .lang-toggle button {
+        border: none;
+        background: transparent;
+        color: var(--muted-foreground);
+        padding: 0.5rem 1rem;
+        border-radius: 9999px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-size: 0.875rem;
+    }
+
+    .lang-toggle button.active {
+        background: var(--background);
+        color: var(--foreground);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
     .features {
         padding: 4rem 0;
         background: var(--muted);
+    }
+
+    .grid .feature {
+        animation: fadeUp 0.8s ease-out backwards;
+    }
+
+    .grid .feature:nth-child(1) {
+        animation-delay: 0.1s;
+    }
+    .grid .feature:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+    .grid .feature:nth-child(3) {
+        animation-delay: 0.3s;
+    }
+    .grid .feature:nth-child(4) {
+        animation-delay: 0.4s;
+    }
+    .grid .feature:nth-child(5) {
+        animation-delay: 0.5s;
+    }
+    .grid .feature:nth-child(6) {
+        animation-delay: 0.6s;
     }
 
     .grid {
@@ -147,6 +321,11 @@ const base = import.meta.env.BASE_URL;
 
         .hero {
             padding: 4rem 0 2rem;
+        }
+
+        .lang-toggle {
+            top: 1rem;
+            right: 1rem;
         }
     }
 </style>
