@@ -1,0 +1,378 @@
+---
+import Layout from "../layouts/Layout.astro";
+import CtaBanner from "../components/CtaBanner.astro";
+import { getCharacterChart } from "../lib/transliterator";
+import { breadcrumbSchema, organizationSchema } from "../lib/schema";
+
+const chart = getCharacterChart();
+const consonants = chart.consonants;
+const independentVowels = chart.independentVowels;
+const dependentVowels = chart.dependentVowels;
+const commonWords = chart.commonWords;
+
+const jsonLd = [
+    organizationSchema(),
+    breadcrumbSchema([
+        { name: "Home", path: "/" },
+        { name: "Transliteration chart", path: "/transliteration-chart/" },
+    ]),
+];
+
+/** Groups a table into columns so long lists stay readable on mobile. */
+const chunk = <T,>(items: T[], size: number): T[][] => {
+    const out: T[][] = [];
+    for (let i = 0; i < items.length; i += size) out.push(items.slice(i, i + size));
+    return out;
+};
+
+const consonantRows = chunk(consonants, 4);
+const vowelRows = chunk(independentVowels, 4);
+const signRows = chunk(dependentVowels, 4);
+const wordRows = chunk(commonWords, 3);
+---
+
+<Layout
+    title="Sinhala Transliteration Chart (English → සිංහල)"
+    description="The complete English-to-Sinhala transliteration chart: every consonant, vowel, vowel sign and 160+ common words, with the exact rules CleanBoard uses."
+    path="/transliteration-chart/"
+    lang="en"
+    jsonLd={jsonLd}
+>
+    <section class="page-head">
+        <div class="container">
+            <p class="eyebrow">Reference</p>
+            <h1>Sinhala transliteration chart</h1>
+            <p class="lede">
+                Every rule the CleanBoard engine uses, written out. If you are
+                not sure how a sound maps to a letter, this is the table to
+                check — and it is the same table the app shows in its
+                transliteration settings.
+            </p>
+        </div>
+    </section>
+
+    <section class="section" aria-labelledby="intro-heading">
+        <div class="container container--narrow prose">
+            <h2 id="intro-heading">How to read this chart</h2>
+            <p>
+                The left column is what you type in English letters. The right
+                column is the Sinhala character the engine produces. Uppercase
+                letters are meaningful: <code>Th</code> is
+                <span class="sinhala">ථ</span> while <code>th</code> is
+                <span class="sinhala">ත</span>, and <code>T</code> is
+                <span class="sinhala">ඨ</span>.
+            </p>
+            <p>
+                A vowel typed straight after a consonant becomes a
+                <em>vowel sign</em> written to the right of it — so
+                <code>ka</code> is <span class="sinhala">ක</span> (the
+                inherent <span class="sinhala">අ</span> is implied) and
+                <code>ki</code> is <span class="sinhala">කි</span>.
+            </p>
+        </div>
+    </section>
+
+    <section class="section section--alt" aria-labelledby="vowels-heading">
+        <div class="container">
+            <div class="section__head">
+                <h2 id="vowels-heading">Independent vowels</h2>
+                <p>
+                    These stand on their own as a letter. They are what you
+                    type when a vowel starts a syllable.
+                </p>
+            </div>
+
+            <div class="table-wrap">
+                <table class="chart">
+                    <caption class="visually-hidden">
+                        English letters that map to independent Sinhala vowels
+                    </caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">Type</th>
+                            <th scope="col" class="sinhala-col">සිංහල</th>
+                            <th scope="col">Type</th>
+                            <th scope="col" class="sinhala-col">සිංහල</th>
+                            <th scope="col">Type</th>
+                            <th scope="col" class="sinhala-col">සිංහල</th>
+                            <th scope="col">Type</th>
+                            <th scope="col" class="sinhala-col">සිංහල</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            vowelRows.map((row) => (
+                                <tr>
+                                    {row.map(([roman, sinhala]) => (
+                                        <>
+                                            <td>
+                                                <code>{roman}</code>
+                                            </td>
+                                            <td class="sinhala">{sinhala}</td>
+                                        </>
+                                    ))}
+                                    {Array.from({ length: 4 - row.length }).map(
+                                        () => (
+                                            <>
+                                                <td />
+                                                <td />
+                                            </>
+                                        ),
+                                    )}
+                                </tr>
+                            ))
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" aria-labelledby="signs-heading">
+        <div class="container">
+            <div class="section__head">
+                <h2 id="signs-heading">Dependent vowel signs (pili)</h2>
+                <p>
+                    These are written to the right of a consonant. A trailing
+                    <code>h</code> in English means &ldquo;no vowel&rdquo; —
+                    the bare consonant.
+                </p>
+            </div>
+
+            <div class="table-wrap">
+                <table class="chart">
+                    <caption class="visually-hidden">
+                        English letters that map to dependent Sinhala vowel signs
+                    </caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">Type</th>
+                            <th scope="col" class="sinhala-col">සිංහල</th>
+                            <th scope="col">Type</th>
+                            <th scope="col" class="sinhala-col">සිංහල</th>
+                            <th scope="col">Type</th>
+                            <th scope="col" class="sinhala-col">සිංහල</th>
+                            <th scope="col">Type</th>
+                            <th scope="col" class="sinhala-col">සිංහල</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            signRows.map((row) => (
+                                <tr>
+                                    {row.map(([roman, sinhala]) => (
+                                        <>
+                                            <td>
+                                                <code>{roman}</code>
+                                            </td>
+                                            <td class="sinhala">{sinhala}</td>
+                                        </>
+                                    ))}
+                                    {Array.from({ length: 4 - row.length }).map(
+                                        () => (
+                                            <>
+                                                <td />
+                                                <td />
+                                            </>
+                                        ),
+                                    )}
+                                </tr>
+                            ))
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="section section--alt" aria-labelledby="consonants-heading">
+        <div class="container">
+            <div class="section__head">
+                <h2 id="consonants-heading">Consonants</h2>
+                <p>
+                    The full consonant map, including aspirated forms, the
+                    geminated forms Sinhala speakers type with a doubled
+                    letter, and the pre-nasalised cluster letters.
+                </p>
+            </div>
+
+            <div class="table-wrap">
+                <table class="chart">
+                    <caption class="visually-hidden">
+                        English letters that map to Sinhala consonants
+                    </caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">Type</th>
+                            <th scope="col" class="sinhala-col">සිංහල</th>
+                            <th scope="col">Type</th>
+                            <th scope="col" class="sinhala-col">සිංහල</th>
+                            <th scope="col">Type</th>
+                            <th scope="col" class="sinhala-col">සිංහල</th>
+                            <th scope="col">Type</th>
+                            <th scope="col" class="sinhala-col">සිංහල</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            consonantRows.map((row) => (
+                                <tr>
+                                    {row.map(([roman, sinhala]) => (
+                                        <>
+                                            <td>
+                                                <code>{roman}</code>
+                                            </td>
+                                            <td class="sinhala">{sinhala}</td>
+                                        </>
+                                    ))}
+                                    {Array.from({ length: 4 - row.length }).map(
+                                        () => (
+                                            <>
+                                                <td />
+                                                <td />
+                                            </>
+                                        ),
+                                    )}
+                                </tr>
+                            ))
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" aria-labelledby="words-heading">
+        <div class="container">
+            <div class="section__head">
+                <h2 id="words-heading">Common words</h2>
+                <p>
+                    Words whose spelling differs from what the letter-by-letter
+                    rules would produce. The engine always prefers these, so
+                    you get <span class="sinhala">මොකද්ද</span> rather than
+                    a literal transliteration.
+                </p>
+            </div>
+
+            <div class="table-wrap">
+                <table class="chart chart--words">
+                    <caption class="visually-hidden">
+                        Common Singlish words and their Sinhala spelling
+                    </caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">English</th>
+                            <th scope="col" class="sinhala-col">සිංහල</th>
+                            <th scope="col">English</th>
+                            <th scope="col" class="sinhala-col">සිංහල</th>
+                            <th scope="col">English</th>
+                            <th scope="col" class="sinhala-col">සිංහල</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            wordRows.map((row) => (
+                                <tr>
+                                    {row.map(([roman, sinhala]) => (
+                                        <>
+                                            <td>
+                                                <code>{roman}</code>
+                                            </td>
+                                            <td class="sinhala">{sinhala}</td>
+                                        </>
+                                    ))}
+                                    {Array.from({ length: 3 - row.length }).map(
+                                        () => (
+                                            <>
+                                                <td />
+                                                <td />
+                                            </>
+                                        ),
+                                    )}
+                                </tr>
+                            ))
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <CtaBanner
+        lang="en"
+        title="Try these rules yourself"
+        body="The converter on this site uses every rule on this page — type a word and see what comes out."
+        links={[
+            { href: "/transliterate/", label: "Open the converter" },
+            { href: "/download/", label: "Get the keyboard" },
+        ]}
+    />
+</Layout>
+
+<style>
+    .page-head {
+        padding-block: clamp(2.5rem, 7vw, 4rem) clamp(1rem, 3vw, 2rem);
+    }
+
+    .page-head h1 {
+        font-size: clamp(1.875rem, 5.5vw, 2.75rem);
+    }
+
+    .page-head .lede {
+        margin-top: 0.85rem;
+        max-width: 46rem;
+    }
+
+    .table-wrap {
+        overflow-x: auto;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        background: var(--surface);
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .chart {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9375rem;
+        min-width: 34rem;
+    }
+
+    .chart th,
+    .chart td {
+        text-align: left;
+        padding: 0.55rem 0.85rem;
+        border-bottom: 1px solid var(--border);
+        white-space: nowrap;
+    }
+
+    .chart thead th {
+        background: var(--surface-2);
+        color: var(--muted-foreground);
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+
+    .chart tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+    .chart code {
+        background: var(--surface-2);
+        border-radius: 0.3rem;
+        padding: 0.1rem 0.35rem;
+        color: var(--foreground);
+    }
+
+    .chart .sinhala {
+        font-family: "Noto Sans Sinhala", var(--font-sans);
+        font-size: 1.125rem;
+        color: var(--foreground);
+    }
+
+    .sinhala-col {
+        width: 1%;
+    }
+</style>

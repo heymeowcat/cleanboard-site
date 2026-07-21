@@ -1,0 +1,39 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import HomeContent from "../../components/HomeContent.astro";
+import { faqs } from "../../data/nav";
+import {
+    faqSchema,
+    organizationSchema,
+    softwareApplicationSchema,
+    webSiteSchema,
+} from "../../lib/schema";
+
+const lang = "si" as const;
+
+const jsonLd = [
+    organizationSchema(),
+    {
+        ...webSiteSchema(),
+        "@id": `${"https://heymeowcat.is-a.dev/cleanboard-site"}/#website-si`,
+        inLanguage: "si",
+    },
+    {
+        ...softwareApplicationSchema(),
+        "@id": `${"https://heymeowcat.is-a.dev/cleanboard-site"}/#softwareapplication-si`,
+        inLanguage: "si",
+    },
+    faqSchema(faqs.si.map((f) => ({ question: f.question, answer: f.answer }))),
+];
+---
+
+<Layout
+    title="සිංහල සහ ඉංග්‍රීසි යතුරුපුවරුව — නොමිලේ"
+    description="ඉංග්‍රීසි අකුරු ලියන්න, සිංහල ලැබේ. CleanBoard යනු නොමිලේ, සම්පූර්ණයෙන්ම නොබැඳි, දැන්දීම ප්‍රචාරණයක් නැති ඇන්ඩ්‍රොයිඩ් යතුරුපුවරුවකි."
+    path="/si/"
+    lang={lang}
+    alternates={{ en: "/", si: "/si/" }}
+    jsonLd={jsonLd}
+>
+    <HomeContent lang={lang} toolId="si-home-transliterator" />
+</Layout>

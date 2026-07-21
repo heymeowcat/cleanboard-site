@@ -1,0 +1,24 @@
+---
+import Layout from "../layouts/Layout.astro";
+import FeaturesContent from "../components/FeaturesContent.astro";
+import { breadcrumbSchema, organizationSchema } from "../lib/schema";
+
+const jsonLd = [
+    organizationSchema(),
+    breadcrumbSchema([
+        { name: "Home", path: "/" },
+        { name: "Features", path: "/features/" },
+    ]),
+];
+---
+
+<Layout
+    title="Features — Sinhala Layouts, Gestures, Offline"
+    description="Four Sinhala layouts, a built-in Singlish engine, offline dictionaries, gesture typing, an inline calculator and full theming — with no internet permission."
+    path="/features/"
+    lang="en"
+    alternates={{ en: "/features/", si: "/si/features/" }}
+    jsonLd={jsonLd}
+>
+    <FeaturesContent lang="en" />
+</Layout>

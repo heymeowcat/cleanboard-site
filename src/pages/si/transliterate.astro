@@ -1,0 +1,36 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import TransliterateContent from "../../components/TransliterateContent.astro";
+import { faqs } from "../../data/nav";
+import {
+    breadcrumbSchema,
+    faqSchema,
+    organizationSchema,
+    webApplicationSchema,
+} from "../../lib/schema";
+
+const jsonLd = [
+    organizationSchema(),
+    {
+        ...webApplicationSchema(),
+        "@id": "https://heymeowcat.is-a.dev/cleanboard-site/#webapp-si",
+        inLanguage: "si",
+    },
+    breadcrumbSchema([
+        { name: "Home", path: "/si/" },
+        { name: "ඉංග්‍රීසි සිට සිංහල", path: "/si/transliterate/" },
+    ]),
+    faqSchema(faqs.si.map((f) => ({ question: f.question, answer: f.answer }))),
+];
+---
+
+<Layout
+    title="ඉංග්‍රීසි සිට සිංහල අකුරු පරිවර්තනය"
+    description="ඉංග්‍රීසි (Singlish) පෙළ සිංහල ලෙස ස්වයංක්‍රීයව පරිවර්තනය කරන්න. නොමිලේ, ස්වයංක්‍රීයව, සම්පූර්ණයෙන්ම ඔබගේ බ්‍රවුසරය තුළම ක්‍රියා කරයි."
+    path="/si/transliterate/"
+    lang="si"
+    alternates={{ en: "/transliterate/", si: "/si/transliterate/" }}
+    jsonLd={jsonLd}
+>
+    <TransliterateContent lang="si" toolId="si-transliterate-tool" />
+</Layout>

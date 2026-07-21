@@ -1,0 +1,32 @@
+---
+import Layout from "../layouts/Layout.astro";
+import TransliterateContent from "../components/TransliterateContent.astro";
+import { faqs } from "../data/nav";
+import {
+    breadcrumbSchema,
+    faqSchema,
+    organizationSchema,
+    webApplicationSchema,
+} from "../lib/schema";
+
+const jsonLd = [
+    organizationSchema(),
+    webApplicationSchema(),
+    breadcrumbSchema([
+        { name: "Home", path: "/" },
+        { name: "English to Sinhala", path: "/transliterate/" },
+    ]),
+    faqSchema(faqs.en.map((f) => ({ question: f.question, answer: f.answer }))),
+];
+---
+
+<Layout
+    title="English to Sinhala Transliterator — Free Tool"
+    description="Convert English (Singlish) to Sinhala සිංහල instantly. Type 'kohomada hodai' and get 'කොහොමද හොඳයි'. Free, instant and 100% in your browser."
+    path="/transliterate/"
+    lang="en"
+    alternates={{ en: "/transliterate/", si: "/si/transliterate/" }}
+    jsonLd={jsonLd}
+>
+    <TransliterateContent lang="en" toolId="transliterate-tool" />
+</Layout>

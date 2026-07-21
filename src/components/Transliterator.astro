@@ -1,0 +1,628 @@
+---
+/**
+ * The English (Singlish) → Sinhala transliterator.
+ *
+ * This is the site's primary content: type plain English letters and they
+ * are converted to සිංහල live in the browser. Nothing is uploaded — the
+ * conversion runs entirely on the visitor's device.
+ *
+ * The engine is the same one the CleanBoard Android keyboard uses, and it
+ * follows the standard Singlish scheme: the long vowel sign (කේ rather
+ * than කෙ), clusters written as separate letters (කර rather than ක්‍ර),
+ * gemination (අක්ක) and the word-final hal (ගමන්).
+ *
+ * See `src/lib/transliterator.ts`.
+ */
+import {
+    generateSuggestions,
+    transliterate,
+    transliterateLiteral,
+} from "../lib/transliterator";
+
+interface Props {
+    /** UI language. */
+    lang?: "en" | "si";
+    /** Unique instance id — required when more than one is on a page. */
+    id?: string;
+    /** Compact variant for the homepage hero. */
+    compact?: boolean;
+}
+
+const { lang = "en", id = "transliterator", compact = false } = Astro.props;
+
+const copy = {
+    en: {
+        label: "English (Singlish) text",
+        placeholder: "Type here — e.g. kohomada hodai",
+        outputLabel: "සිංහල",
+        outputPlaceholder: "Your Sinhala text will appear here",
+        copy: "Copy",
+        copied: "Copied",
+        copyFailed: "Press Ctrl+C",
+        clear: "Clear",
+        suggestions: "Other spellings",
+        breakdown: "Character breakdown",
+        examples: "Try an example",
+        examplesList: [
+            "kohomada hodai",
+            "ayubowan",
+            "mama sinhala dannanawa",
+            "subha divasak",
+        ],
+        examplesLabel: {
+            "kohomada hodai": "How are you?",
+            ayubowan: "Hello",
+            "mama sinhala dannanawa": "I know Sinhala",
+            "subha divasak": "Good morning",
+        },
+        hint: "Every letter you type is converted on your device. Nothing is sent to a server.",
+        characterCount: "characters",
+    },
+    si: {
+        label: "ඉංග්‍රීසි (Singlish) පෙළ",
+        placeholder: "මෙහි ටයිප් කරන්න — උදා. kohomada hodai",
+        outputLabel: "සිංහල",
+        outputPlaceholder: "ඔබගේ සිංහල පෙළ මෙහි පෙන්වනු ඇත",
+        copy: "පිටපත් කරන්න",
+        copied: "පිටපත් කරන ලදී",
+        copyFailed: "Ctrl+C ඔබන්න",
+        clear: "මකන්න",
+        suggestions: "වෙනත් අකුරු ලියුම්",
+        breakdown: "අකුරු විස්තරය",
+        examples: "උදාහරණයක් උත්සාහ කරන්න",
+        examplesList: [
+            "kohomada hodai",
+            "ayubowan",
+            "mama sinhala dannanawa",
+            "subha divasak",
+        ],
+        examplesLabel: {
+            "kohomada hodai": "කොහොමද?",
+            ayubowan: "ආයුබෝවන්",
+            "mama sinhala dannanawa": "මම සිංහල දන්නවා",
+            "subha divasak": "සුභ දිනයක්",
+        },
+        hint: "ඔබ ලියන එක් එක් අකුර ඔබගේ දුරකථනය තුළම සිංහලට හරවනු ලැබේ. කිසිදු දත්තයක් සේවාදායකයකට යවන්නේ නැත.",
+        characterCount: "අකුරු",
+    },
+} as const;
+
+const t = copy[lang];
+---
+
+<div class="transliterator" id={id} data-lang={lang}>
+    <div class="transliterator__panes">
+        <div class="pane">
+            <label class="pane__label" for={`${id}-input`}>
+                {t.label}
+            </label>
+            <textarea
+                id={`${id}-input`}
+                class="pane__input"
+                rows={compact ? 2 : 3}
+                placeholder={t.placeholder}
+                spellcheck="false"
+                autocomplete="off"
+                autocapitalize="off"
+                autocorrect="off"
+                aria-describedby={`${id}-hint`}
+            ></textarea>
+        </div>
+
+        <div class="pane pane--output">
+            <div class="pane__label-row">
+                <label class="pane__label" for={`${id}-output`}>
+                    {t.outputLabel}
+                </label>
+                <span class="pane__count" id={`${id}-count`} aria-live="polite"></span>
+            </div>
+            <div
+                class="pane__output sinhala"
+                id={`${id}-output`}
+                role="status"
+                aria-live="polite"
+                aria-atomic="false"
+            >
+                {t.outputPlaceholder}
+            </div>
+        </div>
+    </div>
+
+    <div class="transliterator__toolbar">
+        <button
+            type="button"
+            class="btn btn--ghost btn--sm"
+            id={`${id}-copy`}
+            disabled
+        >
+            <svg
+                aria-hidden="true"
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            >
+                <rect x="9" y="9" width="12" height="12" rx="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span data-copy-label>{t.copy}</span>
+        </button>
+        <button
+            type="button"
+            class="btn btn--ghost btn--sm"
+            id={`${id}-clear`}
+        >
+            {t.clear}
+        </button>
+    </div>
+
+    <div class="transliterator__examples">
+        <span class="transliterator__examples-label">{t.examples}:</span>
+        <div class="transliterator__chips" id={`${id}-examples`}>
+            {
+                t.examplesList.map((example) => (
+                    <button
+                        type="button"
+                        class="chip"
+                        data-example={example}
+                        title={t.examplesLabel[
+                            example as keyof typeof t.examplesLabel
+                        ]}
+                    >
+                        {example}
+                    </button>
+                ))
+            }
+        </div>
+    </div>
+
+    <div class="transliterator__suggestions" id={`${id}-suggestions`} hidden>
+        <span class="transliterator__examples-label">{t.suggestions}:</span>
+        <div class="transliterator__chips" id={`${id}-suggestion-chips`}></div>
+    </div>
+
+    <div class="transliterator__breakdown" id={`${id}-breakdown`} hidden>
+        <span class="transliterator__examples-label">{t.breakdown}:</span>
+        <div class="transliterator__breakdown-list" id={`${id}-breakdown-list`}></div>
+    </div>
+
+    <p class="transliterator__hint" id={`${id}-hint`}>
+        {t.hint}
+    </p>
+</div>
+
+<script>
+    import {
+        generateSuggestions,
+        transliterate,
+        transliterateLiteral,
+    } from "../lib/transliterator";
+    import { setCandidateFrequencyLookup } from "../lib/transliterator";
+    import {
+        loadSinhalaFrequencies,
+        sinhalaFrequency,
+    } from "../lib/sinhala-frequencies";
+
+    const LABELS: Record<string, { copy: string; copied: string; failed: string }> = {
+        en: { copy: "Copy", copied: "Copied", failed: "Press Ctrl+C" },
+        si: {
+            copy: "පිටපත් කරන්න",
+            copied: "පිටපත් කරන ලදී",
+            failed: "Ctrl+C ඔබන්න",
+        },
+    };
+
+    const PLACEHOLDERS: Record<string, string> = {
+        en: "Your Sinhala text will appear here",
+        si: "ඔබගේ සිංහල පෙළ මෙහි පෙන්වනු ඇත",
+    };
+
+    /** The word currently being typed, used for the alternatives list. */
+    const lastWord = (text: string) => {
+        const matches = text.match(/[\p{L}\p{M}'’]+/gu);
+        return matches ? matches[matches.length - 1] : "";
+    };
+
+    /** Splits a word into its leading punctuation, core and trailing punctuation. */
+    const splitWord = (piece: string) => {
+        const match = /^(\W*)(.*?)(\W*)$/u.exec(piece);
+        return {
+            lead: match?.[1] ?? "",
+            core: match?.[2] ?? "",
+            trail: match?.[3] ?? "",
+        };
+    };
+
+    function setup(root: HTMLElement) {
+        const id = root.id;
+        /** Fetches a required element, throwing if the markup changed. */
+        const must = <T extends HTMLElement>(sel: string): T => {
+            const el = root.querySelector<T>(sel);
+            if (!el) throw new Error(`CleanBoard: missing element ${sel}`);
+            return el;
+        };
+
+        const input = must<HTMLTextAreaElement>(`#${id}-input`);
+        const output = must(`#${id}-output`);
+        const count = must(`#${id}-count`);
+        const copyBtn = must<HTMLButtonElement>(`#${id}-copy`);
+        const clearBtn = must<HTMLButtonElement>(`#${id}-clear`);
+        const examples = must(`#${id}-examples`);
+        const suggestionWrap = must(`#${id}-suggestions`);
+        const suggestionChips = must(`#${id}-suggestion-chips`);
+        const breakdownWrap = must(`#${id}-breakdown`);
+        const breakdownList = must(`#${id}-breakdown-list`);
+        const copyLabel = root.querySelector<HTMLElement>("[data-copy-label]");
+
+        const lang = root.dataset.lang ?? "en";
+        const labels = LABELS[lang] ?? LABELS.en;
+        const placeholder = PLACEHOLDERS[lang] ?? PLACEHOLDERS.en;
+
+        let current = "";
+
+        // --- conversion ------------------------------------------------
+        const convert = (text: string): string =>
+            text
+                .split(/(\s+)/)
+                .map((piece) => {
+                    if (!piece.trim()) return piece;
+                    const { lead, core, trail } = splitWord(piece);
+                    if (!core) return piece;
+                    return lead + transliterate(core).primary + trail;
+                })
+                .join("");
+
+        /** The alternative spellings for the word being typed. */
+        const alternativesFor = (word: string): string[] => {
+            if (!word || word.length < 2) return [];
+            const result = transliterate(word);
+            return result.candidates
+                .filter((c) => c !== result.primary)
+                .slice(0, 8);
+        };
+
+        const render = () => {
+            const text = input.value;
+            current = convert(text);
+
+            output.textContent = current.trim() ? current : placeholder;
+            output.classList.toggle("is-empty", !current.trim());
+            count.textContent = text.length
+                ? `${text.length} ${lang === "si" ? "අකුරු" : "characters"}`
+                : "";
+            copyBtn.disabled = !current.trim();
+
+            // Alternatives for the word being typed.
+            const word = lastWord(text);
+            suggestionChips.replaceChildren();
+            const alts = alternativesFor(word);
+            if (alts.length) {
+                for (const alt of alts) {
+                    const chip = document.createElement("button");
+                    chip.type = "button";
+                    chip.className = "chip chip--sinhala";
+                    chip.textContent = alt;
+                    chip.title = `${word} → ${alt}`;
+                    chip.addEventListener("click", () => {
+                        const start = text.length - word.length;
+                        input.value = text.slice(0, start) + alt;
+                        input.focus();
+                        input.setSelectionRange(
+                            input.value.length,
+                            input.value.length,
+                        );
+                        render();
+                    });
+                    suggestionChips.append(chip);
+                }
+                suggestionWrap.hidden = false;
+            } else {
+                suggestionWrap.hidden = true;
+            }
+
+            // Character-by-character breakdown of the last word.
+            breakdownList.replaceChildren();
+            if (word.length > 0 && word.length <= 24) {
+                for (const ch of Array.from(word)) {
+                    const cell = document.createElement("span");
+                    cell.className = "breakdown__cell";
+                    const rom = document.createElement("span");
+                    rom.className = "breakdown__roman";
+                    rom.textContent = ch;
+                    const sin = document.createElement("span");
+                    sin.className = "breakdown__sinhala sinhala";
+                    sin.textContent = transliterateLiteral(ch);
+                    cell.append(rom, sin);
+                    breakdownList.append(cell);
+                }
+                breakdownWrap.hidden = false;
+            } else {
+                breakdownWrap.hidden = true;
+            }
+        };
+
+        // Render straight away. The conversion is a cheap string operation, so
+        // there is nothing to debounce — and unlike requestAnimationFrame this
+        // also runs in a background tab, where rAF is throttled or paused.
+        input.addEventListener("input", render);
+
+        clearBtn.addEventListener("click", () => {
+            input.value = "";
+            render();
+            input.focus();
+        });
+
+        examples?.addEventListener("click", (event) => {
+            const target = (event.target as HTMLElement).closest<HTMLElement>(
+                "[data-example]",
+            );
+            if (!target) return;
+            input.value = target.dataset.example ?? "";
+            render();
+            input.focus();
+        });
+
+        const copyText = async () => {
+            if (!current.trim()) return;
+            try {
+                await navigator.clipboard.writeText(current);
+            } catch {
+                // Fall back for browsers without clipboard access (http, older).
+                const ta = document.createElement("textarea");
+                ta.value = current;
+                ta.setAttribute("readonly", "");
+                ta.style.position = "fixed";
+                ta.style.opacity = "0";
+                document.body.append(ta);
+                ta.select();
+                try {
+                    // Deprecated, but it is the only fallback that works in
+                    // browsers without the async clipboard API.
+                    document.execCommand("copy");
+                } catch {
+                    if (copyLabel) copyLabel.textContent = labels.failed;
+                    ta.remove();
+                    return;
+                }
+                ta.remove();
+            }
+            if (copyLabel) {
+                const original = labels.copy;
+                copyLabel.textContent = labels.copied;
+                window.setTimeout(() => {
+                    copyLabel.textContent = original;
+                }, 1600);
+            }
+        };
+
+        copyBtn.addEventListener("click", copyText);
+
+        // Ctrl/Cmd+Enter copies from the input as well.
+        input.addEventListener("keydown", (event) => {
+            if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+                event.preventDefault();
+                void copyText();
+            }
+        });
+
+        render();
+
+        // Load the Sinhala frequency list in the background and re-render
+        // once it arrives, so the alternatives are ranked by word frequency.
+        const base = document.documentElement.dataset.base ?? "";
+        void loadSinhalaFrequencies(`${base}/data/si-words.txt`).then(() => {
+            setCandidateFrequencyLookup(sinhalaFrequency);
+            render();
+        });
+    }
+
+    document
+        .querySelectorAll<HTMLElement>(".transliterator")
+        .forEach(setup);
+</script>
+
+<style>
+    .transliterator {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+    }
+
+
+    .transliterator__panes {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    @media (min-width: 48rem) {
+        .transliterator__panes {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    .pane {
+        padding: 1rem 1.125rem 1.125rem;
+        min-width: 0;
+    }
+
+    .pane--output {
+        background: var(--surface-2);
+        border-top: 1px solid var(--border);
+    }
+
+    @media (min-width: 48rem) {
+        .pane--output {
+            border-top: 0;
+            border-left: 1px solid var(--border);
+        }
+    }
+
+    .pane__label-row {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 0.75rem;
+    }
+
+    .pane__label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted-foreground);
+        margin-bottom: 0.5rem;
+    }
+
+    .pane__count {
+        font-size: 0.75rem;
+        color: var(--muted-foreground);
+    }
+
+    .pane__input {
+        width: 100%;
+        min-height: 4.5rem;
+        resize: vertical;
+        font-family: inherit;
+        font-size: 1rem;
+        line-height: 1.55;
+        color: var(--foreground);
+        background: var(--background);
+        border: 1px solid var(--border);
+        border-radius: 0.75rem;
+        padding: 0.7rem 0.85rem;
+    }
+
+    .pane__input:focus {
+        outline: 2px solid var(--ring);
+        outline-offset: 1px;
+        border-color: var(--accent);
+    }
+
+    .pane__output {
+        min-height: 4.5rem;
+        font-size: 1.375rem;
+        line-height: 1.6;
+        color: var(--foreground);
+        background: var(--background);
+        border: 1px solid var(--border);
+        border-radius: 0.75rem;
+        padding: 0.7rem 0.85rem;
+        word-break: break-word;
+    }
+
+    .pane__output.is-empty {
+        color: var(--muted-foreground);
+        font-size: 1rem;
+        font-style: italic;
+    }
+
+    .sinhala {
+        font-family: "Noto Sans Sinhala", var(--font-sans);
+    }
+
+    .transliterator__toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        padding: 0 1.125rem 0.875rem;
+    }
+
+    .transliterator__examples,
+    .transliterator__suggestions,
+    .transliterator__breakdown {
+        padding: 0 1.125rem 0.875rem;
+    }
+
+    .transliterator__suggestions[hidden],
+    .transliterator__breakdown[hidden] {
+        display: none;
+    }
+
+    .transliterator__examples-label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--muted-foreground);
+        margin-bottom: 0.5rem;
+    }
+
+    .transliterator__chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+    }
+
+    .chip {
+        display: inline-flex;
+        align-items: center;
+        min-height: 2rem;
+        padding: 0.25rem 0.7rem;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--background);
+        color: var(--muted-foreground);
+        font-family: inherit;
+        font-size: 0.8125rem;
+        cursor: pointer;
+        transition:
+            border-color 0.15s ease,
+            color 0.15s ease,
+            background-color 0.15s ease;
+    }
+
+    .chip:hover {
+        border-color: var(--accent);
+        color: var(--foreground);
+        background: var(--accent-soft);
+    }
+
+    .chip--sinhala {
+        font-family: "Noto Sans Sinhala", var(--font-sans);
+        font-size: 0.9375rem;
+        color: var(--foreground);
+    }
+
+    .transliterator__breakdown-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+    }
+
+    .breakdown__cell {
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.1rem;
+        min-width: 2.25rem;
+        padding: 0.35rem 0.4rem;
+        border: 1px solid var(--border);
+        border-radius: 0.5rem;
+        background: var(--background);
+    }
+
+    .breakdown__roman {
+        font-size: 0.75rem;
+        color: var(--muted-foreground);
+        text-transform: uppercase;
+    }
+
+    .breakdown__sinhala {
+        font-size: 1.0625rem;
+        color: var(--foreground);
+    }
+
+    .transliterator__hint {
+        padding: 0 1.125rem 1.125rem;
+        font-size: 0.8125rem;
+        color: var(--muted-foreground);
+    }
+</style>

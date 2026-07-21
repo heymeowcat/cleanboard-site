@@ -1,0 +1,49 @@
+---
+import Layout from "../layouts/Layout.astro";
+import DownloadContent from "../components/DownloadContent.astro";
+import { breadcrumbSchema, howToSchema, organizationSchema } from "../lib/schema";
+import { PLAY_STORE_ID } from "../lib/site";
+
+const steps = [
+    {
+        name: "Install CleanBoard",
+        text: `Open the Google Play listing for CleanBoard (package ${PLAY_STORE_ID}) and tap Install. The app is free, with no ads and no in-app purchases.`,
+    },
+    {
+        name: "Enable it in Android settings",
+        text: "Go to Settings → System → Languages & input → On-screen keyboard, then choose CleanBoard from the list of installed keyboards.",
+    },
+    {
+        name: "Set it as your default",
+        text: "Tap the gear icon next to CleanBoard and turn on the switches for the layouts you want. You can switch between them from the globe key while you type.",
+    },
+    {
+        name: "Type Sinhala",
+        text: "Switch to the Singlish or Phonetic layout and type plain English letters. CleanBoard converts them to සිංහල as you type, using the same engine that powers the converter on this site.",
+    },
+];
+
+const jsonLd = [
+    organizationSchema(),
+    breadcrumbSchema([
+        { name: "Home", path: "/" },
+        { name: "Download", path: "/download/" },
+    ]),
+    howToSchema(
+        "How to install the CleanBoard Sinhala keyboard on Android",
+        "Install CleanBoard from Google Play and enable it as your default keyboard in four steps.",
+        steps,
+    ),
+];
+---
+
+<Layout
+    title="Download CleanBoard — Free Sinhala Keyboard"
+    description="Download CleanBoard, the free and fully offline Sinhala keyboard for Android. Four layouts, a Singlish engine, offline dictionaries, no permissions."
+    path="/download/"
+    lang="en"
+    alternates={{ en: "/download/", si: "/si/download/" }}
+    jsonLd={jsonLd}
+>
+    <DownloadContent lang="en" />
+</Layout>

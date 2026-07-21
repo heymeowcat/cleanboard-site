@@ -1,0 +1,24 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import FeaturesContent from "../../components/FeaturesContent.astro";
+import { breadcrumbSchema, organizationSchema } from "../../lib/schema";
+
+const jsonLd = [
+    organizationSchema(),
+    breadcrumbSchema([
+        { name: "Home", path: "/si/" },
+        { name: "විශේෂ ලක්ෂණ", path: "/si/features/" },
+    ]),
+];
+---
+
+<Layout
+    title="විශේෂ ලක්ෂණ — සිංහල යතුරුපුවරුව"
+    description="CleanBoard එකිනෙක් එක් සිංහල පිහිටුම් හතරක්, ඇතුළත් Singlish එංජිනයක්, නොබැඳි ශබ්දකෝෂ සහ අභින ටයිප් කිරීම — අන්තර්ජාල අනුමතයකින් තොරව."
+    path="/si/features/"
+    lang="si"
+    alternates={{ en: "/features/", si: "/si/features/" }}
+    jsonLd={jsonLd}
+>
+    <FeaturesContent lang="si" />
+</Layout>

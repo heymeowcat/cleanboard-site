@@ -1,0 +1,81 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { BASE_PATH } from "../lib/site";
+
+const links = [
+    { path: "/", label: "Home" },
+    { path: "/transliterate/", label: "English to Sinhala converter" },
+    { path: "/features/", label: "Features" },
+    { path: "/transliteration-chart/", label: "Transliteration chart" },
+    { path: "/download/", label: "Download for Android" },
+];
+---
+
+<Layout
+    title="Page not found — CleanBoard"
+    description="That page does not exist. Try the English to Sinhala converter, the transliteration chart, or download the CleanBoard keyboard for Android."
+    path="/404.html"
+    noindex={true}
+>
+    <div class="container container--narrow notfound">
+        <p class="eyebrow">404</p>
+        <h1>This page could not be found</h1>
+        <p class="lede">
+            The link may be out of date. Here is where everything lives.
+        </p>
+
+        <nav class="notfound__links" aria-label="Site pages">
+            <ul>
+                {
+                    links.map((link) => (
+                        <li>
+                            <a href={`${BASE_PATH}${link.path}`}>{link.label}</a>
+                        </li>
+                    ))
+                }
+            </ul>
+        </nav>
+    </div>
+</Layout>
+
+<style>
+    .notfound {
+        padding-block: clamp(3rem, 10vw, 6rem);
+    }
+
+    .notfound h1 {
+        font-size: clamp(1.75rem, 5vw, 2.5rem);
+    }
+
+    .notfound .lede {
+        margin-top: 0.75rem;
+    }
+
+    .notfound__links {
+        margin-top: 2rem;
+    }
+
+    .notfound__links ul {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .notfound__links a {
+        display: inline-flex;
+        align-items: center;
+        min-height: 2.75rem;
+        padding: 0 1rem;
+        border: 1px solid var(--border);
+        border-radius: 0.75rem;
+        background: var(--surface);
+        font-weight: 500;
+        text-decoration: none;
+    }
+
+    .notfound__links a:hover {
+        border-color: var(--accent);
+        background: var(--accent-soft);
+    }
+</style>

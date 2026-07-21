@@ -1,0 +1,49 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import DownloadContent from "../../components/DownloadContent.astro";
+import { breadcrumbSchema, howToSchema, organizationSchema } from "../../lib/schema";
+import { PLAY_STORE_ID } from "../../lib/site";
+
+const steps = [
+    {
+        name: "CleanBoard ස්ථාපනය කරන්න",
+        text: `Google Play දිලිස් පිටුවේ CleanBoard (පැකේජ් ${PLAY_STORE_ID}) විවෘත කර Install කරන්න. යෙදුම නොමිලේ වන අතර දැන්දීම ප්‍රචාරණයක් හෝ යෙදුම් තුළ මිල ගණන් ගැනීමක් නැත.`,
+    },
+    {
+        name: "Android සැකසුම්වල සක්‍රිය කරන්න",
+        text: "Settings → System → Languages & input → On-screen keyboard යන කොටසට ගොස් ගිහින්, ස්ථාපනය කළ යතුරුපුවරුව් ලැයිස්තුවෙන් CleanBoard තෝරන්න.",
+    },
+    {
+        name: "පෙරටම යතුරුපුවරුව ලෙස සැකසුම් කරන්න",
+        text: "CleanBoard අදුරු ඉදිරියේ ඇති ගෙල් ලකුණ ඔබන්න, ඔබට අවශ්‍ය පිහිටුම් සඳහා මාරුණයන් කරන්න. ලියද්දී ගෝලු යතුර මගින් ඒවා අතර මාරු කළ හැක.",
+    },
+    {
+        name: "සිංහල ලියන්න",
+        text: "Singlish හෝ Phonetic පිහිටුමට මාරු වී සරල ඉංග්‍රීසි අකුරු ලියන්න. CleanBoard ඒවා ඔබ ලියන විටම සිංහලට හරවයි — මෙම වෙබි අඩවියේ පරිවර්තකයේ ඇති එකම එංජිනය භාවිත කරමින්.",
+    },
+];
+
+const jsonLd = [
+    organizationSchema(),
+    breadcrumbSchema([
+        { name: "Home", path: "/si/" },
+        { name: "බාගන්න", path: "/si/download/" },
+    ]),
+    howToSchema(
+        "ඇන්ඩ්‍රොයිඩ් සඳහා CleanBoard සිංහල යතුරුපුවරුව ස්ථාපනය කරන ආකාරය",
+        "Google Play හරහා CleanBoard ස්ථාපනය කර පියවර හතරකින් පෙරටම යතුරුපුවරුව ලෙස සක්‍රිය කරන්න.",
+        steps,
+    ),
+];
+---
+
+<Layout
+    title="CleanBoard බාගන්න — නොමිලේ"
+    description="ඇන්ඩ්‍රොයිඩ් සඳහා නොමිලේ සහ සම්පූර්ණයෙන්ම නොබැඳි සිංහල යතුරුපුවරුව CleanBoard බාගන්න. පිහිටුම් හතර, ඇතුළත් Singlish එංජිනය, අන්තර්ජාල අනුමතය නැත."
+    path="/si/download/"
+    lang="si"
+    alternates={{ en: "/download/", si: "/si/download/" }}
+    jsonLd={jsonLd}
+>
+    <DownloadContent lang="si" />
+</Layout>
