@@ -1,0 +1,367 @@
+---
+/**
+ * Site header: logo, primary navigation, language switch and the install CTA.
+ *
+ * The mobile menu is a plain `<button>` + `aria-expanded` toggle so it works
+ * without JavaScript being required for the page to be usable — the nav is
+ * visible by default and only collapses once the script runs.
+ */
+import { navItems } from "../data/nav";
+import PlayStoreIcon from "./PlayStoreIcon.astro";
+import { BASE_PATH, PLAY_STORE_URL, SITE_NAME } from "../lib/site";
+
+interface Props {
+    /** "en" or "si" — controls the labels. */
+    lang: "en" | "si";
+    /** Current path (site-relative, no base path) used for the active state. */
+    path: string;
+    /** Where the language switch should point. */
+    altPath: string;
+    /** Label for the language switch button pointing at the other language. */
+    altLabel: string;
+}
+
+const { lang, path, altPath, altLabel } = Astro.props;
+
+const isActive = (itemPath: string) =>
+    itemPath === "/" ? path === "/" : path.startsWith(itemPath);
+---
+
+<header class="site-header">
+    <div class="container header__inner">
+        <a class="brand" href={`${BASE_PATH}/`} aria-label={`${SITE_NAME} — home`}>
+            <img
+                src={`${BASE_PATH}/cleanboard-logo.png`}
+                alt=""
+                width="36"
+                height="36"
+                loading="eager"
+                decoding="async"
+                width="36"
+                height="36"
+            />
+            <span class="brand__name">{SITE_NAME}</span>
+        </a>
+
+        <button
+            class="nav-toggle"
+            id="nav-toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="primary-nav"
+        >
+            <span class="visually-hidden">Menu</span>
+            <span class="nav-toggle__bar" aria-hidden="true"></span>
+        </button>
+
+        <nav
+            class="primary-nav"
+            id="primary-nav"
+            aria-label="Primary"
+        >
+            <ul class="primary-nav__list">
+                {
+                    navItems.map((item) => (
+                        <li>
+                            <a
+                                href={`${BASE_PATH}${item.path}`}
+                                aria-current={
+                                    isActive(item.path) ? "page" : undefined
+                                }
+                                class:list={[
+                                    "primary-nav__link",
+                                    { "is-active": isActive(item.path) },
+                                ]}
+                            >
+                                {lang === "si" ? item.si : item.en}
+                            </a>
+                        </li>
+                    ))
+                }
+            </ul>
+
+            <div class="primary-nav__actions">
+                <a
+                    class="lang-switch"
+                    href={`${BASE_PATH}${altPath}`}
+                    hreflang={lang === "en" ? "si" : "en"}
+                    lang={lang === "en" ? "si" : "en"}
+                >
+                    {altLabel}
+                </a>
+                <a
+                    class="btn btn--store"
+                    href={PLAY_STORE_URL}
+                    rel="noopener"
+                    target="_blank"
+                >
+                    <PlayStoreIcon size={16} />
+                    <span>Google Play</span>
+                </a>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<script>
+    const toggle = document.getElementById("nav-toggle");
+    const nav = document.getElementById("primary-nav");
+
+    if (toggle && nav) {
+        const setOpen = (open: boolean) => {
+            toggle.setAttribute("aria-expanded", String(open));
+            nav.toggleAttribute("data-open", open);
+            document.body.classList.toggle("nav-open", open);
+        };
+
+        toggle.addEventListener("click", () => {
+            setOpen(toggle.getAttribute("aria-expanded") !== "true");
+        });
+
+        // Close the menu when a link is followed or the viewport grows.
+        nav.addEventListener("click", (event) => {
+            if ((event.target as HTMLElement).closest("a")) setOpen(false);
+        });
+
+        const mq = window.matchMedia("(min-width: 48rem)");
+        mq.addEventListener("change", (e) => {
+            if (e.matches) setOpen(false);
+        });
+
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape") setOpen(false);
+        });
+    }
+</script>
+
+<style>
+    .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        background: color-mix(in srgb, var(--background) 85%, transparent);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+        padding-top: env(safe-area-inset-top);
+    }
+
+    .header__inner {
+        min-height: var(--header-height);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+    }
+
+    .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        font-weight: 700;
+        font-size: 1.0625rem;
+        letter-spacing: -0.02em;
+        color: var(--foreground);
+        text-decoration: none;
+        flex-shrink: 0;
+    }
+
+    .brand img {
+        border-radius: 28%;
+        background: var(--surface-2);
+    }
+
+    .nav-toggle {
+        display: none;
+        width: 2.75rem;
+        height: 2.75rem;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        border-radius: 0.65rem;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .nav-toggle__bar,
+    .nav-toggle__bar::before,
+    .nav-toggle__bar::after {
+        position: absolute;
+        left: 50%;
+        width: 1.125rem;
+        height: 2px;
+        background: var(--foreground);
+        border-radius: 2px;
+        transform: translateX(-50%);
+        transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .nav-toggle__bar {
+        top: 50%;
+        margin-top: -1px;
+    }
+
+    .nav-toggle__bar::before {
+        content: "";
+        top: -6px;
+    }
+
+    .nav-toggle__bar::after {
+        content: "";
+        top: 6px;
+    }
+
+    .nav-toggle[aria-expanded="true"] .nav-toggle__bar {
+        background: transparent;
+    }
+
+    .nav-toggle[aria-expanded="true"] .nav-toggle__bar::before {
+        transform: translateX(-50%) translateY(6px) rotate(45deg);
+    }
+
+    .nav-toggle[aria-expanded="true"] .nav-toggle__bar::after {
+        transform: translateX(-50%) translateY(-6px) rotate(-45deg);
+    }
+
+    .primary-nav {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .primary-nav__list {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        list-style: none;
+    }
+
+    .primary-nav__link {
+        display: inline-flex;
+        align-items: center;
+        min-height: 2.25rem;
+        padding: 0 0.7rem;
+        border-radius: 999px;
+        font-size: 0.9375rem;
+        font-weight: 500;
+        color: var(--muted-foreground);
+        text-decoration: none;
+        white-space: nowrap;
+    }
+
+    .primary-nav__link:hover {
+        color: var(--foreground);
+        background: var(--surface-2);
+    }
+
+    .primary-nav__link.is-active {
+        color: var(--foreground);
+        background: var(--surface-2);
+        font-weight: 600;
+    }
+
+    .primary-nav__actions {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .lang-switch {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 2.25rem;
+        padding: 0 0.75rem;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--muted-foreground);
+        text-decoration: none;
+        white-space: nowrap;
+    }
+
+    .lang-switch:hover {
+        color: var(--foreground);
+        border-color: var(--accent);
+    }
+
+    .btn--sm {
+        min-height: 2.25rem;
+        padding: 0.4rem 0.9rem;
+        font-size: 0.875rem;
+    }
+
+    /* A compact, authentic-looking store button: the official Google Play
+       mark on a high-contrast pill. */
+    .btn--store {
+        min-height: 2.25rem;
+        padding: 0.3rem 0.85rem 0.3rem 0.6rem;
+        font-size: 0.875rem;
+        background: var(--foreground);
+        color: var(--background);
+        border-radius: 0.5rem;
+    }
+
+    .btn--store:hover {
+        background: var(--foreground);
+        color: var(--background);
+        opacity: 0.88;
+    }
+
+    @media (max-width: 60rem) {
+        .primary-nav__link {
+            padding: 0 0.5rem;
+        }
+    }
+
+    @media (max-width: 48rem) {
+        .nav-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .primary-nav {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 100%;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0;
+            padding: 0.75rem clamp(1rem, 4vw, 2rem) 1.25rem;
+            background: var(--background);
+            border-bottom: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            display: none;
+        }
+
+        .primary-nav[data-open] {
+            display: flex;
+        }
+
+        .primary-nav__list {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.125rem;
+        }
+
+        .primary-nav__link {
+            min-height: 2.75rem;
+            padding: 0 0.75rem;
+            border-radius: 0.6rem;
+            font-size: 1rem;
+        }
+
+        .primary-nav__actions {
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--border);
+            justify-content: space-between;
+        }
+
+        .lang-switch,
+        .primary-nav__actions .btn {
+            min-height: 2.75rem;
+        }
+    }
+</style>

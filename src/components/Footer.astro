@@ -1,0 +1,182 @@
+---
+/**
+ * Site footer: navigation links, install CTA and the legal/attribution row.
+ */
+import { footerGroups } from "../data/nav";
+import { BASE_PATH, PLAY_STORE_URL, SITE_NAME } from "../lib/site";
+
+interface Props {
+    lang: "en" | "si";
+}
+
+const { lang } = Astro.props;
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+    <div class="container footer__grid">
+        <div class="footer__brand">
+            <a class="footer__logo" href={`${BASE_PATH}/`}>
+                <img
+                    src={`${BASE_PATH}/cleanboard-logo.png`}
+                    alt=""
+                    width="44"
+                    height="44"
+                    loading="lazy"
+                    decoding="async"
+                />
+                <span>{SITE_NAME}</span>
+            </a>
+            <p class="footer__tagline">
+                {
+                    lang === "si"
+                        ? "සිංහල සහ ඉංග්‍රීසි භාෂාවලට නිදහස්, නොබැඳි ඇන්ඩ්‍රොයිඩ් යතුරුපුවරුව."
+                        : "A free, private, offline Android keyboard for Sinhala and English."
+                }
+            </p>
+            <a
+                class="btn btn--primary"
+                href={PLAY_STORE_URL}
+                rel="noopener"
+                target="_blank"
+            >
+                {
+                    lang === "si"
+                        ? "Google Play සඳහා බාගන්න"
+                        : "Get it on Google Play"
+                }
+            </a>
+        </div>
+
+        {
+            footerGroups.map((group) => (
+                <nav class="footer__col" aria-label={group.en.title}>
+                    <h2 class="footer__title">
+                        {lang === "si" ? group.si.title : group.en.title}
+                    </h2>
+                    <ul>
+                        {group.en.links.map((link) => (
+                            <li>
+                                <a
+                                    href={`${BASE_PATH}${link.path}`}
+                                    lang={lang === "si" ? "si" : undefined}
+                                >
+                                    {lang === "si"
+                                        ? group.si.links.find(
+                                              (l) => l.path === link.path,
+                                          )?.label
+                                        : link.label}
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                </nav>
+            ))
+        }
+    </div>
+
+    <div class="container footer__bottom">
+        <p>&copy; {year} heymeowcat. {lang === "si" ? "සියලුම හිමිකම් ඇවිරිණි." : "All rights reserved."}</p>
+        <p class="footer__meta">
+            <a href={`${BASE_PATH}/privacy-policy/`}>
+                {lang === "si" ? "පෞද්ගලිකත්ව ප්‍රතිපත්තිය" : "Privacy Policy"}
+            </a>
+            <span aria-hidden="true">·</span>
+            <a href={`${BASE_PATH}/terms-of-service/`}>
+                {lang === "si" ? "සේවා කොන්දේසි" : "Terms of Service"}
+            </a>
+        </p>
+    </div>
+</footer>
+
+<style>
+    .site-footer {
+        margin-top: clamp(3rem, 8vw, 6rem);
+        border-top: 1px solid var(--border);
+        background: var(--background-alt);
+        padding-block: clamp(2.5rem, 6vw, 4rem) 1.5rem;
+        padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+    }
+
+    .footer__grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.4fr) repeat(auto-fit, minmax(9rem, 1fr));
+        gap: clamp(1.5rem, 4vw, 3rem);
+    }
+
+    .footer__logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-weight: 700;
+        font-size: 1.0625rem;
+        color: var(--foreground);
+        text-decoration: none;
+    }
+
+    .footer__logo img {
+        border-radius: 28%;
+        background: var(--surface);
+    }
+
+    .footer__tagline {
+        margin: 0.85rem 0 1.25rem;
+        font-size: 0.9375rem;
+        max-width: 30ch;
+    }
+
+    .footer__title {
+        font-size: 0.8125rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--foreground);
+        margin-bottom: 0.85rem;
+    }
+
+    .footer__col ul {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .footer__col a {
+        font-size: 0.9375rem;
+        color: var(--muted-foreground);
+        text-decoration: none;
+    }
+
+    .footer__col a:hover {
+        color: var(--foreground);
+        text-decoration: underline;
+    }
+
+    .footer__bottom {
+        margin-top: clamp(2rem, 5vw, 3rem);
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem 1.5rem;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.875rem;
+    }
+
+    .footer__meta {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .footer__meta a {
+        color: var(--muted-foreground);
+        text-decoration: none;
+    }
+
+    .footer__meta a:hover {
+        color: var(--foreground);
+        text-decoration: underline;
+    }
+</style>

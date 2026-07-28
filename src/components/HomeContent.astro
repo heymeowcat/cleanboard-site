@@ -1,0 +1,401 @@
+---
+/**
+ * The homepage body, shared by `/` and `/si/`.
+ *
+ * Every string comes from `src/data/content.ts` and `src/data/nav.ts`, so
+ * the two language versions can never drift apart.
+ */
+import Transliterator from "./Transliterator.astro";
+import FeatureGrid from "./FeatureGrid.astro";
+import Faq from "./Faq.astro";
+import CtaBanner from "./CtaBanner.astro";
+import PlayBadge from "./PlayBadge.astro";
+import { benefits, comparison, steps } from "../data/content";
+import { BASE_PATH, PLAY_STORE_URL } from "../lib/site";
+
+interface Props {
+    lang: "en" | "si";
+    /** Unique id for the converter instance. */
+    toolId: string;
+}
+
+const { lang, toolId } = Astro.props;
+---
+
+<section class="hero">
+    <div class="container">
+        <div class="hero__intro">
+            <p class="eyebrow">
+                {
+                    lang === "si"
+                        ? "නොමිලේ · දැන්දීම ප්‍රචාරණයක් නැත"
+                        : "Free · No ads · No tracking"
+                }
+            </p>
+            <h1>
+                {
+                    lang === "si"
+                        ? "සිංහල සහ ඉංග්‍රීසි යතුරුපුවරුව"
+                        : "The Sinhala & English keyboard"
+                }
+                <span class="hero__accent">
+                    {
+                        lang === "si"
+                            ? "ඔබගේ දුරකථනයේ"
+                            : "that works offline."
+                    }
+                </span>
+            </h1>
+            <p class="lede hero__lede">
+                {
+                    lang === "si"
+                        ? "ඉංග්‍රීසි අකුරු ලියන්න, සිංහල ලැබේ. CleanBoard ඇන්ඩ්‍රොයිඩ් යතුරුපුවරුවක් වන අතර එය සම්පූර්ණයෙන්ම නොබැඳිය — අන්තර්ජාල අනුමතය නැත, දත්ත රැගෙන යාම නැත."
+                        : "Type in plain English letters and get සිංහල back instantly. CleanBoard is a fully offline Android keyboard — no internet permission, no data collection, no ads."
+                }
+            </p>
+        </div>
+
+        <!-- The main content of the page: a working English → Sinhala converter. -->
+        <div class="hero__tool">
+            <Transliterator lang={lang} id={toolId} />
+        </div>
+
+        <div class="hero__actions">
+            <a
+                class="hero__badge"
+                href={PLAY_STORE_URL}
+                rel="noopener"
+                target="_blank"
+                aria-label={
+                    lang === "si"
+                        ? "Google Play හරහා CleanBoard බාගන්න"
+                        : "Get CleanBoard on Google Play"
+                }
+            >
+                <PlayBadge lang={lang} />
+            </a>
+            <a class="btn btn--ghost" href={`${BASE_PATH}/transliterate/`}>
+                {
+                    lang === "si"
+                        ? "සම්පූර්ණ පරිවර්තකය විවෘත කරන්න"
+                        : "Open the full converter"
+                }
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="section section--alt" aria-labelledby="features-heading">
+    <div class="container">
+        <div class="section__head">
+            <h2 id="features-heading">
+                {lang === "si" ? "ඇයි CleanBoard ද?" : "Why CleanBoard?"}
+            </h2>
+            <p>
+                {
+                    lang === "si"
+                        ? "ඔබගේ අකුරු, ඔබගේ දත්ත, ඔබගේ උපකරණය — සියල්ලම ඔබගේ දුරකථනය තුළම රඳවා ගනු ලැබේ."
+                        : "Your keystrokes, your data and your device stay where they belong — on your phone."
+                }
+            </p>
+        </div>
+        <FeatureGrid lang={lang} as="h3" />
+    </div>
+</section>
+
+<section class="section" aria-labelledby="how-heading">
+    <div class="container">
+        <div class="section__head">
+            <h2 id="how-heading">
+                {
+                    lang === "si"
+                        ? "කොහොමද ක්‍රියා කරන්නේ"
+                        : "How the conversion works"
+                }
+            </h2>
+            <p>
+                {
+                    lang === "si"
+                        ? "මෙම පරිවර්තකය CleanBoard යෙදුම තුළ ඇති එකම එංජිනය භාවිත කරයි."
+                        : "The converter above runs the exact same engine that ships inside the CleanBoard Android app."
+                }
+            </p>
+        </div>
+
+        <ol class="steps">
+            {
+                steps[lang].map((step, index) => (
+                    <li class="steps__item">
+                        <span class="steps__num" aria-hidden="true">
+                            {index + 1}
+                        </span>
+                        <div>
+                            <h3>{step.title}</h3>
+                            <p>{step.body}</p>
+                        </div>
+                    </li>
+                ))
+            }
+        </ol>
+    </div>
+</section>
+
+<section class="section section--alt" aria-labelledby="benefits-heading">
+    <div class="container">
+        <div class="section__head">
+            <h2 id="benefits-heading">
+                {
+                    lang === "si"
+                        ? "මෙම පරිවර්තකය භාවිත කරන්නේ ඇයි"
+                        : "Why use this converter"
+                }
+            </h2>
+        </div>
+        <ul class="benefits">
+            {
+                benefits[lang].map((benefit) => (
+                    <li>
+                        <svg
+                            aria-hidden="true"
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path d="M20 6 9 17l-5-5" />
+                        </svg>
+                        <span>{benefit}</span>
+                    </li>
+                ))
+            }
+        </ul>
+    </div>
+</section>
+
+<section class="section" aria-labelledby="compare-heading">
+    <div class="container">
+        <div class="section__head">
+            <h2 id="compare-heading">
+                {
+                    lang === "si"
+                        ? "සාමාන්‍ය යතුරුපුවරුවකට වඩා"
+                        : "Compared with a typical keyboard app"
+                }
+            </h2>
+        </div>
+
+        <div class="table-wrap">
+            <table class="compare">
+                <caption class="visually-hidden">
+                    {
+                        lang === "si"
+                            ? "CleanBoard සහ සාමාන්‍ය ඇන්ඩ්‍රොයිඩ් යතුරුපුවරුවක දෝෂ සංගතය"
+                            : "Feature comparison between CleanBoard and a typical Android keyboard"
+                    }
+                </caption>
+                <thead>
+                    <tr>
+                        {
+                            comparison[lang].headers.map((header) => (
+                                <th scope="col">{header}</th>
+                            ))
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        comparison[lang].rows.map((row) => (
+                            <tr>
+                                <th scope="row">{row[0]}</th>
+                                <td class="compare__good">{row[1]}</td>
+                                <td>{row[2]}</td>
+                            </tr>
+                        ))
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<section class="section section--alt" aria-labelledby="faq-heading">
+    <div class="container container--narrow">
+        <div class="section__head">
+            <h2 id="faq-heading">
+                {lang === "si" ? "නොතිරාත්තර ප්‍රශ්න" : "Frequently asked questions"}
+            </h2>
+        </div>
+        <Faq lang={lang} />
+    </div>
+</section>
+
+<CtaBanner
+    lang={lang}
+    links={[
+        { href: "/features/", label: lang === "si" ? "සියලුම විශේෂ ලක්ෂණ" : "All features" },
+        {
+            href: "/transliteration-chart/",
+            label: lang === "si" ? "අකුරු පරිවර්තන චාර්ටය" : "Transliteration chart",
+        },
+        {
+            href: "/privacy-policy/",
+            label: lang === "si" ? "පෞද්ගලිකත්ව ප්‍රතිපත්තිය" : "Privacy Policy",
+        },
+    ]}
+/>
+
+<style>
+    .hero {
+        padding-block: clamp(2.5rem, 7vw, 4.5rem) clamp(2rem, 5vw, 3.5rem);
+        text-align: center;
+    }
+
+    .hero__intro {
+        max-width: 46rem;
+        margin-inline: auto;
+    }
+
+    .hero h1 {
+        font-size: clamp(2rem, 6.5vw, 3.5rem);
+        line-height: 1.1;
+    }
+
+    .hero__accent {
+        display: block;
+        color: var(--accent-strong);
+    }
+
+    .hero__lede {
+        margin-top: 1rem;
+    }
+
+    .hero__tool {
+        max-width: 58rem;
+        margin: clamp(1.75rem, 4vw, 2.5rem) auto 0;
+        text-align: left;
+    }
+
+    .hero__actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem 1.5rem;
+        margin-top: clamp(1.5rem, 4vw, 2rem);
+    }
+
+    .hero__badge {
+        display: inline-block;
+        border-radius: 0.5rem;
+        transition: transform 0.2s ease;
+    }
+
+    .hero__badge:hover {
+        transform: translateY(-2px);
+    }
+
+    .steps {
+        list-style: none;
+        display: grid;
+        gap: 1.25rem;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+    }
+
+    .steps__item {
+        display: flex;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .steps__num {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.25rem;
+        height: 2.25rem;
+        flex-shrink: 0;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: var(--accent-strong);
+        font-weight: 700;
+        font-size: 0.9375rem;
+    }
+
+    .steps__item h3 {
+        font-size: 1.0625rem;
+        margin-bottom: 0.35rem;
+    }
+
+    .steps__item p {
+        font-size: 0.9375rem;
+    }
+
+    .benefits {
+        list-style: none;
+        display: grid;
+        gap: 0.875rem;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    }
+
+    .benefits li {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.65rem;
+        font-size: 0.9375rem;
+        color: var(--muted-foreground);
+    }
+
+    .benefits svg {
+        flex-shrink: 0;
+        margin-top: 0.2rem;
+        color: var(--accent-strong);
+    }
+
+    .table-wrap {
+        overflow-x: auto;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        background: var(--surface);
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .compare {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9375rem;
+        min-width: 32rem;
+    }
+
+    .compare th,
+    .compare td {
+        text-align: left;
+        padding: 0.8rem 1rem;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .compare thead th {
+        background: var(--surface-2);
+        color: var(--foreground);
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .compare tbody th {
+        font-weight: 500;
+        color: var(--muted-foreground);
+    }
+
+    .compare tbody tr:last-child th,
+    .compare tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+    .compare__good {
+        color: var(--accent-strong);
+        font-weight: 600;
+    }
+</style>

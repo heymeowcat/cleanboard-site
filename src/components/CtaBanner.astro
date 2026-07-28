@@ -1,0 +1,107 @@
+---
+/**
+ * Closing call-to-action band: the Play Store badge plus a couple of
+ * supporting links.
+ */
+import PlayBadge from "./PlayBadge.astro";
+import { BASE_PATH, PLAY_STORE_URL } from "../lib/site";
+
+interface Props {
+    lang?: "en" | "si";
+    /** Heading text. */
+    title?: string;
+    body?: string;
+    /** Extra links shown under the badge. */
+    links?: Array<{ href: string; label: string }>;
+}
+
+const {
+    lang = "en",
+    title = lang === "si" ? "දැන්ම බාගන්න" : "Get CleanBoard today",
+    body = lang === "si"
+        ? "නොමිලේ, දැන්දීම ප්‍රචාරණයක් නැති, සම්පූර්ණයෙන්ම නොබැඳි සිංහල යතුරුපුවරුව."
+        : "Free, no ads, no tracking, and it never touches the network.",
+    links = [],
+} = Astro.props;
+---
+
+<section class="cta section section--alt">
+    <div class="container cta__inner">
+        <div class="cta__copy">
+            <h2>{title}</h2>
+            <p>{body}</p>
+        </div>
+        <div class="cta__actions">
+            <a
+                href={PLAY_STORE_URL}
+                rel="noopener"
+                target="_blank"
+                class="cta__badge"
+                aria-label={
+                    lang === "si"
+                        ? "Google Play හරහා CleanBoard බාගන්න"
+                        : "Get CleanBoard on Google Play"
+                }
+            >
+                <PlayBadge lang={lang} />
+            </a>
+            {
+                links.length > 0 && (
+                    <div class="cta__links">
+                        {links.map((link) => (
+                            <a href={`${BASE_PATH}${link.href}`}>{link.label}</a>
+                        ))}
+                    </div>
+                )
+            }
+        </div>
+    </div>
+</section>
+
+<style>
+    .cta__inner {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: clamp(1.5rem, 4vw, 3rem);
+    }
+
+    .cta__copy {
+        max-width: 34rem;
+    }
+
+    .cta__copy h2 {
+        font-size: clamp(1.5rem, 4vw, 2rem);
+    }
+
+    .cta__copy p {
+        margin-top: 0.6rem;
+        font-size: 1.0625rem;
+    }
+
+    .cta__actions {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .cta__badge {
+        display: inline-block;
+        border-radius: 0.5rem;
+        transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .cta__badge:hover {
+        transform: translateY(-2px);
+        opacity: 0.92;
+    }
+
+    .cta__links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem 1.25rem;
+        font-size: 0.9375rem;
+    }
+</style>

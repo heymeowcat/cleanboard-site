@@ -1,0 +1,24 @@
+---
+/**
+ * Loads the self-hosted web fonts and exposes the two critical font URLs so
+ * the layout can preload them.
+ *
+ * The @font-face rules live in `src/styles/fonts.css`, which is processed by
+ * Vite — that way the font files are content-hashed, get the deployment base
+ * path and are served with a long cache lifetime.
+ *
+ * Both families are variable (weight 100–900) so a single file covers every
+ * weight we use. `font-display: swap` keeps text visible while the font
+ * loads, and the preload in the layout means the swap usually happens before
+ * first paint.
+ *
+ * See `scripts/fetch-fonts.mjs` for how the files are refreshed.
+ */
+import "../styles/fonts.css";
+import outfitLatin from "../assets/fonts/outfit-latin.woff2?url";
+import notoSansSinhala from "../assets/fonts/noto-sans-sinhala-sinhala.woff2?url";
+
+export const criticalFonts = [outfitLatin, notoSansSinhala];
+---
+
+<slot />

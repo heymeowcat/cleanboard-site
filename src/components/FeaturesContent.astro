@@ -1,0 +1,223 @@
+---
+/**
+ * The body of the features page, shared by `/features/` and `/si/features/`.
+ */
+import FeatureGrid from "./FeatureGrid.astro";
+import CtaBanner from "./CtaBanner.astro";
+import { comparison, layouts, privacyPillars } from "../data/content";
+
+interface Props {
+    lang: "en" | "si";
+}
+
+const { lang } = Astro.props;
+---
+
+<section class="page-head">
+    <div class="container">
+        <p class="eyebrow">{lang === "si" ? "විශේෂ ලක්ෂණ" : "Features"}</p>
+        <h1>
+            {
+                lang === "si"
+                    ? "CleanBoard කරන සියලුම දේ, එක තැනක"
+                    : "Everything CleanBoard does, in one place"
+            }
+        </h1>
+        <p class="lede">
+            {
+                lang === "si"
+                    ? "යතුරුපුවරුවක් වේගවත්, පුරෝකථ සහ පෞද්ගලික විය යුතුය. මේ නම් අප නිර්මාණය කළ අංග — ගිණුම් නැත, දැන්දීම ප්‍රචාරණයක් නැත, ජාලයක් නැත."
+                    : "A keyboard should be fast, predictable and private. These are the features we built for exactly that — no accounts, no ads, no network."
+            }
+        </p>
+    </div>
+</section>
+
+<section class="section" aria-labelledby="grid-heading">
+    <div class="container">
+        <h2 id="grid-heading" class="visually-hidden">
+            {lang === "si" ? "සියලුම විශේෂ ලක්ෂණ" : "All features"}
+        </h2>
+        <FeatureGrid lang={lang} as="h3" />
+    </div>
+</section>
+
+<section class="section section--alt" aria-labelledby="layouts-heading">
+    <div class="container">
+        <div class="section__head">
+            <h2 id="layouts-heading">
+                {lang === "si" ? "සිංහල පිහිටුම් හතර" : "Four Sinhala layouts"}
+            </h2>
+            <p>
+                {
+                    lang === "si"
+                        ? "ඔබ ඉගෙන ගත් ආකාරයට ගැලපෙන පිහිටුම තෝරා ගන්න, අවශ්‍ය නම් ඕනෑම විට මාරු කරන්න. එක් එක් පිහිටුමේ සම්පූර්ණ සිංහල යතුරුපුවරුවද ඇත — ඡේය අකුරු සහ දකුණ පැත්තේ ලියන ශක්ති සලකුණු ඇතුළත්."
+                        : "Pick the layout that matches how you were taught to write, and switch whenever you like. Each one keeps the full Sinhala keyboard, including conjuncts and the vowel signs Sinhala writes on the right-hand side."
+                }
+            </p>
+        </div>
+
+        <div class="grid grid--2">
+            {
+                layouts[lang].map((layout) => (
+                    <article class="card">
+                        <h3>{layout.name}</h3>
+                        <p>{layout.body}</p>
+                    </article>
+                ))
+            }
+        </div>
+    </div>
+</section>
+
+<section class="section" aria-labelledby="privacy-heading">
+    <div class="container">
+        <div class="section__head">
+            <h2 id="privacy-heading">
+                {
+                    lang === "si"
+                        ? "පෞද්ගලිකත්වයක් විශේෂ ලක්ෂණයකි"
+                        : "Privacy is a feature"
+                }
+            </h2>
+            <p>
+                {
+                    lang === "si"
+                        ? "බොහෝ යතුරුපුවරුව නොමිලේ වන්නේ ඔබගේ අවධානය හෝ දත්ත විකුණා සිටිමින්. CleanBoard නොමිලේ වන්නේ එය එකම කාර්යය නිවැරදිව කරන කුඩා, විවෘත මූලාවීය යෙදුමක් නිසාය."
+                        : "Most keyboards are free because they sell your attention or your data. CleanBoard is free because it is a small, open source app that does one job well."
+                }
+            </p>
+        </div>
+
+        <div class="grid grid--3">
+            {
+                privacyPillars[lang].map((item) => (
+                    <article class="card">
+                        <h3>{item.title}</h3>
+                        <p>{item.body}</p>
+                    </article>
+                ))
+            }
+        </div>
+    </div>
+</section>
+
+<section class="section section--alt" aria-labelledby="compare-heading">
+    <div class="container">
+        <div class="section__head">
+            <h2 id="compare-heading">
+                {
+                    lang === "si"
+                        ? "CleanBoard සහ සාමාන්‍ය යතුරුපුවරුව"
+                        : "CleanBoard vs. a typical keyboard"
+                }
+            </h2>
+        </div>
+
+        <div class="table-wrap">
+            <table class="compare">
+                <caption class="visually-hidden">
+                    {
+                        lang === "si"
+                            ? "CleanBoard සහ සාමාන්‍ය ඇන්ඩ්‍රොයිඩ් යතුරුපුවරුවක දෝෂ සංගතය"
+                            : "Feature comparison between CleanBoard and a typical Android keyboard"
+                    }
+                </caption>
+                <thead>
+                    <tr>
+                        {
+                            comparison[lang].headers.map((header) => (
+                                <th scope="col">{header}</th>
+                            ))
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        comparison[lang].rows.map((row) => (
+                            <tr>
+                                <th scope="row">{row[0]}</th>
+                                <td class="compare__good">{row[1]}</td>
+                                <td>{row[2]}</td>
+                            </tr>
+                        ))
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<CtaBanner
+    lang={lang}
+    links={[
+        {
+            href: "/download/",
+            label: lang === "si" ? "ඇන්ඩ්‍රොයිඩ් සඳහා බාගන්න" : "Download for Android",
+        },
+        {
+            href: "/transliterate/",
+            label: lang === "si" ? "පරිවර්තකය උත්සාහ කරන්න" : "Try the converter",
+        },
+    ]}
+/>
+
+<style>
+    .page-head {
+        padding-block: clamp(2.5rem, 7vw, 4rem) clamp(1.5rem, 4vw, 2.5rem);
+    }
+
+    .page-head h1 {
+        font-size: clamp(1.875rem, 5.5vw, 3rem);
+        max-width: 20ch;
+    }
+
+    .page-head .lede {
+        margin-top: 0.85rem;
+        max-width: 46rem;
+    }
+
+    .table-wrap {
+        overflow-x: auto;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        background: var(--surface);
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .compare {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9375rem;
+        min-width: 32rem;
+    }
+
+    .compare th,
+        .compare td {
+        text-align: left;
+        padding: 0.8rem 1rem;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .compare thead th {
+        background: var(--surface-2);
+        color: var(--foreground);
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .compare tbody th {
+        font-weight: 500;
+        color: var(--muted-foreground);
+    }
+
+    .compare tbody tr:last-child th,
+    .compare tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+    .compare__good {
+        color: var(--accent-strong);
+        font-weight: 600;
+    }
+</style>

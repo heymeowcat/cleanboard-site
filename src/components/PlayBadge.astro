@@ -1,0 +1,51 @@
+---
+/**
+ * The official Google Play badge, self-hosted and compressed.
+ *
+ * Hosting it locally removes a third-party request from the critical path
+ * (better LCP) and means the page never leaks the visitor's IP to
+ * play.google.com.
+ */
+import { BASE_PATH } from "../lib/site";
+
+interface Props {
+    lang?: "en" | "si";
+    class?: string;
+}
+
+const { lang = "en", class: className } = Astro.props;
+---
+
+<picture>
+    <source
+        srcset={`${BASE_PATH}/play-badge.webp`}
+        type="image/webp"
+        width="320"
+        height="124"
+    />
+    <img
+        src={`${BASE_PATH}/play-badge.png`}
+        alt={
+            lang === "si"
+                ? "Google Play හරහා CleanBoard බාගන්න"
+                : "Get CleanBoard on Google Play"
+        }
+        width="320"
+        height="124"
+        loading="lazy"
+        decoding="async"
+        class={className}
+    />
+</picture>
+
+<style>
+    picture {
+        display: inline-block;
+        line-height: 0;
+    }
+
+    img {
+        height: 3.25rem;
+        width: auto;
+    }
+</style>

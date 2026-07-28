@@ -1,0 +1,310 @@
+---
+/**
+ * The body of the download page, shared by `/download/` and `/si/download/`.
+ */
+import PlayBadge from "./PlayBadge.astro";
+import CtaBanner from "./CtaBanner.astro";
+import { PLAY_STORE_ID, PLAY_STORE_URL } from "../lib/site";
+
+interface Props {
+    lang: "en" | "si";
+}
+
+const { lang } = Astro.props;
+
+const steps = {
+    en: [
+        {
+            name: "Install CleanBoard",
+            text: `Open the Google Play listing for CleanBoard (package ${PLAY_STORE_ID}) and tap Install. The app is free, with no ads and no in-app purchases.`,
+        },
+        {
+            name: "Enable it in Android settings",
+            text: "Go to Settings → System → Languages & input → On-screen keyboard, then choose CleanBoard from the list of installed keyboards.",
+        },
+        {
+            name: "Set it as your default",
+            text: "Tap the gear icon next to CleanBoard and turn on the switches for the layouts you want. You can switch between them from the globe key while you type.",
+        },
+        {
+            name: "Type Sinhala",
+            text: "Switch to the Singlish or Phonetic layout and type plain English letters. CleanBoard converts them to සිංහල as you type, using the same engine that powers the converter on this site.",
+        },
+    ],
+    si: [
+        {
+            name: "CleanBoard ස්ථාපනය කරන්න",
+            text: `Google Play දිලිස් පිටුවේ CleanBoard (පැකේජ් ${PLAY_STORE_ID}) විවෘත කර Install කරන්න. යෙදුම නොමිලේ වන අතර දැන්දීම ප්‍රචාරණයක් හෝ යෙදුම් තුළ මිල ගණන් ගැනීමක් නැත.`,
+        },
+        {
+            name: "Android සැකසුම්වල සක්‍රිය කරන්න",
+            text: "Settings → System → Languages & input → On-screen keyboard යන කොටසට ගොස් ගිහින්, ස්ථාපනය කළ යතුරුපුවරුව් ලැයිස්තුවෙන් CleanBoard තෝරන්න.",
+        },
+        {
+            name: "පෙරටම යතුරුපුවරුව ලෙස සැකසුම් කරන්න",
+            text: "CleanBoard අදුරු ඉදිරියේ ඇති ගෙල් ලකුණ ඔබන්න, ඔබට අවශ්‍ය පිහිටුම් සඳහා මාරුණයන් කරන්න. ලියද්දී ගෝලු යතුර මගින් ඒවා අතර මාරු කළ හැක.",
+        },
+        {
+            name: "සිංහල ලියන්න",
+            text: "Singlish හෝ Phonetic පිහිටුමට මාරු වී සරල ඉංග්‍රීසි අකුරු ලියන්න. CleanBoard ඒවා ඔබ ලියන විටම සිංහලට හරවයි — මෙම වෙබි අඩවියේ පරිවර්තකයේ ඇති එකම එංජිනය භාවිත කරමින්.",
+        },
+    ],
+} as const;
+
+const requirements = {
+    en: [
+        {
+            body: "Most phones in use today run Android 11 or later.",
+            strong: "Android 7.0 (API 24) or newer.",
+        },
+        {
+            body: "A Play Store account is needed only to download it from the store.",
+            strong: "A Google account is not required",
+        },
+        {
+            body: "Every feature works offline.",
+            strong: "No internet connection is needed",
+        },
+    ],
+    si: [
+        {
+            body: "අද භාවිත කරන බොහෝ දුරකථන Android 11 හෝ එයට වඩා නව අනුවාදයක් ධාවනය කරයි.",
+            strong: "Android 7.0 (API 24) හෝ ඊටත් නව අනුවාදය.",
+        },
+        {
+            body: "Play Store ගිණුමක් අවශ්‍ය වන්නේ යෙදුම ගලවා ගැනීමට පමණයි.",
+            strong: "Google ගිණුමක් අවශ්‍ය නොවේ",
+        },
+        {
+            body: "සියලුම විශේෂ ලක්ෂණ නොබැඳිව ක්‍රියා කරයි.",
+            strong: "අන්තර්ජාල සම්බන්ධතාවයක් අවශ්‍ය නැත",
+        },
+    ],
+} as const;
+---
+
+<section class="page-head">
+    <div class="container">
+        <p class="eyebrow">
+            {lang === "si" ? "Google Play හි නොමිලේ" : "Free on Google Play"}
+        </p>
+        <h1>
+            {lang === "si" ? "CleanBoard බාගන්න" : "Download CleanBoard"}
+        </h1>
+        <p class="lede">
+            {
+                lang === "si"
+                    ? "සිංහල සහ ඉංග්‍රීසි භාෂාවලට නිදහස්, පෞද්ගලික, සම්පූර්ණයෙන්ම නොබැඳි ඇන්ඩ්‍රොයිඩ් යතුරුපුවරුවකි. දැන්දීම ප්‍රචාරණයක් නැත, අන්තර්ජාල අනුමතය නැත."
+                    : "A free, private, fully offline Android keyboard for Sinhala and English. No ads, no in-app purchases, no internet permission."
+            }
+        </p>
+        <div class="page-head__badge">
+            <a
+                href={PLAY_STORE_URL}
+                rel="noopener"
+                target="_blank"
+                aria-label={
+                    lang === "si"
+                        ? "Google Play හරහා CleanBoard බාගන්න"
+                        : "Get CleanBoard on Google Play"
+                }
+            >
+                <PlayBadge lang={lang} />
+            </a>
+        </div>
+        <ul class="quick-facts">
+            {
+                (
+                    lang === "si"
+                        ? [
+                              "Android 7.0 සහ ඊටත් නව",
+                              "ආසන්න වශයෙන් 4 MB",
+                              "වතුරණ අනුමතය හැර අනුමත කිරීමක් නැත",
+                              "විවෘත මූලාවීය",
+                          ]
+                        : [
+                              "Android 7.0 and newer",
+                              "~4 MB download",
+                              "No permissions beyond vibration",
+                              "Open source",
+                          ]
+                ).map((fact) => (
+                    <li>{fact}</li>
+                ))
+            }
+        </ul>
+    </div>
+</section>
+
+<section class="section" aria-labelledby="install-heading">
+    <div class="container container--narrow">
+        <div class="section__head">
+            <h2 id="install-heading">
+                {lang === "si" ? "පියවර හතරකින් ස්ථාපනය කරන්න" : "Install in four steps"}
+            </h2>
+        </div>
+
+        <ol class="install">
+            {
+                steps[lang].map((step, index) => (
+                    <li class="install__step">
+                        <span class="install__num" aria-hidden="true">
+                            {index + 1}
+                        </span>
+                        <div>
+                            <h3>{step.name}</h3>
+                            <p>{step.text}</p>
+                        </div>
+                    </li>
+                ))
+            }
+        </ol>
+    </div>
+</section>
+
+<section class="section section--alt" aria-labelledby="requirements-heading">
+    <div class="container container--narrow">
+        <div class="section__head">
+            <h2 id="requirements-heading">
+                {lang === "si" ? "අවශ්‍යතා" : "Requirements"}
+            </h2>
+        </div>
+        <ul class="requirements">
+            {
+                requirements[lang].map((item) => (
+                    <li>
+                        <strong>{item.strong}</strong> {item.body}
+                    </li>
+                ))
+            }
+        </ul>
+    </div>
+</section>
+
+<CtaBanner
+    lang={lang}
+    title={
+        lang === "si"
+            ? "ස්ථාපනය කරන්නේ නැතුව උත්සාහ කරන්න ඕනේද?"
+            : "Want to try it before you install?"
+    }
+    body={
+        lang === "si"
+            ? "මෙම වෙබි අඩවියේ ඉංග්‍රීසි සිට සිංහල පරිවර්තකය එකම එංජිනය භාවිත කරයි — බාගැනීමක් අවශ්‍ය නැත."
+            : "The English to Sinhala converter on this site runs the exact same engine — no download required."
+    }
+    links={[
+        {
+            href: "/transliterate/",
+            label: lang === "si" ? "පරිවර්තකය විවෘත කරන්න" : "Open the converter",
+        },
+        {
+            href: "/features/",
+            label: lang === "si" ? "සියලුම විශේෂ ලක්ෂණ" : "See all features",
+        },
+    ]}
+/>
+
+<style>
+    .page-head {
+        padding-block: clamp(2.5rem, 7vw, 4rem) clamp(1.5rem, 4vw, 2.5rem);
+        text-align: center;
+    }
+
+    .page-head h1 {
+        font-size: clamp(1.875rem, 6vw, 3rem);
+    }
+
+    .page-head .lede {
+        margin: 0.85rem auto 0;
+        max-width: 40rem;
+    }
+
+    .page-head__badge {
+        display: inline-block;
+        margin-top: 1.75rem;
+        border-radius: 0.5rem;
+        transition: transform 0.2s ease;
+    }
+
+    .page-head__badge:hover {
+        transform: translateY(-2px);
+    }
+
+    .quick-facts {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem 1.5rem;
+        margin-top: 1.75rem;
+        font-size: 0.875rem;
+        color: var(--muted-foreground);
+    }
+
+    .quick-facts li {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .quick-facts li::before {
+        content: "";
+        width: 0.4rem;
+        height: 0.4rem;
+        border-radius: 999px;
+        background: var(--accent);
+    }
+
+    .install {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .install__step {
+        display: flex;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .install__num {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        flex-shrink: 0;
+        border-radius: 999px;
+        background: var(--accent-button);
+        color: var(--accent-foreground);
+        font-weight: 700;
+    }
+
+    .install__step h3 {
+        font-size: 1.0625rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .install__step p {
+        font-size: 0.9375rem;
+    }
+
+    .requirements {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .requirements li {
+        padding-left: 1.25rem;
+        border-left: 3px solid var(--accent);
+        font-size: 0.9375rem;
+    }
+
+    .requirements strong {
+        color: var(--foreground);
+    }
+</style>

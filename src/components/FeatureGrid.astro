@@ -1,0 +1,90 @@
+---
+/**
+ * The feature grid. Each card is a real <article> so the list reads
+ * correctly to screen readers and to search engines.
+ */
+import { features } from "../data/content";
+
+interface Props {
+    lang?: "en" | "si";
+    /** Heading level for each card title. */
+    as?: "h2" | "h3";
+}
+
+const { lang = "en", as: Heading = "h3" } = Astro.props;
+const items = features[lang];
+---
+
+<div class="grid grid--3 feature-grid">
+    {
+        items.map((feature) => (
+            <article class="card feature" id={`feature-${feature.id}`}>
+                <span class="feature__icon" aria-hidden="true">
+                    <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        {feature.icon === "keyboard" && (
+                            <path d="M3 6h18v12H3zM7 10h.01M11 10h.01M15 10h.01M7 14h10" />
+                        )}
+                        {feature.icon === "cloud-off" && (
+                            <path d="M2 2l20 20M5.8 5.8A6 6 0 0 0 6 18h11M18.7 16.7A4.5 4.5 0 0 0 18 8h-1.3A6 6 0 0 0 10.5 4" />
+                        )}
+                        {feature.icon === "shield" && (
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
+                        )}
+                        {feature.icon === "grid" && (
+                            <path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z" />
+                        )}
+                        {feature.icon === "swipe" && (
+                            <path d="M5 12l-3 3 3 3M2 15h11a4 4 0 0 0 4-4V8M14 4l3 3-3 3" />
+                        )}
+                        {feature.icon === "sparkles" && (
+                            <path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3ZM19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9L19 15Z" />
+                        )}
+                    </svg>
+                </span>
+                <Heading>{feature.title}</Heading>
+                <p>{feature.body}</p>
+            </article>
+        ))
+    }
+</div>
+
+<style>
+    .feature {
+        position: relative;
+        transition:
+            transform 0.2s ease,
+            border-color 0.2s ease;
+    }
+
+    .feature:hover {
+        transform: translateY(-3px);
+        border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+    }
+
+    .feature__icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 0.75rem;
+        background: var(--accent-soft);
+        color: var(--accent-strong);
+        margin-bottom: 0.9rem;
+    }
+
+    .feature :global(h2),
+    .feature :global(h3) {
+        font-size: 1.0625rem;
+        margin-bottom: 0.45rem;
+    }
+</style>
