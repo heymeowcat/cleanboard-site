@@ -1,98 +1,136 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { BASE_PATH, CONTACT_EMAIL } from "../lib/site";
+import { breadcrumbSchema, organizationSchema } from "../lib/schema";
+
+/** Updated whenever the terms text changes. */
+const lastUpdated = "October 22, 2026";
+
+const jsonLd = [
+    organizationSchema(),
+    breadcrumbSchema([
+        { name: "Home", path: "/" },
+        { name: "Terms of Service", path: "/terms-of-service/" },
+    ]),
+];
 ---
 
-<Layout title="Terms of Service - CleanBoard">
-    <div class="container content">
-        <h1>Terms of Service</h1>
-        <p class="last-updated">
-            Last updated: {
-                new Date().toLocaleDateString("en-US", {
-                    month: "long",
-                    day: "numeric",
-                    year: "numeric",
-                })
-            }
-        </p>
+<Layout
+    title="Terms of Service — CleanBoard"
+    description="The terms for using the CleanBoard Android keyboard and this website. Provided as-is, free of charge, with no data collection."
+    path="/terms-of-service/"
+    jsonLd={jsonLd}
+>
+    <div class="container container--reading">
+        <article class="prose terms">
+            <header class="terms__head">
+                <h1>Terms of Service</h1>
+                <p class="terms__meta">Last updated: {lastUpdated}</p>
+            </header>
 
-        <section>
             <p>
-                By using the CleanBoard application, you agree to these simple
-                terms of service.
+                By installing or using CleanBoard, or by using this website,
+                you agree to the terms below. They are deliberately short,
+                because a keyboard that asks for nothing should not ask for a
+                lot in return.
             </p>
-        </section>
 
-        <section>
-            <h3>1. Use of the App</h3>
+            <h2 id="licence">1. Licence</h2>
             <p>
-                CleanBoard is a tool provided for personal, non-commercial use.
-                You are responsible for any text you type using the keyboard. We
-                do not monitor or control the content you create.
+                CleanBoard is provided free of charge for personal,
+                non-commercial use. You may use it, modify the open-source
+                release, and redistribute it under the terms of its licence.
+                You may not sell it, bundle it into a paid product, or use it to
+                build a competing commercial offering without permission.
             </p>
-        </section>
 
-        <section>
-            <h3>2. "As Is" Basis</h3>
+            <h2 id="use">2. Acceptable use</h2>
             <p>
-                The application is provided "as is" and "as available" without
-                warranties of any kind. While we strive for accuracy in our
-                transliteration and suggestions, we do not guarantee that the
-                app will always function perfectly or be error-free.
+                You are responsible for the text you type with CleanBoard. The
+                keyboard only converts characters — it does not create,
+                monitor, store or control any content. Do not use it to break
+                the law, to harass anyone, or to infringe someone&rsquo;s
+                rights.
             </p>
-        </section>
 
-        <section>
-            <h3>3. Privacy</h3>
+            <h2 id="as-is">3. Provided &ldquo;as is&rdquo;</h2>
             <p>
-                Your use of the app is also governed by our <a
-                    href="/cleanboard-site/privacy-policy">Privacy Policy</a
-                >, which states that we do not collect any of your data.
+                The app and this website are provided &ldquo;as is&rdquo; and
+                &ldquo;as available&rdquo;, without warranties of any kind.
+                Transliteration is inherently ambiguous — Sinhala has sounds
+                that English letters cannot distinguish — so we work hard on
+                the rules and the dictionary, but we cannot guarantee that
+                every suggestion will be the one you wanted. Pick the
+                alternative that matches your intent.
             </p>
-        </section>
 
-        <section>
-            <h3>4. Intellectual Property</h3>
+            <h2 id="privacy">4. Privacy</h2>
             <p>
-                The CleanBoard name, logo, and source code are the property of
-                heymeowcat. You may not decompile or attempt to extract the
-                source code of the app for commercial purposes without
-                permission.
+                Your use of CleanBoard is also governed by our
+                <a href={`${BASE_PATH}/privacy-policy/`}>Privacy Policy</a>,
+                which explains that no data is collected at all.
             </p>
-        </section>
 
-        <section>
-            <h3>5. Changes to Terms</h3>
+            <h2 id="ip">5. Intellectual property</h2>
             <p>
-                We may update these terms from time to time. Your continued use
-                of the app after such changes constitutes acceptance of the new
-                terms.
+                The CleanBoard name, logo and artwork are the property of
+                heymeowcat. The source code is open source and can be reused
+                under its licence. Please do not redistribute the name or logo
+                in a way that implies an official build.
             </p>
-        </section>
+
+            <h2 id="availability">6. Availability</h2>
+            <p>
+                We aim to keep the app and this website available, but we do
+                not guarantee uninterrupted service, and we may change or
+                remove features at any time. The website&rsquo;s converter
+                depends on your browser, so very old browsers may not support
+                it.
+            </p>
+
+            <h2 id="liability">7. Limitation of liability</h2>
+            <p>
+                To the maximum extent permitted by law, heymeowcat is not
+                liable for any indirect or consequential loss arising from the
+                use of CleanBoard or this website. Some jurisdictions do not
+                allow certain exclusions, so parts of this section may not
+                apply to you.
+            </p>
+
+            <h2 id="changes">8. Changes</h2>
+            <p>
+                These terms may be updated from time to time. The
+                &ldquo;last updated&rdquo; date above always reflects the
+                current version, and continued use after a change constitutes
+                acceptance of the new terms.
+            </p>
+
+            <h2 id="contact">9. Contact</h2>
+            <p>
+                Questions can be sent to
+                <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
+            </p>
+        </article>
     </div>
 </Layout>
 
 <style>
-    .content {
-        padding: 8rem 0 4rem;
-        max-width: 700px;
+    .terms {
+        padding-block: clamp(2.5rem, 6vw, 4rem) 1rem;
     }
 
-    h1 {
-        font-size: 2.5rem;
-        margin-bottom: 0.5rem;
+    .terms__head {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--border);
     }
 
-    .last-updated {
-        margin-bottom: 3rem;
+    .terms h1 {
+        font-size: clamp(1.875rem, 5vw, 2.5rem);
+    }
+
+    .terms__meta {
+        margin-top: 0.5rem;
         font-size: 0.875rem;
-    }
-
-    section {
-        margin-bottom: 2.5rem;
-    }
-
-    h3 {
-        margin-bottom: 1rem;
-        color: var(--foreground);
     }
 </style>
