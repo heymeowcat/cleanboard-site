@@ -1,0 +1,16 @@
+# GitHub Pages redirects
+# https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site#redirecting-the-root-domain-to-a-subpath
+#
+# GitHub Pages already redirects http:// to https:// for GitHub Pages
+# domains and for custom domains with a verified HTTPS certificate.
+# The rules below normalise the remaining cases: URLs without a trailing
+# slash, and the old flat slugs that used to exist before the site was
+# reorganised — they are redirected rather than 404ing so any existing
+# inbound links keep working.
+
+/privacy-policy  /cleanboard-site/privacy-policy/  301
+/terms-of-service  /cleanboard-site/terms-of-service/  301
+/transliterate  /cleanboard-site/transliterate/  301
+/features  /cleanboard-site/features/  301
+/download  /cleanboard-site/download/  301
+/transliteration-chart  /cleanboard-site/transliteration-chart/  301
