@@ -1,7 +1,14 @@
-# Sample workflow for building and deploying an Astro site to GitHub Pages
+# Build and deploy the CleanBoard website to GitHub Pages.
 #
-# To get started with Astro see: https://docs.astro.build/en/getting-started/
+# The site lives at https://heymeowcat.is-a.dev/cleanboard-site/
 #
+# The `site` and `base` values come from astro.config.mjs and are NOT
+# overridden here. Passing `--site`/`--base` from the Pages action would
+# make the sitemap and canonical URLs depend on whatever the Pages API
+# reports, which is not guaranteed to match the real domain.
+#
+# https://docs.astro.build/en/guides/deploy/github/
+
 name: Deploy Astro site to Pages
 
 on:
@@ -18,15 +25,16 @@ permissions:
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+# Allow only one concurrent deployment, skipping runs queued between the
+# run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these
+# production deployments to complete.
 concurrency:
   group: "pages"
   cancel-in-progress: false
 
 env:
-  BUILD_PATH: "." # default value when not using subfolders
-  # BUILD_PATH: subfolder
+  BUILD_PATH: "."
 
 jobs:
   build:
@@ -35,6 +43,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Detect package manager
         id: detect-package-manager
         run: |
@@ -54,24 +63,41 @@ jobs:
             echo "Unable to determine package manager"
             exit 1
           fi
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          # Node 20 reached end-of-life in April 2026. Node 22 is the
+          # current LTS and is supported by Astro 5 and sharp.
+          node-version: "22"
           cache: ${{ steps.detect-package-manager.outputs.manager }}
           cache-dependency-path: ${{ env.BUILD_PATH }}/${{ steps.detect-package-manager.outputs.lockfile }}
+
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
+
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
         working-directory: ${{ env.BUILD_PATH }}
-      - name: Build with Astro
-        run: |
-          ${{ steps.detect-package-manager.outputs.runner }} astro build \
-            --site "${{ steps.pages.outputs.origin }}" \
-            --base "${{ steps.pages.outputs.base_path }}"
+
+      - name: Verify the transliteration engine
+        run: npm run test:transliterator
         working-directory: ${{ env.BUILD_PATH }}
+
+      - name: Build with Astro
+        run: ${{ steps.detect-package-manager.outputs.runner }} astro build
+        working-directory: ${{ env.BUILD_PATH }}
+
+      # Fail the deployment rather than shipping a broken page.
+      - name: Check for broken links
+        run: npm run test:links
+        working-directory: ${{ env.BUILD_PATH }}
+
+      - name: Audit the on-page SEO
+        run: npm run audit:seo
+        working-directory: ${{ env.BUILD_PATH }}
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
