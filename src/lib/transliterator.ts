@@ -143,7 +143,7 @@ export const CONSONANT_ALTERNATIVES: Record<string, string[]> = {
     v: [],
     y: [],
     s: ["ශ", "ෂ"],
-    h: ["ත", "ධ"],
+    h: [],
     f: ["ඵ"],
     z: ["ස"],
     K: [],
@@ -458,17 +458,26 @@ function tokenize(word: string): Unit[] {
         i += 1;
     }
 
-    // A medial consonant that is followed by another consonant can take the
-    // hal, which is how Sinhala writes a cluster: "kanda" is කන්ද and
-    // "hambantota" is හම්බන්තොට. The plain form is kept as an
-    // alternative, and the word frequencies decide between them.
+    // A medial consonant whose vowel has been elided takes the hal, which is
+    // how Sinhala writes a cluster: "kanda" is කන්ද and "hambantota" is
+    // හම්බන්තොට. Before a liquid, glide or හ the plain form is the reading
+    // ("kra" is කර, "sha" is සහ), so there only the hal is offered.
+    const PLAIN_ONSETS = new Set(["ර", "ල", "ව", "ය", "හ"]);
     for (let i = 0; i < units.length - 1; i++) {
         const unit = units[i];
         const next = units[i + 1];
         if (!unit.consonant || unit.vowel !== "") continue;
-        if (next.vowel !== "" || !next.consonant) continue;
+        if (!next.consonant) continue;
         if (unit.primary.endsWith(HAL)) continue;
-        unit.alternatives.push(unit.primary + HAL);
+
+        const plain = unit.primary;
+        if (PLAIN_ONSETS.has([...next.consonant][0])) {
+            unit.alternatives.push(plain + HAL);
+            continue;
+        }
+        // The plain letter would be read with its inherent vowel (pa-na-da),
+        // which is a different pronunciation, so only the hal is correct.
+        unit.primary = plain + HAL;
     }
 
     // Sinhala orthography: a consonant that is followed by න, ත or ඟ must
@@ -485,8 +494,9 @@ function tokenize(word: string): Unit[] {
 
         const explicit = unit.consonant + "ැ";
         if (explicit === unit.primary) continue;
-        unit.alternatives.unshift(unit.primary);
-        unit.primary = explicit;
+        if (!unit.alternatives.includes(explicit)) {
+            unit.alternatives.push(explicit);
+        }
     }
 
     // A consonant at the very end of the word, with no vowel after it, is
@@ -494,6 +504,12 @@ function tokenize(word: string): Unit[] {
     const last = units[units.length - 1];
     if (last && last.consonant && last.vowel === "") {
         last.primary = last.primary + HAL;
+        // A single-letter alternative is word-final too, so it takes a hal.
+        last.alternatives = last.alternatives.map((alternative) =>
+            [...alternative].length === 1 && !alternative.endsWith(HAL)
+                ? alternative + HAL
+                : alternative,
+        );
     }
 
     return units;
@@ -523,6 +539,18 @@ function buildCandidates(units: Unit[], literal: string): string[] {
             push(parts.join(""));
         }
     });
+
+    // "nd" can also be the single letter ඳ, which swallows the following
+    // vowel: "honda" is හොඳ, not හොන්ද.
+    for (let i = 0; i < units.length - 1; i++) {
+        const unit = units[i];
+        const next = units[i + 1];
+        if (unit.consonant !== "න" || unit.vowel !== "") continue;
+        if (next.consonant !== "ද") continue;
+        const parts = units.map((u) => u.primary);
+        parts.splice(i, 2, "ඳ" + next.primary.slice(next.consonant.length));
+        push(parts.join(""));
+    }
 
     // Every unit swapped for its first (or second) alternative at once.
     for (const pick of [0, 1]) {
