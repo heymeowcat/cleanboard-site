@@ -20,7 +20,7 @@ export const SITE_NAME = "CleanBoard";
 export const SITE_TAGLINE = "The Ultimate Sinhala & English Typing Experience";
 
 export const DEFAULT_DESCRIPTION =
-  "CleanBoard is a free, private, offline Android keyboard for Sinhala and English. Type Singlish and get සිංහල instantly — no internet permission, no tracking.";
+  "CleanBoard is a free, private, offline-first Android keyboard for Sinhala and English. Type Singlish and get සිංහල instantly — no ads, no tracking. Optional internet features are off until you enable them.";
 
 export const PLAY_STORE_URL =
   "https://play.google.com/store/apps/details?id=com.heymeowcat.cleanboard";
@@ -51,7 +51,7 @@ export const OG_IMAGE = {
   path: "/og-image.png",
   width: 1200,
   height: 630,
-  alt: "CleanBoard — the private, offline Sinhala & English Android keyboard with a built-in Singlish transliteration engine.",
+  alt: "CleanBoard — the private, offline-first Sinhala & English Android keyboard with a built-in Singlish transliteration engine.",
 };
 
 export const LOCALE = {

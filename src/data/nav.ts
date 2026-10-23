@@ -72,12 +72,12 @@ export const faqs = {
         {
             question: "Is CleanBoard really offline?",
             answer:
-                "Yes. The Android app does not request the INTERNET permission, so it is technically incapable of sending your keystrokes anywhere. The website converter is also fully client-side.",
+                "The core keyboard is. Typing, transliteration, suggestions and the dictionaries work without a connection. GIFs, stickers, voice input and optional model or dictionary downloads use the internet, and each of those features is off until you enable it. The website converter is fully client-side.",
         },
         {
             question: "Does the app collect any data?",
             answer:
-                "No. There is no analytics, no crash-reporting SDK and no advertising SDK. All processing happens on your device.",
+                "There is no analytics, crash-reporting or advertising SDK, and no account. Core typing stays on your device. When you use the optional GIF or sticker search, the request goes to Klipy; when you use voice input, audio is handled by your device's speech recognition service. CleanBoard does not receive or store either.",
         },
         {
             question: "Which Sinhala layouts are supported?",
@@ -104,12 +104,12 @@ export const faqs = {
         {
             question: "CleanBoard ඇත්තටම නොබැඳිද?",
             answer:
-                "ඔව්. ඇන්ඩ්‍රොයිඩ් යෙදුම INTERNET අනුමතය ඉල්ලන්නේ නැත, එබැවින් එය ඔබගේ අකුරු ගලවන කිසිදු තැනකට යැමීමට නොහැකි ලෙස තිබේ.",
+                "මූලික යතුරුපුවරුව ඔව්. ටයිප් කිරීම, පරිවර්තනය, යෝජනා සහ ශබ්දකෝෂ සම්බන්ධතාවයක් නොමැතිව ක්‍රියා කරයි. GIF, ස්ටිකර්, හඬ සහ අමතර ආකෘති හෝ ශබ්දකෝෂ බාගැනීම් අන්තර්ජාලය භාවිත කරයි; එම අංග ඔබ සක්‍රිය කරන තෙක් නිශ්චලය. වෙබ් අඩවියේ පරිවර්තකය සම්පූර්ණයෙන්ම බ්‍රවුසරය තුළ ක්‍රියා කරයි.",
         },
         {
             question: "යෙදුම දත්ත රැගෙන යනවාද?",
             answer:
-                "නැත. ස්ථානීය විශ්ලේෂණ, ක්‍රාෂ් වාර්තා හෝ දැන්දීම ප්‍රචාරණ යෙදුම් නොමැත. සියලු ක්‍රියා ඔබගේ දුරකථනය තුළම සිදු වේ.",
+                "විශ්ලේෂණ, දෝෂ වාර්තා හෝ දැන්වීම් SDK නැත; ගිණුමක්ද නැත. මූලික ටයිප් කිරීම ඔබගේ උපකරණයේම සිදු වේ. ඔබ අමතර GIF හෝ ස්ටිකර් සෙවීම භාවිත කරන විට ඉල්ලීම Klipy වෙත යයි; හඬ භාවිත කරන විට ශ්‍රව්‍යය ඔබගේ උපකරණයේ කථන හඳුනාගැනීමේ සේවාව විසින් ක්‍රියාත්මක කරයි. CleanBoard ඒවා ලබා නොගනී හෝ ගබඩා නොකරයි.",
         },
         {
             question: "කුමක් හරි සිංහල පිහිටුම් මොනවාද?",

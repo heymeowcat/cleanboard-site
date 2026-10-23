@@ -20,7 +20,7 @@
  * Usage: node scripts/generate-capture-list.mjs
  */
 
-import { readFileSync, writeFileSync } from "node:fs";
+import { writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 

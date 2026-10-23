@@ -13,14 +13,14 @@
  *
  * The rules themselves are:
  *
- *   • the long vowel sign is preferred, but only at the end of a word —
- *     "ke" is කේ while "kela" is කෙල
+ *   • the long vowel sign is preferred, so "ke" is කේ (kē), not කෙ
  *   • a bare "a" leaves the consonant's inherent vowel in place
- *   • "jh", "sh" and "nh" are two separate letters, not aspirates
+ *   • "sh" is ශ and "dr" is a true conjunct (ද්‍ර); "jh" and "nh" are
+ *     two separate letters, not aspirates
  *   • a doubled consonant is geminated — "akka" is අක්ක
  *   • a word-final consonant takes the hal — "gaman" is ගමන්
  *   • a consonant before න, ත or ඟ spells its vowel out — "gana" is ගැන
- *   • clusters are written as separate letters — "kra" is කර
+ *   • "kr" is written as two letters — "kra" is කර
  *
  * Where two spellings are possible — කෙ / කේ, ග / ඝ, ද / ඩ — the choice
  * is made with word frequency, the way the scheme is meant to work. The
@@ -28,6 +28,7 @@
  */
 
 import dictionary from "../data/reference-dictionary.json" with { type: "json" };
+import curated from "../data/singlish-curated.json" with { type: "json" };
 
 /** A transliterated word plus the ranked alternatives. */
 export interface Transliteration {
@@ -43,9 +44,10 @@ export interface Transliteration {
  * Keys are matched longest-first. The value is the preferred output for
  * that key.
  *
- * Note that "jh", "sh" and "nh" are NOT digraphs here: they are two
- * separate letters, so "sha" is ස + හ and "jha" is ජ + හ. The uppercase
- * forms ARE conjuncts (Sh is ශ), which is why they are listed separately.
+ * Note that "jh" and "nh" are NOT digraphs here: they are two separate
+ * letters, so "jha" is ජ + හ and "nha" is න + හ. "sh" IS a digraph (ශ),
+ * as are the uppercase conjunct forms (Sh is ශ), which is why they are
+ * listed separately.
  */
 export const CONSONANTS: Record<string, string> = {
     // Lowercase
@@ -73,6 +75,7 @@ export const CONSONANTS: Record<string, string> = {
     v: "ව",
     y: "ය",
     s: "ස",
+    sh: "ශ",
     h: "හ",
     f: "ෆ",
     z: "ස",
@@ -143,6 +146,7 @@ export const CONSONANT_ALTERNATIVES: Record<string, string[]> = {
     v: [],
     y: [],
     s: ["ශ", "ෂ"],
+    sh: ["ෂ"],
     h: [],
     f: ["ඵ"],
     z: ["ස"],
@@ -171,8 +175,13 @@ export const CONSONANT_ALTERNATIVES: Record<string, string[]> = {
  *   "ko"   → කෝ   (final o is long)      "koba" → කොබ  (medial o is short)
  *   "koho" → කොහෝ (the first o is medial, the second is final)
  *
+ * Real words can break that pattern ("meka" is මේක, not මෙක), so the other
+ * position's sign is always offered as an alternative and the frequency
+ * model decides.
+ *
  * "i" and "u" are always short, and the doubled spellings ("aa", "ee", "ii",
- * "oo", "uu") are always long.
+ * "oo", "uu") are always long. "ai" is the glide යි after a consonant
+ * ("lamai" is ලමයි); word-initially it is අයි ("aiyo" is අයියෝ).
  */
 export const DEPENDENT_VOWELS: Record<string, { final: string; medial: string }> = {
     "": { final: "", medial: "" },
@@ -186,22 +195,42 @@ export const DEPENDENT_VOWELS: Record<string, { final: string; medial: string }>
     oo: { final: "ූ", medial: "ූ" },
     u: { final: "ු", medial: "ු" },
     uu: { final: "ූ", medial: "ූ" },
-    ai: { final: "ි", medial: "ි" },
+    ai: { final: "යි", medial: "යි" },
     au: { final: "ු", medial: "ු" },
 };
 
-/** The alternative rendering of each dependent vowel, the second choice. */
-const DEPENDENT_VOWEL_ALTERNATIVES: Record<string, string> = {
-    a: "ා",
-    aa: "ෑ",
-    e: "ෙ",
-    ee: "ෙඑ",
-    i: "ී",
-    o: "ො",
-    u: "ූ",
-    ai: "ෛ",
-    au: "ෞ",
-};
+/**
+ * The second spelling of a dependent vowel.
+ *
+ * For e and o the other position's sign is the useful alternative (medial
+ * "ෙ" can be the long "ේ", and final "ේ" can be the short "ෙ"). For the
+ * remaining vowels the alternative is the other length.
+ */
+function alternativeSign(vowel: string, isFinal: boolean): string | null {
+    const signs = DEPENDENT_VOWELS[vowel];
+    if (!signs) return null;
+
+    const primary = isFinal ? signs.final : signs.medial;
+    const other = isFinal ? signs.medial : signs.final;
+    if (other !== primary) return other;
+
+    switch (vowel) {
+        case "a":
+            return "ා";
+        case "aa":
+            return "ෑ";
+        case "i":
+            return "ී";
+        case "u":
+            return "ූ";
+        case "ai":
+            return "ෛ";
+        case "au":
+            return "ෞ";
+        default:
+            return null;
+    }
+}
 
 /** Independent (word-initial) vowels. */
 export const INDEPENDENT_VOWELS: Record<string, string> = {
@@ -215,7 +244,7 @@ export const INDEPENDENT_VOWELS: Record<string, string> = {
     ee: "ඊ",
     o: "ඔ",
     oo: "ඌ",
-    ai: "ඊ",
+    ai: "අයි",
     au: "ඖ",
     ay: "අයි",
 };
@@ -260,14 +289,16 @@ export const GEMINATED: Record<string, string> = {
 /**
  * Cluster consonants: two letters that form a single Sinhala conjunct.
  *
- * "sr" and "pr" are true conjuncts in Sinhala (ශ්‍ර, ප්‍ර). The others —
- * "kr", "tr", "gr" — the scheme writes as two separate letters
- * (කර, තර, ගර) and offers the conjunct as an alternative.
+ * "sr" and "pr" are true conjuncts in Sinhala (ශ්‍ර, ප්‍ර), and so is "dr"
+ * (ද්‍ර — "chandra" is චන්ද්‍ර). The others — "kr", "tr", "gr" — the
+ * scheme writes as two separate letters (කර, තර, ගර) and offers the conjunct
+ * as an alternative.
  */
 export const CONJUNCTS: Record<string, string> = {
     sr: "ශ්‍ර",
     pr: "ප්‍ර",
     br: "බ්‍ර",
+    dr: "ද්‍ර",
     shr: "ශ්‍ර",
     thr: "ථ්‍ර",
     phr: "ප්‍ර",
@@ -312,8 +343,13 @@ const CONJUNCT_KEYS = Object.keys(CONJUNCTS).sort(
  * and the reference output. It is shared with the Android app — the Kotlin file
  * `SinglishDictionary.kt` is generated from the same JSON by
  * `npm run build:dictionary`, so the app and the website can never disagree.
+ *
+ * `singlish-curated.json` is the product layer: everyday spellings that the
+ * letter rules cannot know (nangi, hondai, sthuthi), English loanwords as
+ * Sinhala writers actually spell them, and the standard Sinhala names of
+ * Sri Lankan places. It overrides the captured reference entries.
  */
-export const DICTIONARY: Record<string, string> = dictionary;
+export const DICTIONARY: Record<string, string> = { ...dictionary, ...curated };
 
 /** Longest dictionary key first, so "kohomada" wins over "koh". */
 const DICTIONARY_KEYS = Object.keys(DICTIONARY).sort(
@@ -398,8 +434,9 @@ function tokenize(word: string): Unit[] {
             add(cons + sign);
         }
 
-        // Then the alternative vowel sign — the other position's sign.
-        const altSign = DEPENDENT_VOWEL_ALTERNATIVES[vowel] ?? null;
+        // Then the alternative vowel sign — the other position's sign, or
+        // the other vowel length when the position makes no difference.
+        const altSign = alternativeSign(vowel, isFinal);
         if (altSign !== null && altSign !== sign) {
             add(consonant + altSign);
             for (const cons of consAlts) {
@@ -431,8 +468,18 @@ function tokenize(word: string): Unit[] {
         const consonantKey = matchConsonant(rest);
         if (consonantKey) {
             const after = rest.slice(consonantKey.length);
-            const vowel = matchVowel(after) ?? "";
-            const isFinal = consonantKey.length + vowel.length >= rest.length;
+            let vowel = matchVowel(after) ?? "";
+            let vowelLength = vowel.length;
+
+            // After a consonant, "ay" is the vowel a followed by the
+            // consonant y — "lamaya" is ලමය, "kay" is කය් — not a single
+            // vowel. At the start of a word it stays the independent අයි.
+            if (vowel === "ay") {
+                vowel = "a";
+                vowelLength = 1;
+            }
+
+            const isFinal = consonantKey.length + vowelLength >= rest.length;
             const geminated = GEMINATED[consonantKey];
             units.push(
                 makeUnit(
@@ -442,7 +489,7 @@ function tokenize(word: string): Unit[] {
                     isFinal,
                 ),
             );
-            i += consonantKey.length + vowel.length;
+            i += consonantKey.length + vowelLength;
             continue;
         }
 

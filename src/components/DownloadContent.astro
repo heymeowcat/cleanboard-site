@@ -34,19 +34,19 @@ const steps = {
     si: [
         {
             name: "CleanBoard ස්ථාපනය කරන්න",
-            text: `Google Play දිලිස් පිටුවේ CleanBoard (පැකේජ් ${PLAY_STORE_ID}) විවෘත කර Install කරන්න. යෙදුම නොමිලේ වන අතර දැන්දීම ප්‍රචාරණයක් හෝ යෙදුම් තුළ මිල ගණන් ගැනීමක් නැත.`,
+            text: `Google Play පිටුවේ CleanBoard (පැකේජ් ${PLAY_STORE_ID}) විවෘත කර Install කරන්න. යෙදුම නොමිලේ වන අතර දැන්වීම් හෝ යෙදුම් තුළ මිල ගණන් ගැනීම් නැත.`,
         },
         {
             name: "Android සැකසුම්වල සක්‍රිය කරන්න",
-            text: "Settings → System → Languages & input → On-screen keyboard යන කොටසට ගොස් ගිහින්, ස්ථාපනය කළ යතුරුපුවරුව් ලැයිස්තුවෙන් CleanBoard තෝරන්න.",
+            text: "Settings → System → Languages & input → On-screen keyboard යන කොටසට ගොස්, ස්ථාපනය කළ යතුරුපුවරු ලැයිස්තුවෙන් CleanBoard තෝරන්න.",
         },
         {
-            name: "පෙරටම යතුරුපුවරුව ලෙස සැකසුම් කරන්න",
-            text: "CleanBoard අදුරු ඉදිරියේ ඇති ගෙල් ලකුණ ඔබන්න, ඔබට අවශ්‍ය පිහිටුම් සඳහා මාරුණයන් කරන්න. ලියද්දී ගෝලු යතුර මගින් ඒවා අතර මාරු කළ හැක.",
+            name: "පෙරනිමි යතුරුපුවරුව ලෙස සකසන්න",
+            text: "CleanBoard අසල ඇති ගියර් ලකුණ ඔබන්න, ඔබට අවශ්‍ය පිහිටුම් සඳහා ස්විච සක්‍රිය කරන්න. ලියද්දී ග්ලෝබ් යතුර මගින් ඒවා අතර මාරු විය හැක.",
         },
         {
             name: "සිංහල ලියන්න",
-            text: "Singlish හෝ Phonetic පිහිටුමට මාරු වී සරල ඉංග්‍රීසි අකුරු ලියන්න. CleanBoard ඒවා ඔබ ලියන විටම සිංහලට හරවයි — මෙම වෙබි අඩවියේ පරිවර්තකයේ ඇති එකම එංජිනය භාවිත කරමින්.",
+            text: "Singlish හෝ Phonetic පිහිටුමට මාරු වී සරල ඉංග්‍රීසි අකුරු ලියන්න. CleanBoard ඒවා ඔබ ලියන විටම සිංහලට හරවයි — මෙම වෙබ් අඩවියේ පරිවර්තකයේ ඇති එකම එන්ජිම භාවිත කරමින්.",
         },
     ],
 } as const;
@@ -62,8 +62,8 @@ const requirements = {
             strong: "A Google account is not required",
         },
         {
-            body: "Every feature works offline.",
-            strong: "No internet connection is needed",
+            body: "Optional GIFs, stickers and voice use the internet only after you enable them.",
+            strong: "Offline typing and dictionaries",
         },
     ],
     si: [
@@ -76,8 +76,8 @@ const requirements = {
             strong: "Google ගිණුමක් අවශ්‍ය නොවේ",
         },
         {
-            body: "සියලුම විශේෂ ලක්ෂණ නොබැඳිව ක්‍රියා කරයි.",
-            strong: "අන්තර්ජාල සම්බන්ධතාවයක් අවශ්‍ය නැත",
+            body: "GIF, ස්ටිකර් සහ හඬ ඔබ සක්‍රිය කළ පසුව පමණක් අන්තර්ජාලය භාවිත කරයි.",
+            strong: "නොබැඳි ටයිප් කිරීම සහ ශබ්දකෝෂ",
         },
     ],
 } as const;
@@ -94,8 +94,8 @@ const requirements = {
         <p class="lede">
             {
                 lang === "si"
-                    ? "සිංහල සහ ඉංග්‍රීසි භාෂාවලට නිදහස්, පෞද්ගලික, සම්පූර්ණයෙන්ම නොබැඳි ඇන්ඩ්‍රොයිඩ් යතුරුපුවරුවකි. දැන්දීම ප්‍රචාරණයක් නැත, අන්තර්ජාල අනුමතය නැත."
-                    : "A free, private, fully offline Android keyboard for Sinhala and English. No ads, no in-app purchases, no internet permission."
+                    ? "සිංහල සහ ඉංග්‍රීසි භාෂාවලට නිදහස්, පෞද්ගලික, නොබැඳි-පළමු ඇන්ඩ්‍රොයිඩ් යතුරුපුවරුවකි. දැන්වීම් නැත, යෙදුම් තුළ මිල ගණන් ගැනීම් නැත, දත්ත රැගෙන යාමක් නැත. GIF, ස්ටිකර් සහ හඬ ඔබ සක්‍රිය කරන තෙක් නිශ්චලය."
+                    : "A free, private, offline-first Android keyboard for Sinhala and English. No ads, no in-app purchases, no data collection. Optional GIFs, stickers and voice are off by default."
             }
         </p>
         <div class="page-head__badge">
@@ -118,14 +118,14 @@ const requirements = {
                     lang === "si"
                         ? [
                               "Android 7.0 සහ ඊටත් නව",
-                              "ආසන්න වශයෙන් 4 MB",
-                              "වතුරණ අනුමතය හැර අනුමත කිරීමක් නැත",
-                              "විවෘත මූලාවීය",
+                              "නොබැඳි ටයිප් කිරීම සහ ශබ්දකෝෂ",
+                              "දැන්වීම් හෝ ලුහුබැඳීම් නැත",
+                              "විවෘත මූලාශ්‍රය",
                           ]
                         : [
                               "Android 7.0 and newer",
-                              "~4 MB download",
-                              "No permissions beyond vibration",
+                              "Offline typing and dictionaries",
+                              "No ads or tracking",
                               "Open source",
                           ]
                 ).map((fact) => (

@@ -1,6 +1,5 @@
 {
-  "_comment": "Held-out ground truth captured from https://www.google.com/intl/si/inputtools/try/. These words are deliberately NOT in the engine's dictionary, so they measure how well the deterministic rules generalise beyond the words we know. Value = Google's primary answer.",
-  "_captured": "2026-10-22",
+  "_comment": "Held-out regression cases. These words are deliberately NOT in the engine's dictionary, so they measure how well the deterministic rules generalise beyond known words. Value = the expected primary answer.",
   "entries": {
     "akka": "අක්ක",
     "amma": "අම්ම",
@@ -48,5 +47,6 @@
     "vatika": "වටික",
     "yamu": "යමු",
     "yana": "යන"
-  }
+  },
+  "_updated": "2026-10-22"
 }

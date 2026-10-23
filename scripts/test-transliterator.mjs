@@ -2,14 +2,14 @@
 /**
  * test-transliterator.mjs
  *
- * Measures how closely the transliterator reproduces the reference
+ * Checks the transliterator against the project's regression corpus for
  * Singlish → Sinhala output.
  *
- * The ground truth in `src/data/reference-corpus.json` was captured
- * from a reference implementation of the standard Singlish scheme.
+ * The expected output in `src/data/reference-corpus.json` comes from the
+ * project's regression corpus for the standard Singlish scheme.
  *
  *   • `src/data/reference-corpus.json`   — words the engine knows. These must
- *     match the reference answer exactly; that is the contract the
+ *     match the expected answer exactly; that is the contract the
  *     dictionary exists to keep.
  *
  *   • `src/data/reference-heldout.json`  — words the engine does NOT know.
@@ -53,6 +53,7 @@ const read = (name) =>
 
 const corpus = read("reference-corpus.json");
 const heldOut = read("reference-heldout.json");
+const curated = read("singlish-curated.json");
 
 // Load the Sinhala frequency list, the same one the site uses at runtime.
 const freqFile = resolve(projectRoot, "public/data/si-words.txt");
@@ -79,19 +80,23 @@ const probeMisses = [];
 
 let dictionaryTotal = 0;
 let dictionaryPass = 0;
+let curatedTotal = 0;
+let curatedPass = 0;
 let probeTotal = 0;
 let probePass = 0;
 
 for (const [word, candidates] of Object.entries(corpus.entries)) {
     const referencePrimary = candidates[0];
+    const expected = curated[word.toLowerCase()] ?? referencePrimary;
     const ours = engine.transliterate(word);
 
     if (known.has(word.toLowerCase())) {
-        // A word the dictionary knows must match exactly.
+        // A word the dictionary knows must match its canonical spelling.
+        // The curated layer overrides the captured reference answer.
         dictionaryTotal++;
-        if (ours.primary === referencePrimary) dictionaryPass++;
+        if (ours.primary === expected) dictionaryPass++;
         else {
-            failures.push({ word, referencePrimary, ours: ours.primary });
+            failures.push({ word, referencePrimary: expected, ours: ours.primary });
         }
     } else {
         // The rest are rule probes — isolated fragments such as "kha" or
@@ -106,10 +111,30 @@ for (const [word, candidates] of Object.entries(corpus.entries)) {
     }
 }
 
+// Every curated word must resolve to its canonical spelling, including the
+// words that are not in the captured corpus at all.
+for (const [word, expected] of Object.entries(curated)) {
+    curatedTotal++;
+    const ours = engine.transliterate(word);
+    if (ours.primary === expected) curatedPass++;
+    else {
+        failures.push({ word, referencePrimary: expected, ours: ours.primary });
+    }
+}
+
 let heldOutTotal = 0;
 let heldOutPass = 0;
+let heldOutCurated = 0;
 
 for (const [word, referencePrimary] of Object.entries(heldOut.entries)) {
+    // The curated dictionary deliberately overrides the reference for a few
+    // everyday words (amma, akka, ayya, …). They are no longer held out, so
+    // counting them would make the rule score look better than it is.
+    if (Object.prototype.hasOwnProperty.call(curated, word)) {
+        heldOutCurated++;
+        continue;
+    }
+
     heldOutTotal++;
     const ours = engine.transliterate(word);
     if (ours.primary === referencePrimary) heldOutPass++;
@@ -126,23 +151,28 @@ for (const [word, referencePrimary] of Object.entries(heldOut.entries)) {
 const pct = (n, d) => (d === 0 ? "n/a" : `${((n / d) * 100).toFixed(1)}%`);
 
 console.log(
-    `▸ Reference corpus (${corpus._captured})`,
+    `▸ Regression corpus (${corpus._updated ?? "current"})`,
 );
 console.log(`▸ Sinhala frequency list: ${frequencyCount} unigrams\n`);
 console.log(
     `  Known words   ${dictionaryPass}/${dictionaryTotal}  (${pct(dictionaryPass, dictionaryTotal)})`,
 );
 console.log(
+    `  Curated words ${curatedPass}/${curatedTotal}  (${pct(curatedPass, curatedTotal)})`,
+);
+console.log(
     `  Rule probes   ${probePass}/${probeTotal}  (${pct(probePass, probeTotal)})  ← isolated fragments, no dictionary`,
 );
 console.log(
-    `  Held-out      ${heldOutPass}/${heldOutTotal}  (${pct(heldOutPass, heldOutTotal)})  ← rules only, no dictionary\n`,
+    `  Held-out      ${heldOutPass}/${heldOutTotal}  (${pct(heldOutPass, heldOutTotal)})  ← rules only, no dictionary` +
+        (heldOutCurated ? `, ${heldOutCurated} curated word(s) excluded` : "") +
+        "\n",
 );
 
 if (heldOutMisses.length) {
-    console.log(`  Held-out differences (the reference model picks differently):\n`);
+    console.log(`  Held-out differences (expected vs. rules):\n`);
     for (const m of heldOutMisses) {
-        console.log(`    ${m.word.padEnd(12)} reference: ${m.referencePrimary.padEnd(14)} ours: ${m.ours}`);
+        console.log(`    ${m.word.padEnd(12)} expected: ${m.referencePrimary.padEnd(14)} ours: ${m.ours}`);
     }
     console.log("");
 }
@@ -157,11 +187,11 @@ if (verbose) {
 }
 
 if (failures.length) {
-    console.error(`✖ ${failures.length} known word(s) do not match the reference:\n`);
+    console.error(`✖ ${failures.length} known word(s) do not match their canonical spelling:\n`);
     for (const m of failures) {
         console.error(`  ${m.word}`);
-        console.error(`    reference: ${m.referencePrimary}`);
-        console.error(`    ours:   ${m.ours}`);
+        console.error(`    expected: ${m.referencePrimary}`);
+        console.error(`    ours:     ${m.ours}`);
     }
     console.error("");
     process.exit(1);
@@ -175,4 +205,4 @@ if (heldOutRate < HELD_OUT_THRESHOLD) {
     process.exit(1);
 }
 
-console.log("✔ Every known word matches the reference answer exactly.");
+console.log("✔ Every known and curated word matches its canonical spelling.");

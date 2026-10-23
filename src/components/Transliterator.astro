@@ -13,12 +13,6 @@
  *
  * See `src/lib/transliterator.ts`.
  */
-import {
-    generateSuggestions,
-    transliterate,
-    transliterateLiteral,
-} from "../lib/transliterator";
-
 interface Props {
     /** UI language. */
     lang?: "en" | "si";
@@ -197,7 +191,6 @@ const t = copy[lang];
 
 <script>
     import {
-        generateSuggestions,
         transliterate,
         transliterateLiteral,
     } from "../lib/transliterator";
@@ -380,9 +373,16 @@ const t = copy[lang];
                 document.body.append(ta);
                 ta.select();
                 try {
-                    // Deprecated, but it is the only fallback that works in
-                    // browsers without the async clipboard API.
-                    document.execCommand("copy");
+                    // The async Clipboard API is preferred; this legacy
+                    // fallback is for browsers that do not expose it.
+                    const legacyCopy = (
+                        document as unknown as {
+                            execCommand?: (command: string) => boolean;
+                        }
+                    ).execCommand;
+                    if (!legacyCopy || !legacyCopy.call(document, "copy")) {
+                        throw new Error("copy failed");
+                    }
                 } catch {
                     if (copyLabel) copyLabel.textContent = labels.failed;
                     ta.remove();

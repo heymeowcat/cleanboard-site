@@ -4,7 +4,7 @@ import { CONTACT_EMAIL } from "../lib/site";
 import { breadcrumbSchema, organizationSchema } from "../lib/schema";
 
 /** Updated whenever the policy text changes. */
-const lastUpdated = "October 22, 2026";
+const lastUpdated = "October 23, 2026";
 
 const jsonLd = [
     organizationSchema(),
@@ -17,7 +17,7 @@ const jsonLd = [
 
 <Layout
     title="Privacy Policy — CleanBoard"
-    description="CleanBoard collects no data. The app does not request the Internet permission and has no analytics or advertising SDK. Everything stays on your device."
+    description="How CleanBoard handles your data: typing stays on your device, there are no ads or tracking, and the optional internet features are off until you turn them on."
     path="/privacy-policy/"
     jsonLd={jsonLd}
 >
@@ -30,80 +30,139 @@ const jsonLd = [
 
             <p>
                 CleanBoard is built by heymeowcat. This policy explains what
-                happens to your data — which, in short, is nothing, because the
-                app has no way to send any.
+                happens to your data. The short version: the keyboard is
+                offline-first, there are no ads and no tracking, and the few
+                features that can use the internet are off until you choose to
+                turn them on.
             </p>
 
-            <h2 id="no-collection">1. No data collection</h2>
+            <h2 id="stays-on-device">1. What stays on your device</h2>
             <p>
-                CleanBoard does not collect, store, transmit, sell or share any
-                personal data. We do not record your keystrokes, your typing
-                history, your contacts, your location or your device identifier.
-                We have no analytics pipeline, no advertising SDK, no
-                crash-reporting service and no account system, because there is
-                nothing for any of them to report.
+                Typing, Singlish transliteration, spelling correction, word
+                prediction, the bundled English and Sinhala dictionaries, your
+                personal dictionary, learned words and clipboard history are
+                processed and stored locally on your device. CleanBoard does not
+                send your keystrokes, typed text or clipboard to us.
+            </p>
+            <p>
+                Settings and the personal dictionary live in the app&rsquo;s
+                private storage. Clipboard history and the learned-word history
+                are deliberately excluded from Android cloud backup and device
+                transfer. Other app data, such as settings and the personal
+                dictionary, may be included if you have Android&rsquo;s backup
+                service enabled; that backup is controlled by your device and
+                your Android backup settings, not by CleanBoard.
             </p>
 
-            <h2 id="no-internet-permission">2. No internet permission</h2>
+            <h2 id="optional-internet">2. Optional features that use the internet</h2>
             <p>
-                The CleanBoard app does not request and does not use the Android
-                <code>INTERNET</code> permission. This is not a promise — it is a
-                technical guarantee. Without that permission the operating
-                system will not let the app open a network connection, so the
-                app is incapable of sending information from your device to a
-                server.
-            </p>
-
-            <h2 id="permissions">3. Permissions the app does use</h2>
-            <p>
-                CleanBoard requests only the permissions that are strictly
-                needed for the features you switch on:
+                CleanBoard requests the Android <code>INTERNET</code> permission
+                because a few optional features can use a network connection.
+                Each of them is off by default and only works after you enable
+                it:
             </p>
             <ul>
                 <li>
-                    <strong>Vibration</strong> — for haptic feedback when you
-                    press a key, if you enable it in the settings.
+                    <strong>GIF and sticker search</strong> — when you open the
+                    GIF or sticker tab, the app contacts Klipy&rsquo;s API
+                    (<code>api.klipy.com</code>) to load trending results or the
+                    search term you type. Klipy receives that request and
+                    standard network information such as your IP address, and
+                    handles it under its own
+                    <a href="https://klipy.com/support/privacy-policy" rel="noopener" target="_blank">privacy policy</a>.
+                    CleanBoard has no Klipy account and does not send your name,
+                    email address or keyboard history.
+                </li>
+                <li>
+                    <strong>Voice input</strong> — the microphone button uses
+                    Android&rsquo;s speech recognition service. When you use it,
+                    audio is passed to the speech recognition provider selected
+                    by your device, which may process it on-device or on its own
+                    servers depending on the provider and your device settings.
+                    CleanBoard does not store the audio and does not receive the
+                    provider&rsquo;s recordings.
+                </li>
+                <li>
+                    <strong>Optional model and dictionary downloads</strong> —
+                    if you choose to download an updated prediction model or the
+                    optional translation dictionary, the app fetches the file
+                    from GitHub. GitHub receives a standard file request,
+                    including your IP address.
+                </li>
+            </ul>
+            <p>
+                If you never enable these features, the keyboard does not use
+                the network. You can turn each one off again at any time from
+                the Privacy section of the app&rsquo;s home screen.
+            </p>
+
+            <h2 id="permissions">3. Permissions</h2>
+            <ul>
+                <li>
+                    <strong>Internet</strong> — used only by the optional
+                    features described above.
+                </li>
+                <li>
+                    <strong>Microphone</strong> — requested only when you turn on
+                    voice input and tap the microphone button. You can deny or
+                    revoke it in Android settings; the rest of the keyboard keeps
+                    working.
+                </li>
+                <li>
+                    <strong>Vibration</strong> — used for haptic feedback if you
+                    enable it. Vibration is a normal Android capability rather
+                    than a runtime permission on current versions.
                 </li>
             </ul>
 
-            <h2 id="website">4. This website</h2>
+            <h2 id="no-tracking">4. No advertising, analytics or accounts</h2>
+            <p>
+                CleanBoard has no advertising SDK, no analytics SDK, no
+                crash-reporting SDK, no fingerprinting and no account system.
+                We do not sell data, build advertising profiles or track you
+                across apps. There is no CleanBoard server that receives your
+                typing.
+            </p>
+
+            <h2 id="website">5. This website</h2>
             <p>
                 The website at <code>heymeowcat.is-a.dev/cleanboard-site</code>
                 is a static site. It sets no cookies, runs no analytics and
                 embeds no third-party scripts. The English-to-Sinhala converter
-                runs entirely inside your browser using JavaScript that is
-                served from this domain; the text you type is never transmitted
-                anywhere.
+                runs entirely inside your browser using JavaScript served from
+                this domain; the text you type is never transmitted anywhere.
             </p>
             <p>
-                The site does load one external resource: a link to the Google
-                Play listing, which only takes you to Google when you click it.
+                Links to Google Play, GitHub and Klipy take you to those
+                services when you click them. Those services have their own
+                privacy policies.
             </p>
 
-            <h2 id="third-party">5. Third-party services</h2>
+            <h2 id="third-party">6. Third-party services</h2>
             <p>
-                If you download CleanBoard from Google Play, Google Play
-                handles the transaction and collects the data its own privacy
-                policy describes. We never receive any of it. Likewise, if you
-                choose to contact us by email, your email travels through your
-                own mail provider.
+                If you download CleanBoard from Google Play, Google Play handles
+                the transaction and collects the data described in its own
+                privacy policy. If you contact us by email, your message travels
+                through your own mail provider. The optional GIF/sticker search,
+                voice input and file downloads involve the third parties named
+                in section 2.
             </p>
 
-            <h2 id="children">6. Children</h2>
+            <h2 id="children">7. Children</h2>
             <p>
-                CleanBoard is safe for all ages. Because it collects no data,
-                it collects no data from children either.
+                CleanBoard is intended for general audiences. We do not knowingly
+                collect personal information from children, because we do not
+                collect personal information from anyone.
             </p>
 
-            <h2 id="changes">7. Changes to this policy</h2>
+            <h2 id="changes">8. Changes to this policy</h2>
             <p>
-                If this policy ever changes, the update will be published on
-                this page together with a new &ldquo;last updated&rdquo; date.
-                Material changes will also be mentioned in the app&rsquo;s
-                release notes.
+                If this policy changes, the update will be published on this
+                page with a new &ldquo;last updated&rdquo; date. Material changes
+                will also be mentioned in the app&rsquo;s release notes.
             </p>
 
-            <h2 id="contact">8. Contact</h2>
+            <h2 id="contact">9. Contact</h2>
             <p>
                 Questions about this policy can be sent to
                 <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.

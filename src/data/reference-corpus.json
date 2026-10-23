@@ -1,6 +1,5 @@
 {
-  "_comment": "Ground truth captured from https://www.google.com/intl/si/inputtools/try/ (Google Input Tools, Sinhala transliteration). Each entry maps the Singlish input to the ranked candidate list Google produced, in Google's order. The first entry is Google's primary answer. Used by scripts/test-transliterator.mjs to prove the site matches, and by scripts/build-dictionary.mjs to generate the same assertions for the Android app.",
-  "_captured": "2026-10-22",
+  "_comment": "Regression corpus for the Singlish transliteration engine. Each entry maps an input to its ranked expected candidates; the first entry is the primary answer. Used by scripts/test-transliterator.mjs and scripts/build-dictionary.mjs to keep the website and Android app in sync.",
   "entries": {
     "a": [
       "අ",
@@ -1836,5 +1835,6 @@
       "නවින්න",
       "නැවින්න"
     ]
-  }
+  },
+  "_updated": "2026-10-22"
 }

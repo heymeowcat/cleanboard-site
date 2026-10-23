@@ -17,19 +17,19 @@ export const features = {
         {
             id: "singlish",
             title: "Singlish engine built in",
-            body: "Type plain English letters and CleanBoard converts them to සිංහල as you type — with 160+ common words and phonetic variants handled for you.",
+            body: "Type plain English letters and CleanBoard converts them to සිංහල as you type — with 400+ common words and phonetic variants handled for you.",
             icon: "keyboard",
         },
         {
             id: "offline",
-            title: "Works completely offline",
-            body: "Downloadable English and Sinhala dictionaries, offline suggestions, and an inline translator that never touches the network.",
+            title: "Offline by default",
+            body: "Typing, suggestions, transliteration and the bundled dictionaries work without a connection. Optional GIFs, stickers and voice are opt-in.",
             icon: "cloud-off",
         },
         {
             id: "privacy",
-            title: "No internet permission",
-            body: "The app does not request the INTERNET permission, so it is technically incapable of sending your keystrokes anywhere. No analytics, no ads, no tracking.",
+            title: "Private by design",
+            body: "No analytics, ads, tracking or accounts. Internet and microphone access are used only by optional features you turn on; the keyboard itself stays local.",
             icon: "shield",
         },
         {
@@ -54,38 +54,38 @@ export const features = {
     si: [
         {
             id: "singlish",
-            title: "ඇතුළත් Singlish එංජිනය",
-            body: "සරල ඉංග්‍රීසි අකුරු ලියන්න, CleanBoard ඒවා ඔබ ලියන විටම සිංහලට හරවයි — පොදු භාෂා 160කට වැඩි සම්පූර්ණ කරන ලද උපක්‍රම සමඟ.",
+            title: "ඇතුළත් Singlish එන්ජිම",
+            body: "සරල ඉංග්‍රීසි අකුරු ලියන්න, CleanBoard ඒවා ඔබ ලියන විටම සිංහලට හරවයි — පොදු වචන 400කට වැඩි ගණනක් සහ ශබ්දානුකූල විකල්ප ඔබ වෙනුවෙන් හසුරුවයි.",
             icon: "keyboard",
         },
         {
             id: "offline",
-            title: "සම්පූර්ණයෙන්ම නොබැඳිය",
-            body: "බාගන්න කළ හැකි ඉංග්‍රීසි සහ සිංහල ශබ්දකෝෂ, නොබැඳි යෝජනා, සහ ජාලය භාවිත නොකරන ඇතුළත් පරිවර්තකය.",
+            title: "පෙරනිමියෙන් නොබැඳි",
+            body: "ටයිප් කිරීම, යෝජනා, පරිවර්තනය සහ ඇතුළත් ශබ්දකෝෂ සම්බන්ධතාවයක් නොමැතිව ක්‍රියා කරයි. GIF, ස්ටිකර් සහ හඬ ඔබ සක්‍රිය කරන තෙක් නිශ්චලය.",
             icon: "cloud-off",
         },
         {
             id: "privacy",
-            title: "අන්තර්ජාල අනුමතය නැත",
-            body: "යෙදුම INTERNET අනුමතය ඉල්ලන්නේ නැත, එබැවින් ඔබගේ අකුරු ගලවන කිසිදු තැනකට යැමීමට නොහැකි ලෙස පවතී. විශ්ලේෂණ, දැන්දීම ප්‍රචාරණ නැත.",
+            title: "පෞද්ගලිකත්වය සැලසුමෙන්",
+            body: "විශ්ලේෂණ, දැන්වීම්, ලුහුබැඳීම හෝ ගිණුම් නැත. අන්තර්ජාලය සහ මයික්‍රොෆෝනය භාවිත වන්නේ ඔබ සක්‍රිය කරන අමතර අංග සඳහා පමණි; යතුරුපුවරුවේ මූලික කටයුතු ඔබගේ උපකරණයේම සිදු වේ.",
             icon: "shield",
         },
         {
             id: "layouts",
             title: "සිංහල පිහිටුම් හතර",
-            body: "CleanBoard Classic, විජේසේකර, Efficient සහ Google/Phonetic ආකෘති — සියල්ලම සම්පූර්ණ ශක්ති සලකුණු සහ ඡේය අකුරු සමඟ.",
+            body: "CleanBoard Classic, විජේසේකර, Efficient සහ Google/Phonetic ආකෘති — සියල්ලම සම්පූර්ණ ස්වර සලකුණු සහ සංයුක්ත අකුරු සමඟ.",
             icon: "grid",
         },
         {
             id: "gestures",
-            title: "අභින ටයිප් කිරීම",
+            title: "අභිනයෙන් ටයිප් කිරීම",
             body: "මකීමට swipe කරන්න, අංක සහ සංකේත සඳහා flick කරන්න, spacebar එක cursor එකක් ලෙස භාවිත කරන්න. යෝජනා පෘ්තියේ වේගවත් ගණකයක් ඇත.",
             icon: "swipe",
         },
         {
             id: "custom",
             title: "ඔබගේ ආකාරයට සකසන්න",
-            body: "ප්‍රතිචාර ශීලි තේමා, ඔබගේ අභින පැහැය, Sparkle වැනි key-press effects, සහ ඔබ පාලනය කරන පිහිටුම් සැකසුම්.",
+            body: "අනුවර්තනය වන තේමා, ඔබට කැමති වර්ණ, Sparkle වැනි යතුරු-එබීම් ප්‍රයෝග සහ ඔබ පාලනය කරන පිහිටුම් සැකසුම්.",
             icon: "sparkles",
         },
     ],
@@ -114,7 +114,7 @@ export const steps = {
         },
         {
             title: "සිංහල ක්ෂණිකව ලබා ගන්න",
-            body: "CleanBoard යෙදුම තුළ ධඟුන එංජිනයම ඔබ ලියන සෑම එක් එක් ජනනයක්ම හරවයි, දන්ත සහ රෙට්‍රෝස් පරිමාව සඳහා ශබ්දානුකූල අනුවර්තන සමඟ.",
+            body: "CleanBoard යෙදුම තුළ ඇති එම එන්ජිම ඔබ ලියන සෑම වචනයක්ම හරවයි, දන්ත සහ මූර්ධන්‍ය අකුරු සඳහා ශබ්දානුකූල විකල්ප සමඟ.",
         },
         {
             title: "පිටපත් කරන්න, හෝ යතුරුපුවරුව භාවිත කරන්න",
@@ -133,11 +133,11 @@ export const benefits = {
         "Works on phones, tablets and desktops",
     ],
     si: [
-        "සම්පූර්ණයෙන්ම ඔබගේ බ්‍රවුසරය තුළම ක්‍රියා කරයි — ගිණුමක්, උඩුගානනයක් හෝ ලුණු කිරීමක් නැත",
-        "CleanBoard ඇන්ඩ්‍රොයිඩ් යෙදුම තුළ ඇති එම එංජිනයම භාවිත කරයි",
-        "මහප්‍රාණ අකුරු (ඛ ඝ ඡ ඣ), ගෙල්ලු අකුරු සහ ං අනුස්වරය නිවැරදිව හසුරුවයි",
-        "ඔබංසුමනය කළ අකුරු ලියුම් පෙන්වා දෙනවා",
-        "දුරකථන, පැටිට්ටි සහ පරිගන්නියක ක්‍රියා කරයි",
+        "සම්පූර්ණයෙන්ම ඔබගේ බ්‍රවුසරය තුළම ක්‍රියා කරයි — ගිණුමක්, උඩුගැන්වීමක් හෝ ලුහුබැඳීමක් නැත",
+        "CleanBoard ඇන්ඩ්‍රොයිඩ් යෙදුම තුළ ඇති එම එන්ජිමම භාවිත කරයි",
+        "මහප්‍රාණ අකුරු (ඛ ඝ ඡ ඣ), ද්විත්ව අකුරු සහ ං අනුස්වරය නිවැරදිව හසුරුවයි",
+        "විකල්ප අක්ෂර වින්‍යාස පෙන්වයි, ඔබට අවශ්‍ය එක තෝරා ගත හැක",
+        "දුරකථන, ටැබ්ලට් සහ පරිගණකවල ක්‍රියා කරයි",
     ],
 };
 
@@ -176,7 +176,7 @@ export const layouts = {
         },
         {
             name: "Google / Phonetic",
-            body: "ඔබ අසන ශබ්දයට ගැලපෙන යතුරු පිහිටුම, එයින් පසු Singlish එංජිනය ද ඇතුළත්.",
+            body: "ඔබ අසන ශබ්දයට ගැලපෙන යතුරු පිහිටුම, එයින් පසු Singlish එන්ජිම ද ඇතුළත්.",
         },
     ],
 } as const;
@@ -185,30 +185,30 @@ export const layouts = {
 export const privacyPillars = {
     en: [
         {
-            title: "No INTERNET permission",
-            body: "The app never asks for network access, so the operating system will not let it send anything. Privacy enforced by the platform, not by a promise.",
+            title: "Offline by default",
+            body: "The keyboard, suggestions and dictionaries work without a network. Optional GIF, sticker and voice features are off until you enable them.",
         },
         {
-            title: "No third-party SDKs",
-            body: "No analytics, no advertising, no crash reporting, no fingerprinting, no A/B testing. There is nothing in the app that talks to anyone.",
+            title: "No tracking SDKs",
+            body: "No analytics, advertising, crash-reporting or fingerprinting SDKs. Klipy is contacted only when you use the optional GIF or sticker search.",
         },
         {
-            title: "Offline dictionaries",
-            body: "English and Sinhala dictionaries download once and live on your device. Suggestions work on a plane, in the countryside, or with data turned off.",
+            title: "Your data stays yours",
+            body: "Your personal dictionary, clipboard history and learned words live on your device. Clipboard and learned-word history are excluded from Android backup.",
         },
     ],
     si: [
         {
-            title: "INTERNET අනුමතය නැත",
-            body: "යෙදුම ජාල ප්‍රවේශය ඉල්ලන්නේ නැත, එබැවින් මෙහෙලුපාඩිය එයට යැමීමට ඉඩ නොදෙයි. පෞද්ගලිකත්වය ප්‍රතිඥා මත නොපිළිතුරුව මෙහෙලුපාඩිය මගින් බලාතැන්නේ.",
+            title: "පෙරනිමියෙන් නොබැඳි",
+            body: "යතුරුපුවරුව, යෝජනා සහ ශබ්දකෝෂ ජාලයක් නොමැතිව ක්‍රියා කරයි. GIF, ස්ටිකර් සහ හඬ ඔබ සක්‍රිය කරන තෙක් නිශ්චලය.",
         },
         {
-            title: "තෙත් පාර්චි යෙදුම් නැත",
-            body: "විශ්ලේෂණ, දැන්දීම ප්‍රචාරණ, ක්‍රාෂ් වාර්තා වාර්තා කිරීම, ඇඟිල්ලේ මුද්ධන, A/B පරීක්ෂණ — යෙදුම තුළ කිසිවෙකුගේ සමඟ කතා කරන දෙයක් නැත.",
+            title: "ලුහුබැඳීම් SDK නැත",
+            body: "විශ්ලේෂණ, දැන්වීම්, දෝෂ වාර්තා හෝ ඇඟිලි සලකුණු කිරීමේ SDK නැත. Klipy සම්බන්ධ වන්නේ ඔබ අමතර GIF හෝ ස්ටිකර් සෙවීම භාවිත කරන විට පමණි.",
         },
         {
-            title: "නොබැඳි ශබ්දකෝෂ",
-            body: "ඉංග්‍රීසි සහ සිංහල ශබ්දකෝෂ එක් වරට බාගන්න ලද ඔබගේ දුරකථනයේ රැඳී ඇත. චාප ගමේ, ගිනි නිල්ලේ නොවේ ඔබට යෝජනා ක්‍රියා කරයි.",
+            title: "ඔබගේ දත්ත ඔබ සතුයි",
+            body: "ඔබගේ පුද්ගලික ශබ්දකෝෂය, පසුරු පුවරු ඉතිහාසය සහ ඉගෙන ගත් වචන ඔබගේ උපකරණයේ රැඳී ඇත. පසුරු පුවරු සහ ඉගෙන ගත් ඉතිහාසය Android උපස්ථයෙන් බැහැර කර ඇත.",
         },
     ],
 } as const;
@@ -218,9 +218,9 @@ export const comparison = {
     en: {
         headers: ["Feature", "CleanBoard", "Typical keyboard"],
         rows: [
-            ["Internet permission", "None", "Often required"],
+            ["Internet access", "Only for opt-in features", "Often required"],
             ["Data collection", "None", "Analytics & crash logs"],
-            ["Works fully offline", "Yes", "Often partial"],
+            ["Core typing offline", "Yes", "Often partial"],
             ["Singlish → සිංහල conversion", "Built in", "Rarely"],
             ["Sinhala layouts", "4 + Phonetic", "1–2"],
             ["Ad tracking", "None", "Common"],
@@ -230,13 +230,13 @@ export const comparison = {
     si: {
         headers: ["විශේෂත්වය", "CleanBoard", "සාමාන්‍ය යතුරුපුවරුව"],
         rows: [
-            ["අන්තර්ජාල අනුමතය", "නැත", "නොතිරාත්තර අවශ්‍යයි"],
+            ["අන්තර්ජාල ප්‍රවේශය", "ඔප්ට්-ඉන් අංග සඳහා පමණි", "බොහෝ විට අවශ්‍යයි"],
             ["දත්ත රැගෙන යාම", "නැත", "විශ්ලේෂණ සහ දෝෂ වාර්තා"],
-            ["සම්පූර්ණයෙන්ම නොබැඳිය", "ඔව්", "නොපූර්ණයි"],
-            ["Singlish → සිංහල පරිවර්තනය", "ඇතුළත්", "ඉතා දුර්ල"],
+            ["මූලික ටයිප් කිරීම නොබැඳිව", "ඔව්", "බොහෝ විට අර්ධ"],
+            ["Singlish → සිංහල පරිවර්තනය", "ඇතුළත්", "දුර්ලභ"],
             ["සිංහල පිහිටුම්", "4 + Phonetic", "1–2"],
-            ["දැන්දීම ප්‍රචාරණ", "නැත", "පොදුයි"],
-            ["මිල", "නොමිලේ", "දැන්දීම සමඟ නොමිලේ"],
+            ["දැන්වීම් ලුහුබැඳීම", "නැත", "සාමාන්‍යයි"],
+            ["මිල", "නොමිලේ", "දැන්වීම් සමඟ නොමිලේ"],
         ],
     },
 } as const;
