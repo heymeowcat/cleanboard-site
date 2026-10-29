@@ -1,0 +1,1169 @@
+---
+/**
+ * The English (Singlish) → Sinhala transliterator.
+ *
+ * This is the site's primary content: type plain English letters and they
+ * are converted to සිංහල live in the browser. Nothing is uploaded — the
+ * conversion runs entirely on the visitor's device.
+ *
+ * The engine is the same one the CleanBoard Android keyboard uses, and it
+ * follows the standard Singlish scheme: the long vowel sign (කේ rather
+ * than කෙ), clusters written as separate letters (කර rather than ක්‍ර),
+ * gemination (අක්ක), the word-final hal (ගමන්) and the æ vowels
+ * ("kaemathi" is කැමති).
+ *
+ * The suggestion strip below the converter mirrors the keyboard's strip:
+ * the engine's first choice is shown first, followed by the other readings
+ * it found, and tapping one uses that spelling for the word.
+ *
+ * See `src/lib/transliterator.ts`.
+ */
+interface Props {
+    /** UI language. */
+    lang?: "en" | "si";
+    /** Unique instance id — required when more than one is on a page. */
+    id?: string;
+    /** Compact variant for the homepage hero. */
+    compact?: boolean;
+}
+
+const { lang = "en", id = "transliterator", compact = false } = Astro.props;
+
+const copy = {
+    en: {
+        label: "English (Singlish) text",
+        placeholder: "Type here — e.g. kohomada hodai",
+        outputLabel: "සිංහල",
+        outputPlaceholder: "Your Sinhala text will appear here",
+        copy: "Copy",
+        copied: "Copied",
+        copyFailed: "Press Ctrl+C",
+        clear: "Clear",
+        suggestions: "Suggestions",
+        previous: "Previous suggestion",
+        next: "Next suggestion",
+        breakdown: "Character breakdown",
+        examples: "Try an example",
+        examplesList: [
+            "kohomada hodai",
+            "ayubowan",
+            "kaemathi",
+            "api yamu",
+            "oyata sthuthi",
+        ],
+        examplesLabel: {
+            "kohomada hodai": "How are you?",
+            ayubowan: "Hello",
+            kaemathi: "Like",
+            "api yamu": "Let's go",
+            "oyata sthuthi": "Thank you",
+        },
+        hint: "Every letter you type is converted on your device. Nothing is sent to a server.",
+        characterCount: "characters",
+    },
+    si: {
+        label: "English (Singlish) text",
+        placeholder: "මෙහි type කරන්න — උදා. kohomada hodai",
+        outputLabel: "සිංහල",
+        outputPlaceholder: "ඔයාගේ සිංහල text එක මෙහි පෙන්වයි",
+        copy: "Copy",
+        copied: "Copied",
+        copyFailed: "Ctrl+C ඔබන්න",
+        clear: "Clear",
+        suggestions: "Suggestions",
+        previous: "කලින් suggestion",
+        next: "ඊළඟ suggestion",
+        breakdown: "Letter breakdown",
+        examples: "උදාහරණයක් try කරන්න",
+        examplesList: [
+            "kohomada hodai",
+            "ayubowan",
+            "kaemathi",
+            "api yamu",
+            "oyata sthuthi",
+        ],
+        examplesLabel: {
+            "kohomada hodai": "How are you?",
+            ayubowan: "Hello",
+            kaemathi: "Like",
+            "api yamu": "Let's go",
+            "oyata sthuthi": "Thank you",
+        },
+        hint: "ඔයා type කරන හැම letter එකක්ම ඔයාගේ device එකේම convert වෙනවා. කිසිම දෙයක් server එකට යන්නේ නැහැ.",
+        characterCount: "අකුරු",
+    },
+} as const;
+
+const t = copy[lang];
+---
+
+<div
+    class:list={["transliterator", { "transliterator--compact": compact }]}
+    id={id}
+    data-lang={lang}
+>
+    <div class="transliterator__panes">
+        <div class="pane">
+            <label class="pane__label" for={`${id}-input`}>
+                {t.label}
+            </label>
+            <div class="pane__field">
+                <textarea
+                    id={`${id}-input`}
+                    class="pane__input"
+                    rows={compact ? 2 : 3}
+                    placeholder={t.placeholder}
+                    spellcheck="false"
+                    autocomplete="off"
+                    autocapitalize="off"
+                    autocorrect="off"
+                    aria-describedby={`${id}-hint`}
+                    aria-autocomplete="list"
+                    aria-controls={`${id}-suggestions`}
+                    aria-expanded="false"
+                ></textarea>
+
+                <div
+                    class="suggest-menu"
+                    id={`${id}-suggestions`}
+                    role="listbox"
+                    aria-label={t.suggestions}
+                    hidden
+                >
+                    <div
+                        class="suggest-menu__list"
+                        id={`${id}-suggestion-chips`}
+                    ></div>
+                    <div class="suggest-menu__nav">
+                        <button
+                            type="button"
+                            class="suggest-menu__nav-btn"
+                            data-suggest-prev
+                            aria-label={t.previous}
+                        >
+                            <svg
+                                width="14"
+                                height="14"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2.4"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                aria-hidden="true"
+                            >
+                                <path d="m6 15 6-6 6 6" />
+                            </svg>
+                        </button>
+                        <button
+                            type="button"
+                            class="suggest-menu__nav-btn"
+                            data-suggest-next
+                            aria-label={t.next}
+                        >
+                            <svg
+                                width="14"
+                                height="14"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2.4"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                aria-hidden="true"
+                            >
+                                <path d="m6 9 6 6 6-6" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="pane pane--output">
+            <div class="pane__label-row">
+                <label class="pane__label" for={`${id}-output`}>
+                    {t.outputLabel}
+                </label>
+                <span class="pane__count" id={`${id}-count`} aria-live="polite"></span>
+            </div>
+            <div
+                class="pane__output sinhala"
+                id={`${id}-output`}
+                role="status"
+                aria-live="polite"
+                aria-atomic="false"
+            >
+                {t.outputPlaceholder}
+            </div>
+        </div>
+    </div>
+
+    <div class="transliterator__toolbar">
+        <button
+            type="button"
+            class="btn btn--ghost btn--sm"
+            id={`${id}-copy`}
+            disabled
+        >
+            <svg
+                aria-hidden="true"
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            >
+                <rect x="9" y="9" width="12" height="12" rx="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span data-copy-label>{t.copy}</span>
+        </button>
+        <button
+            type="button"
+            class="btn btn--ghost btn--sm"
+            id={`${id}-clear`}
+        >
+            {t.clear}
+        </button>
+    </div>
+
+    <div class="transliterator__examples">
+        <span class="transliterator__examples-label">{t.examples}:</span>
+        <div class="transliterator__chips" id={`${id}-examples`}>
+            {
+                t.examplesList.map((example) => (
+                    <button
+                        type="button"
+                        class="chip"
+                        data-example={example}
+                        title={t.examplesLabel[
+                            example as keyof typeof t.examplesLabel
+                        ]}
+                    >
+                        {example}
+                    </button>
+                ))
+            }
+        </div>
+    </div>
+
+    <div class="transliterator__breakdown" id={`${id}-breakdown`} hidden>
+        <span class="transliterator__examples-label">{t.breakdown}:</span>
+        <div class="transliterator__breakdown-list" id={`${id}-breakdown-list`}></div>
+    </div>
+
+    <p class="transliterator__hint" id={`${id}-hint`}>
+        {t.hint}
+    </p>
+</div>
+
+<script>
+    import { breakdown, transliterate } from "../lib/transliterator";
+    import { setAbbreviationLexicon, setCandidateFrequencyLookup } from "../lib/transliterator";
+    import {
+        loadSinhalaFrequencies,
+        sinhalaFrequency,
+    } from "../lib/sinhala-frequencies";
+
+    const LABELS: Record<string, { copy: string; copied: string; failed: string }> = {
+        en: { copy: "Copy", copied: "Copied", failed: "Press Ctrl+C" },
+        si: { copy: "Copy", copied: "Copied", failed: "Ctrl+C ඔබන්න" },
+    };
+
+    const PLACEHOLDERS: Record<string, string> = {
+        en: "Your Sinhala text will appear here",
+        si: "ඔයාගේ සිංහල text එක මෙහි පෙන්වයි",
+    };
+
+    /** Splits a word into its leading punctuation, core and trailing punctuation. */
+    const splitWord = (piece: string) => {
+        const match = /^(\W*)(.*?)(\W*)$/u.exec(piece);
+        return {
+            lead: match?.[1] ?? "",
+            core: match?.[2] ?? "",
+            trail: match?.[3] ?? "",
+        };
+    };
+
+    function setup(root: HTMLElement) {
+        const id = root.id;
+        /** Fetches a required element, throwing if the markup changed. */
+        const must = <T extends HTMLElement>(sel: string): T => {
+            const el = root.querySelector<T>(sel);
+            if (!el) throw new Error(`CleanBoard: missing element ${sel}`);
+            return el;
+        };
+
+        const input = must<HTMLTextAreaElement>(`#${id}-input`);
+        const field = must(".pane__field");
+        const output = must(`#${id}-output`);
+        const count = must(`#${id}-count`);
+        const copyBtn = must<HTMLButtonElement>(`#${id}-copy`);
+        const clearBtn = must<HTMLButtonElement>(`#${id}-clear`);
+        const examples = must(`#${id}-examples`);
+        const suggestionWrap = must(`#${id}-suggestions`);
+        const suggestionChips = must(`#${id}-suggestion-chips`);
+        const prevBtn = must<HTMLButtonElement>("[data-suggest-prev]");
+        const nextBtn = must<HTMLButtonElement>("[data-suggest-next]");
+        const breakdownWrap = must(`#${id}-breakdown`);
+        const breakdownList = must(`#${id}-breakdown-list`);
+        const copyLabel = root.querySelector<HTMLElement>("[data-copy-label]");
+
+        const lang = root.dataset.lang ?? "en";
+        const labels = LABELS[lang] ?? LABELS.en;
+        const placeholder = PLACEHOLDERS[lang] ?? PLACEHOLDERS.en;
+
+        let current = "";
+        /** Index of the keyboard-highlighted option in the suggestion menu. */
+        let activeIndex = -1;
+        /** Set after a suggestion is picked so the menu stays closed. */
+        let suppressFor: string | null = null;
+
+        const menuOptions = () =>
+            Array.from(
+                suggestionChips.querySelectorAll<HTMLButtonElement>(
+                    ".suggest-menu__option",
+                ),
+            );
+
+        const setActive = (index: number) => {
+            const items = menuOptions();
+            activeIndex = index;
+            items.forEach((item, i) => {
+                item.classList.toggle("is-active", i === index);
+            });
+            if (index >= 0 && items[index]) {
+                input.setAttribute("aria-activedescendant", items[index].id);
+                items[index].scrollIntoView({ block: "nearest" });
+            } else {
+                input.removeAttribute("aria-activedescendant");
+            }
+        };
+
+        const setMenu = (open: boolean) => {
+            suggestionWrap.hidden = !open;
+            input.setAttribute("aria-expanded", String(open));
+            if (!open) setActive(-1);
+        };
+
+        /**
+         * Where the caret sits inside the textarea, measured with a hidden
+         * mirror of its text so the menu can open beside the word being typed.
+         */
+        const caretPosition = () => {
+            const style = getComputedStyle(input);
+            const mirror = document.createElement("div");
+            mirror.setAttribute("aria-hidden", "true");
+            mirror.style.position = "absolute";
+            mirror.style.top = "0";
+            mirror.style.left = "0";
+            mirror.style.visibility = "hidden";
+            mirror.style.pointerEvents = "none";
+            mirror.style.whiteSpace = "pre-wrap";
+            mirror.style.overflowWrap = "break-word";
+            mirror.style.width = `${input.offsetWidth}px`;
+            for (const prop of [
+                "box-sizing",
+                "font-family",
+                "font-size",
+                "font-weight",
+                "font-style",
+                "letter-spacing",
+                "line-height",
+                "text-transform",
+                "text-indent",
+                "padding-top",
+                "padding-right",
+                "padding-bottom",
+                "padding-left",
+                "border-top-width",
+                "border-right-width",
+                "border-bottom-width",
+                "border-left-width",
+                "tab-size",
+            ]) {
+                mirror.style.setProperty(prop, style.getPropertyValue(prop));
+            }
+            mirror.textContent = input.value.slice(
+                0,
+                input.selectionStart ?? 0,
+            );
+            const marker = document.createElement("span");
+            marker.style.display = "inline-block";
+            marker.textContent = "\u200b";
+            mirror.append(marker);
+            field.append(mirror);
+            const position = {
+                left: marker.offsetLeft - input.scrollLeft,
+                top: marker.offsetTop - input.scrollTop,
+                lineHeight: parseFloat(style.lineHeight) || 24,
+            };
+            mirror.remove();
+            return position;
+        };
+
+        /** Opens the menu beside the caret, like an IME candidate window. */
+        const positionMenu = () => {
+            if (suggestionWrap.hidden) return;
+            const caret = caretPosition();
+            const menuWidth = suggestionWrap.offsetWidth;
+            const menuHeight = suggestionWrap.offsetHeight;
+            const fieldTop = field.getBoundingClientRect().top;
+            const fieldWidth = field.clientWidth;
+            const edge = 12;
+            const gap = 8;
+            const header = document.querySelector<HTMLElement>(
+                ".site-header",
+            );
+            const topEdge =
+                (header?.getBoundingClientRect().bottom ?? 0) + edge;
+
+            const left = Math.max(
+                0,
+                Math.min(
+                    caret.left - gap / 2,
+                    fieldWidth - menuWidth,
+                ),
+            );
+
+            let top = caret.top + caret.lineHeight + 6;
+            const viewportBottom =
+                (window.visualViewport?.height ?? window.innerHeight) - edge;
+            const spaceBelow = viewportBottom - (fieldTop + top);
+            const spaceAbove = fieldTop + caret.top - topEdge;
+            if (spaceBelow < menuHeight && spaceAbove > spaceBelow) {
+                top = caret.top - menuHeight - 6;
+            }
+            top = Math.max(top, topEdge - fieldTop);
+
+            suggestionWrap.style.setProperty(
+                "--suggest-left",
+                `${Math.round(left)}px`,
+            );
+            suggestionWrap.style.setProperty(
+                "--suggest-top",
+                `${Math.round(top)}px`,
+            );
+        };
+
+        /**
+         * The spelling the visitor picked for a word, keyed by the word's
+         * position in the text. The input keeps the Singlish that was typed;
+         * the choice only changes the output, the way tapping a suggestion
+         * on the keyboard commits that word.
+         */
+        /**
+         * The spelling the visitor picked for a word, keyed by the word's
+         * position in the text. The input keeps the Singlish that was typed;
+         * the choice only changes the output, the way tapping a suggestion
+         * on the keyboard commits that word.
+         */
+        const overrides = new Map<number, { core: string; value: string }>();
+
+        // --- conversion ------------------------------------------------
+        const convert = (text: string): string => {
+            const pieces = text.split(/(\s+)/);
+
+            // Forget choices for words that have since been edited.
+            for (const [index, choice] of overrides) {
+                const piece = pieces[index];
+                if (!piece || splitWord(piece).core !== choice.core) {
+                    overrides.delete(index);
+                }
+            }
+
+            return pieces
+                .map((piece, index) => {
+                    if (!piece.trim()) return piece;
+                    const { lead, core, trail } = splitWord(piece);
+                    if (!core) return piece;
+                    const choice = overrides.get(index);
+                    const primary =
+                        choice && choice.core === core
+                            ? choice.value
+                            : transliterate(core).primary;
+                    return lead + primary + trail;
+                })
+                .join("");
+        };
+
+        const render = () => {
+            const text = input.value;
+            current = convert(text);
+
+            output.textContent = current.trim() ? current : placeholder;
+            output.classList.toggle("is-empty", !current.trim());
+            count.textContent = text.length
+                ? `${text.length} ${lang === "si" ? "අකුරු" : "characters"}`
+                : "";
+            copyBtn.disabled = !current.trim();
+
+            // The suggestion menu for the word under the caret, in the same
+            // order as the keyboard's strip: the engine's first choice, then
+            // every other reading it found.
+            const pieces = text.split(/(\s+)/);
+            const caret = input.selectionStart ?? text.length;
+            let wordIndex = -1;
+            let offset = 0;
+            for (let i = 0; i < pieces.length; i++) {
+                offset += pieces[i].length;
+                if (caret <= offset) {
+                    if (pieces[i].trim()) wordIndex = i;
+                    break;
+                }
+            }
+            const word =
+                wordIndex >= 0 ? splitWord(pieces[wordIndex]).core : "";
+            const result = word.length >= 2 ? transliterate(word) : null;
+            const candidates = result ? result.candidates.slice(0, 8) : [];
+            const selected =
+                (wordIndex >= 0 ? overrides.get(wordIndex)?.value : undefined) ??
+                result?.primary;
+            // Keep a chosen spelling visible even if the frequency model
+            // later moves it out of the first eight.
+            if (selected && !candidates.includes(selected)) {
+                candidates.unshift(selected);
+            }
+
+            suggestionChips.replaceChildren();
+            setActive(-1);
+
+            const choose = (candidate: string) => {
+                overrides.set(wordIndex, { core: word, value: candidate });
+                suppressFor = input.value;
+                render();
+                input.focus();
+                input.setSelectionRange(
+                    input.value.length,
+                    input.value.length,
+                );
+            };
+
+            if (candidates.length > 1) {
+                candidates.forEach((candidate, index) => {
+                    const option = document.createElement("button");
+                    option.type = "button";
+                    option.className = "suggest-menu__option";
+                    option.id = `${id}-suggestion-${index}`;
+                    option.tabIndex = -1;
+                    option.setAttribute("role", "option");
+                    const isSelected = candidate === selected;
+                    option.setAttribute(
+                        "aria-selected",
+                        isSelected ? "true" : "false",
+                    );
+                    option.classList.toggle("is-selected", isSelected);
+                    option.title = `${word} → ${candidate}`;
+                    // Keep the caret in the textarea while clicking an option.
+                    option.addEventListener("pointerdown", (event) => {
+                        event.preventDefault();
+                    });
+                    option.addEventListener("click", () => choose(candidate));
+
+                    const number = document.createElement("span");
+                    number.className = "suggest-menu__num";
+                    number.textContent = String(index + 1);
+                    const label = document.createElement("span");
+                    label.className = "suggest-menu__sinhala sinhala";
+                    label.textContent = candidate;
+                    option.append(number, label);
+                    suggestionChips.append(option);
+                });
+            }
+
+            const showMenu =
+                candidates.length > 1 &&
+                suppressFor !== text &&
+                field.contains(document.activeElement);
+            setMenu(showMenu);
+            if (showMenu) {
+                setActive(0);
+                positionMenu();
+            }
+
+            // Syllable-by-syllable breakdown of the last word, using the
+            // same units the engine read — so "kae" shows as one cell.
+            breakdownList.replaceChildren();
+            const units = word.length > 0 && word.length <= 24
+                ? breakdown(word)
+                : [];
+            if (units.length) {
+                for (const unit of units) {
+                    const cell = document.createElement("span");
+                    cell.className = "breakdown__cell";
+                    const rom = document.createElement("span");
+                    rom.className = "breakdown__roman";
+                    rom.textContent = unit.roman;
+                    const sin = document.createElement("span");
+                    sin.className = "breakdown__sinhala sinhala";
+                    sin.textContent = unit.sinhala;
+                    cell.append(rom, sin);
+                    breakdownList.append(cell);
+                }
+                breakdownWrap.hidden = false;
+            } else {
+                breakdownWrap.hidden = true;
+            }
+        };
+
+        // Render straight away. The conversion is a cheap string operation, so
+        // there is nothing to debounce — and unlike requestAnimationFrame this
+        // also runs in a background tab, where rAF is throttled or paused.
+        input.addEventListener("input", () => {
+            suppressFor = null;
+            render();
+        });
+
+        input.addEventListener("scroll", positionMenu);
+        window.addEventListener("resize", positionMenu);
+        window.visualViewport?.addEventListener("resize", positionMenu);
+
+        field.addEventListener("focusout", () => {
+            window.setTimeout(() => {
+                if (!field.contains(document.activeElement)) setMenu(false);
+            }, 0);
+        });
+
+        // Follow the caret when it moves while the menu is open, so the
+        // suggestions always belong to the word being edited.
+        document.addEventListener("selectionchange", () => {
+            if (!suggestionWrap.hidden && document.activeElement === input) {
+                render();
+            }
+        });
+
+        const navPairs: Array<[HTMLButtonElement, number]> = [
+            [prevBtn, -1],
+            [nextBtn, 1],
+        ];
+        for (const [button, step] of navPairs) {
+            button.addEventListener("pointerdown", (event) => {
+                event.preventDefault();
+            });
+            button.addEventListener("click", () => {
+                if (suggestionWrap.hidden) return;
+                const items = menuOptions();
+                if (!items.length) return;
+                setActive(
+                    (activeIndex + step + items.length) % items.length,
+                );
+            });
+        }
+
+        clearBtn.addEventListener("click", () => {
+            input.value = "";
+            overrides.clear();
+            suppressFor = null;
+            input.focus();
+            render();
+        });
+
+        examples?.addEventListener("click", (event) => {
+            const target = (event.target as HTMLElement).closest<HTMLElement>(
+                "[data-example]",
+            );
+            if (!target) return;
+            input.value = target.dataset.example ?? "";
+            overrides.clear();
+            suppressFor = null;
+            input.focus();
+            render();
+        });
+
+        const copyText = async () => {
+            if (!current.trim()) return;
+            try {
+                await navigator.clipboard.writeText(current);
+            } catch {
+                // Fall back for browsers without clipboard access (http, older).
+                const ta = document.createElement("textarea");
+                ta.value = current;
+                ta.setAttribute("readonly", "");
+                ta.style.position = "fixed";
+                ta.style.opacity = "0";
+                document.body.append(ta);
+                ta.select();
+                try {
+                    // The async Clipboard API is preferred; this legacy
+                    // fallback is for browsers that do not expose it.
+                    const legacyCopy = (
+                        document as unknown as {
+                            execCommand?: (command: string) => boolean;
+                        }
+                    ).execCommand;
+                    if (!legacyCopy || !legacyCopy.call(document, "copy")) {
+                        throw new Error("copy failed");
+                    }
+                } catch {
+                    if (copyLabel) copyLabel.textContent = labels.failed;
+                    ta.remove();
+                    return;
+                }
+                ta.remove();
+            }
+            if (copyLabel) {
+                const original = labels.copy;
+                copyLabel.textContent = labels.copied;
+                window.setTimeout(() => {
+                    copyLabel.textContent = original;
+                }, 1600);
+            }
+        };
+
+        copyBtn.addEventListener("click", copyText);
+
+        // Ctrl/Cmd+Enter copies from the input as well.
+        input.addEventListener("keydown", (event) => {
+            if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+                event.preventDefault();
+                void copyText();
+                return;
+            }
+
+            if (suggestionWrap.hidden) return;
+            const items = menuOptions();
+            if (!items.length) return;
+
+            if (/^[1-9]$/.test(event.key)) {
+                const item = items[Number(event.key) - 1];
+                if (item) {
+                    event.preventDefault();
+                    item.click();
+                }
+            } else if (event.key === "ArrowDown") {
+                event.preventDefault();
+                setActive(
+                    activeIndex >= items.length - 1 ? 0 : activeIndex + 1,
+                );
+            } else if (event.key === "ArrowUp") {
+                event.preventDefault();
+                setActive(
+                    activeIndex <= 0 ? items.length - 1 : activeIndex - 1,
+                );
+            } else if (event.key === "Escape") {
+                suppressFor = input.value;
+                setMenu(false);
+            } else if (
+                event.key === "Enter" &&
+                !event.shiftKey &&
+                activeIndex >= 0
+            ) {
+                event.preventDefault();
+                items[activeIndex].click();
+            }
+        });
+
+        render();
+
+        // Load the Sinhala frequency list in the background and re-render
+        // once it arrives, so the alternatives are ranked by word frequency.
+        const base = document.documentElement.dataset.base ?? "";
+        void loadSinhalaFrequencies(`${base}/data/si-words.txt`).then((frequencies) => {
+            setCandidateFrequencyLookup(sinhalaFrequency);
+            setAbbreviationLexicon(frequencies.keys());
+            render();
+        });
+    }
+
+    document
+        .querySelectorAll<HTMLElement>(".transliterator")
+        .forEach(setup);
+</script>
+
+<style>
+    .transliterator {
+        position: relative;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .transliterator__panes {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    @media (min-width: 48rem) {
+        .transliterator__panes {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    .pane {
+        padding: 1.125rem 1.25rem 1.25rem;
+        min-width: 0;
+    }
+
+    .pane--output {
+        position: relative;
+        background:
+            radial-gradient(
+                120% 140% at 100% 0%,
+                var(--accent-soft) 0%,
+                transparent 62%
+            ),
+            var(--surface);
+        border-top: 1px solid var(--border);
+    }
+
+    @media (min-width: 48rem) {
+        .pane--output {
+            border-top: 0;
+            border-left: 1px solid var(--border);
+            border-radius: 0 var(--radius-xl) 0 0;
+        }
+    }
+
+    .pane__label-row {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 0.75rem;
+    }
+
+    .pane__label {
+        display: block;
+        margin-bottom: 0.55rem;
+        font-size: 0.6875rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted-foreground);
+    }
+
+    .pane__count {
+        font-size: 0.75rem;
+        font-variant-numeric: tabular-nums;
+        color: var(--muted-foreground);
+    }
+
+    .pane__input {
+        display: block;
+        width: 100%;
+        min-height: 4.75rem;
+        resize: vertical;
+        padding: 0.8rem 0.95rem;
+        font-family: inherit;
+        font-size: 1rem;
+        line-height: 1.6;
+        color: var(--foreground);
+        background: var(--background);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        transition:
+            border-color var(--duration) var(--ease-out),
+            box-shadow var(--duration) var(--ease-out),
+            background-color var(--duration) var(--ease-out);
+    }
+
+    .pane__input:hover {
+        border-color: var(--border-strong);
+    }
+
+    .pane__input:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 22%, transparent);
+        background: var(--surface);
+    }
+
+    .pane__field {
+        position: relative;
+    }
+
+    .suggest-menu {
+        position: absolute;
+        top: var(--suggest-top, calc(100% + 0.4rem));
+        left: var(--suggest-left, 0);
+        z-index: 40;
+        width: min(17.5rem, 100%);
+        padding: 0.6rem 0.45rem 0.5rem;
+        background: var(--surface);
+        border: 1px solid var(--border-strong);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-lg);
+        animation: suggest-in 140ms var(--ease-out);
+    }
+
+    .suggest-menu[hidden] {
+        display: none;
+    }
+
+    .suggest-menu__list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.1rem;
+        max-height: 11.75rem;
+        padding-top: 0.35rem;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        scrollbar-width: thin;
+        scrollbar-color: var(--border-strong) transparent;
+    }
+
+    .suggest-menu__list::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .suggest-menu__list::-webkit-scrollbar-thumb {
+        background: var(--border-strong);
+        border-radius: 999px;
+    }
+
+    /* The options are built in JS, so they never receive Astro's scope
+       attribute — target them through their scoped parent instead. */
+    .suggest-menu__list :global(.suggest-menu__option) {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        width: 100%;
+        min-height: 2.35rem;
+        padding: 0.35rem 0.45rem;
+        font-family: inherit;
+        text-align: left;
+        color: var(--foreground);
+        background: transparent;
+        border: 0;
+        border-radius: 0.5rem;
+        cursor: pointer;
+    }
+
+    .suggest-menu__list :global(.suggest-menu__num) {
+        flex-shrink: 0;
+        width: 1rem;
+        font-size: 0.8125rem;
+        font-variant-numeric: tabular-nums;
+        color: var(--muted-foreground);
+    }
+
+    .suggest-menu__list :global(.suggest-menu__sinhala) {
+        font-family: "Noto Sans Sinhala", var(--font-sans);
+        font-size: 1.15rem;
+        line-height: 1.35;
+    }
+
+    .suggest-menu__list :global(.suggest-menu__option):hover,
+    .suggest-menu__list :global(.suggest-menu__option.is-active) {
+        color: var(--accent-strong);
+        background: var(--accent-soft);
+    }
+
+    .suggest-menu__list :global(.suggest-menu__option):hover :global(.suggest-menu__num),
+    .suggest-menu__list :global(.suggest-menu__option.is-active) :global(.suggest-menu__num) {
+        color: var(--accent-strong);
+    }
+
+    .suggest-menu__list :global(.suggest-menu__option.is-selected)::after {
+        content: "✓";
+        margin-left: auto;
+        padding-left: 0.5rem;
+        font-family: var(--font-sans);
+        font-size: 0.8125rem;
+        color: var(--accent-strong);
+    }
+
+    .suggest-menu__list :global(.suggest-menu__option:focus-visible) {
+        outline: 2px solid var(--ring);
+        outline-offset: -2px;
+    }
+
+    .suggest-menu__nav {
+        display: flex;
+        gap: 0.3rem;
+        margin-top: 0.45rem;
+        padding: 0.45rem 0.35rem 0;
+        border-top: 1px solid var(--border);
+    }
+
+    .suggest-menu__nav-btn {
+        display: inline-grid;
+        place-items: center;
+        width: 2.1rem;
+        height: 1.8rem;
+        color: var(--muted-foreground);
+        background: var(--background);
+        border: 1px solid var(--border);
+        border-radius: 0.4rem;
+        cursor: pointer;
+    }
+
+    .suggest-menu__nav-btn:hover {
+        color: var(--foreground);
+        background: var(--surface-2);
+        border-color: var(--border-strong);
+    }
+
+    .suggest-menu__nav-btn:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: 2px;
+    }
+
+    @keyframes suggest-in {
+        from {
+            opacity: 0;
+            transform: translateY(-4px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .pane__output {
+        min-height: 4.75rem;
+        padding: 0.8rem 0.95rem;
+        font-size: 1.5rem;
+        line-height: 1.55;
+        color: var(--foreground);
+        background: var(--surface);
+        background: color-mix(in srgb, var(--surface) 72%, transparent);
+        border: 1px solid var(--accent-line);
+        border-radius: var(--radius-md);
+        word-break: break-word;
+        transition: border-color var(--duration) var(--ease-out);
+    }
+
+    .pane__output.is-empty {
+        font-size: 1rem;
+        font-style: italic;
+        color: var(--muted-foreground);
+        border-color: var(--border);
+    }
+
+    .sinhala {
+        font-family: "Noto Sans Sinhala", var(--font-sans);
+    }
+
+    .transliterator__toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        padding: 0 1.25rem 1rem;
+    }
+
+    .transliterator__examples,
+    .transliterator__breakdown {
+        padding: 0 1.25rem 1rem;
+    }
+
+    .transliterator__breakdown[hidden] {
+        display: none;
+    }
+
+    .transliterator__examples-label {
+        display: block;
+        margin-bottom: 0.55rem;
+        font-size: 0.6875rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted-foreground);
+    }
+
+    .transliterator__chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.45rem;
+    }
+
+    .chip {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 2.125rem;
+        padding: 0.3rem 0.8rem;
+        font-family: inherit;
+        font-size: 0.8125rem;
+        color: var(--muted-foreground);
+        background: var(--background);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        cursor: pointer;
+        transition:
+            background-color var(--duration) var(--ease-out),
+            border-color var(--duration) var(--ease-out),
+            color var(--duration) var(--ease-out),
+            transform var(--duration) var(--ease-out);
+    }
+
+    .chip:hover {
+        color: var(--foreground);
+        background: var(--accent-soft);
+        border-color: var(--accent-line);
+    }
+
+    .chip:active {
+        transform: scale(0.97);
+    }
+
+    .chip:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: 2px;
+    }
+
+    .transliterator__breakdown-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.45rem;
+    }
+
+    .transliterator__breakdown-list :global(.breakdown__cell) {
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.15rem;
+        min-width: 2.375rem;
+        padding: 0.4rem 0.45rem;
+        background: var(--background);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+    }
+
+    .transliterator__breakdown-list :global(.breakdown__roman) {
+        font-size: 0.6875rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--muted-foreground);
+    }
+
+    .transliterator__breakdown-list :global(.breakdown__sinhala) {
+        font-size: 1.0625rem;
+        color: var(--foreground);
+    }
+
+    .transliterator__hint {
+        padding: 0 1.25rem 1.25rem;
+        font-size: 0.8125rem;
+        line-height: 1.6;
+        color: var(--muted-foreground);
+    }
+
+    .transliterator--compact .pane {
+        padding: 1rem 1rem 1.125rem;
+    }
+
+    .transliterator--compact .pane__input,
+    .transliterator--compact .pane__output {
+        min-height: 3.75rem;
+    }
+
+    .transliterator--compact .pane__output {
+        font-size: 1.375rem;
+    }
+
+    .transliterator--compact .transliterator__toolbar,
+    .transliterator--compact .transliterator__examples,
+    .transliterator--compact .transliterator__breakdown {
+        padding-inline: 1rem;
+    }
+
+    .transliterator--compact .transliterator__hint {
+        padding-inline: 1rem;
+        padding-bottom: 1rem;
+    }
+</style>

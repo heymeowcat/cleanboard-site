@@ -1,0 +1,141 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PaintSplash from "../components/PaintSplash.astro";
+import { BASE_PATH } from "../lib/site";
+
+const links = [
+    { path: "/", label: "Home" },
+    { path: "/transliterate/", label: "English to Sinhala converter" },
+    { path: "/features/", label: "Features" },
+    { path: "/download/", label: "Download for Android" },
+];
+---
+
+<Layout
+    title="Page not found — CleanBoard"
+    description="That page does not exist. Try the English to Sinhala converter or download the CleanBoard keyboard for Android."
+    path="/404.html"
+    noindex={true}
+>
+    <section class="notfound">
+        <PaintSplash class="notfound__paint" />
+        <div class="container container--narrow">
+            <p class="eyebrow">404</p>
+            <h1>This page could not be found</h1>
+            <p class="lede">
+                The link may be out of date. Here is where everything lives.
+            </p>
+
+            <nav class="notfound__links" aria-label="Site pages">
+                <ul>
+                    {
+                        links.map((link) => (
+                            <li>
+                                <a href={`${BASE_PATH}${link.path}`}>
+                                    <span>{link.label}</span>
+                                    <svg
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        aria-hidden="true"
+                                    >
+                                        <path d="M5 12h14M13 6l6 6-6 6" />
+                                    </svg>
+                                </a>
+                            </li>
+                        ))
+                    }
+                </ul>
+            </nav>
+        </div>
+    </section>
+</Layout>
+
+<style>
+    .notfound {
+        position: relative;
+        isolation: isolate;
+        overflow: hidden;
+        padding-block: clamp(3rem, 9vw, 6rem);
+    }
+
+    .notfound::before {
+        content: "";
+        position: absolute;
+        inset: -30% -10% auto;
+        height: 90%;
+        z-index: -1;
+        background: radial-gradient(
+            45% 70% at 30% 30%,
+            color-mix(in srgb, var(--accent-soft) 80%, transparent),
+            transparent 70%
+        );
+    }
+
+    .notfound__paint {
+        top: -18rem;
+        right: -15rem;
+        width: min(46rem, 110vw);
+        opacity: 0.4;
+        transform: rotate(12deg);
+    }
+
+    .notfound h1 {
+        max-width: 16ch;
+        font-size: clamp(1.9rem, 5.5vw, 2.9rem);
+    }
+
+    .notfound .lede {
+        margin-top: 0.75rem;
+    }
+
+    .notfound__links {
+        margin-top: clamp(2rem, 5vw, 2.75rem);
+    }
+
+    .notfound__links ul {
+        list-style: none;
+        display: grid;
+        gap: 0.65rem;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    }
+
+    .notfound__links a {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        min-height: 3.4rem;
+        padding: 0 1.15rem;
+        font-weight: 500;
+        color: var(--foreground);
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        text-decoration: none;
+        box-shadow: var(--shadow-sm);
+        transition:
+            transform 0.2s var(--ease-out),
+            border-color 0.18s ease,
+            color 0.18s ease,
+            background-color 0.18s ease;
+    }
+
+    .notfound__links a:hover {
+        transform: translateY(-2px);
+        color: var(--accent-strong);
+        background: var(--accent-soft);
+        border-color: var(--accent-line);
+    }
+
+    .notfound__links svg {
+        flex-shrink: 0;
+        color: var(--accent-strong);
+    }
+</style>
+

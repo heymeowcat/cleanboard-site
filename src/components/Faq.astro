@@ -1,0 +1,124 @@
+---
+/**
+ * FAQ accordion. The questions are rendered as a native <details> list so it
+ * works without JavaScript, is keyboard accessible, and is crawlable.
+ *
+ * The same strings are reused by the FAQPage JSON-LD schema.
+ */
+import { faqs } from "../data/nav";
+
+interface Props {
+    lang?: "en" | "si";
+}
+
+const { lang = "en" } = Astro.props;
+const items = faqs[lang];
+---
+
+<div class="faq">
+    {
+        items.map((item, index) => (
+            <details class="faq__item" open={index === 0}>
+                <summary class="faq__q">
+                    <h3>{item.question}</h3>
+                    <span class="faq__marker" aria-hidden="true" />
+                </summary>
+                <div class="faq__a">
+                    <p>{item.answer}</p>
+                </div>
+            </details>
+        ))
+    }
+</div>
+
+<style>
+    .faq {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+    }
+
+    .faq__item + .faq__item {
+        border-top: 1px solid var(--border);
+    }
+
+    .faq__item[open] {
+        background: color-mix(in srgb, var(--accent-soft) 32%, var(--surface));
+    }
+
+    .faq__q {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1.1rem 1.25rem;
+        cursor: pointer;
+        list-style: none;
+        min-height: 3.5rem;
+    }
+
+    .faq__q::-webkit-details-marker {
+        display: none;
+    }
+
+    .faq__q h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        transition: color 0.18s ease;
+    }
+
+    .faq__q:hover h3 {
+        color: var(--accent-strong);
+    }
+
+    .faq__q:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: -2px;
+        border-radius: var(--radius-sm);
+    }
+
+    .faq__marker {
+        position: relative;
+        flex-shrink: 0;
+        width: 1.9rem;
+        height: 1.9rem;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        border: 1px solid var(--accent-line);
+    }
+
+    .faq__marker::before,
+    .faq__marker::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0.7rem;
+        height: 2px;
+        border-radius: 2px;
+        background: var(--accent-strong);
+        transform: translate(-50%, -50%);
+        transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .faq__marker::after {
+        transform: translate(-50%, -50%) rotate(90deg);
+    }
+
+    .faq__item[open] .faq__marker::after {
+        transform: translate(-50%, -50%) rotate(0deg);
+        opacity: 0;
+    }
+
+    .faq__a {
+        padding: 0 1.25rem 1.25rem;
+        max-width: 46rem;
+    }
+
+    .faq__a p {
+        font-size: 0.9375rem;
+        line-height: 1.7;
+    }
+</style>

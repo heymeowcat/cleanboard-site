@@ -1,0 +1,24 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import FeaturesContent from "../../components/FeaturesContent.astro";
+import { breadcrumbSchema, organizationSchema } from "../../lib/schema";
+
+const jsonLd = [
+    organizationSchema(),
+    breadcrumbSchema([
+        { name: "Home", path: "/si/" },
+        { name: "Features", path: "/si/features/" },
+    ]),
+];
+---
+
+<Layout
+    title="Features — Sinhala keyboard layouts සහ privacy"
+    description="Sinhala layouts 4ක්, built-in Singlish engine, offline dictionaries සහ gesture typing. Optional internet features default එකෙන් off."
+    path="/si/features/"
+    lang="si"
+    alternates={{ en: "/features/", si: "/si/features/" }}
+    jsonLd={jsonLd}
+>
+    <FeaturesContent lang="si" />
+</Layout>

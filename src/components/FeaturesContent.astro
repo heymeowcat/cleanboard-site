@@ -1,0 +1,320 @@
+---
+/**
+ * The body of the features page, shared by `/features/` and `/si/features/`.
+ */
+import FeatureGrid from "./FeatureGrid.astro";
+import ComparisonTable from "./ComparisonTable.astro";
+import PaintSplash from "./PaintSplash.astro";
+import { layouts, privacyPillars } from "../data/content";
+
+interface Props {
+    lang: "en" | "si";
+}
+
+const { lang } = Astro.props;
+
+const layoutGlyphs = ["ක", "ඛ", "ග", "ඤ"];
+
+const privacyIcons = ["cloud-off", "shield-off", "device"] as const;
+
+const privacyIconPaths: Record<(typeof privacyIcons)[number], string> = {
+    "cloud-off":
+        "M3 3l18 18M10.5 6.2A6 6 0 0 1 18 12h1a4 4 0 0 1 2.8 6.8M6.3 6.3A6 6 0 0 0 6 18h11",
+    "shield-off":
+        "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10ZM3 3l18 18",
+    device:
+        "M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2ZM11 18h2",
+};
+---
+
+<section class="page-head">
+    <PaintSplash class="page-head__paint" />
+    <div class="container">
+        <p class="eyebrow">Features</p>
+        <h1>
+            {
+                lang === "si"
+                    ? "CleanBoard කරන හැම දෙයක්ම එක තැනක"
+                    : "Everything CleanBoard does, in one place"
+            }
+        </h1>
+        <p class="lede">
+            {
+                lang === "si"
+                    ? "Keyboard එකක් fast, predictable සහ private වෙන්න ඕනේ. ඒකටම හදපු features ටික තමයි මේ — accounts නැහැ, ads නැහැ, data collection නැහැ. Core keyboard එක offline වැඩ කරනවා; optional features ඔයා on කරනකම් off."
+                    : "A keyboard should be fast, predictable and private. These are the features we built for exactly that — no accounts, no ads and no data collection. The core keyboard works offline; optional features are opt-in."
+            }
+        </p>
+    </div>
+</section>
+
+<section class="section" aria-labelledby="grid-heading">
+    <div class="container">
+        <h2 id="grid-heading" class="visually-hidden">
+            {lang === "si" ? "හැම feature එකක්ම" : "All features"}
+        </h2>
+        <FeatureGrid lang={lang} as="h3" />
+    </div>
+</section>
+
+<section class="section section--alt" aria-labelledby="layouts-heading">
+    <div class="container">
+        <div class="section__head section__head--split">
+            <div>
+                <p class="eyebrow">
+                    {lang === "si" ? "ඔයාගේ විදිහට" : "Your way"}
+                </p>
+                <h2 id="layouts-heading">
+                    {lang === "si" ? "Sinhala layouts 4ක්" : "Four Sinhala layouts"}
+                </h2>
+            </div>
+            <p>
+                {
+                    lang === "si"
+                        ? "ඔයා ඉගෙන ගත්ත විදිහට match වෙන layout එක තෝරන්න, ඕන වෙලාවක switch වෙන්න. හැම layout එකකම full Sinhala keyboard එක තියෙනවා — conjuncts සහ දකුණු පැත්තේ ලියන vowel signs ඇතුළුව."
+                        : "Pick the layout that matches how you were taught to write, and switch whenever you like. Each one keeps the full Sinhala keyboard, including conjuncts and the vowel signs Sinhala writes on the right-hand side."
+                }
+            </p>
+        </div>
+
+        <div class="layouts">
+            {
+                layouts[lang].map((layout, index) => (
+                    <article class="layout-card">
+                        <span class="layout-card__glyph sinhala" aria-hidden="true">
+                            {layoutGlyphs[index]}
+                        </span>
+                        <div>
+                            <h3>{layout.name}</h3>
+                            <p>{layout.body}</p>
+                        </div>
+                    </article>
+                ))
+            }
+        </div>
+    </div>
+</section>
+
+<section class="section" aria-labelledby="privacy-heading">
+    <div class="container">
+        <div class="section__head section__head--split">
+            <div>
+                <p class="eyebrow">
+                    {lang === "si" ? "Privacy පළමුව" : "Privacy first"}
+                </p>
+                <h2 id="privacy-heading">
+                    {
+                        lang === "si"
+                            ? "Privacy කියන්නේත් feature එකක්"
+                            : "Privacy is a feature"
+                    }
+                </h2>
+            </div>
+            <p>
+                {
+                    lang === "si"
+                        ? "ගොඩක් keyboards free වෙන්නේ ඔයාගේ attention එක හරි data හරි විකුණලා. CleanBoard free වෙන්නේ ඒක එක වැඩක් හොඳට කරන කුඩා, open source app එකක් නිසා."
+                        : "Most keyboards are free because they sell your attention or your data. CleanBoard is free because it is a small, open source app that does one job well."
+                }
+            </p>
+        </div>
+
+        <div class="pillars">
+            {
+                privacyPillars[lang].map((item, index) => (
+                    <article class="pillar">
+                        <span class="pillar__icon" aria-hidden="true">
+                            <svg
+                                width="22"
+                                height="22"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <path d={privacyIconPaths[privacyIcons[index]]} />
+                            </svg>
+                        </span>
+                        <h3>{item.title}</h3>
+                        <p>{item.body}</p>
+                    </article>
+                ))
+            }
+        </div>
+    </div>
+</section>
+
+<section class="section section--alt" aria-labelledby="compare-heading">
+    <div class="container">
+        <div class="section__head section__head--split">
+            <div>
+                <p class="eyebrow">Side by side</p>
+                <h2 id="compare-heading">
+                    {
+                        lang === "si"
+                            ? "CleanBoard සහ සාමාන්‍ය keyboard එකක්"
+                            : "CleanBoard vs. a typical keyboard"
+                    }
+                </h2>
+            </div>
+            <p>
+                {
+                    lang === "si"
+                        ? "Internet access, data collection සහ offline typing — පැහැදිලිව compare කරලා බලන්න."
+                        : "Internet access, data collection and offline typing, compared plainly."
+                }
+            </p>
+        </div>
+
+        <ComparisonTable lang={lang} />
+    </div>
+</section>
+
+<style>
+    .page-head {
+        position: relative;
+        isolation: isolate;
+        overflow: hidden;
+        padding-block: clamp(2.5rem, 6vw, 4.25rem) clamp(1.5rem, 3vw, 2.25rem);
+    }
+
+    .page-head::before {
+        content: "";
+        position: absolute;
+        inset: -25% -10% auto;
+        height: 90%;
+        z-index: -1;
+        background: radial-gradient(
+            50% 70% at 25% 20%,
+            color-mix(in srgb, var(--accent-soft) 75%, transparent),
+            transparent 70%
+        );
+    }
+
+    .page-head__paint {
+        top: -18rem;
+        left: -16rem;
+        width: min(48rem, 110vw);
+        opacity: 0.35;
+        transform: rotate(10deg);
+    }
+
+    .page-head h1 {
+        max-width: 20ch;
+        font-size: clamp(1.9rem, 5.2vw, 3.15rem);
+    }
+
+    .page-head .lede {
+        margin-top: 0.9rem;
+        max-width: 46rem;
+    }
+
+    .layouts {
+        display: grid;
+        gap: clamp(0.9rem, 2.5vw, 1.25rem);
+        grid-template-columns: 1fr;
+    }
+
+    @media (min-width: 48rem) {
+        .layouts {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (min-width: 80rem) {
+        .layouts {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+    }
+
+    .layout-card {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: clamp(1.2rem, 3vw, 1.6rem);
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        transition:
+            transform 0.25s var(--ease-out),
+            border-color 0.2s ease,
+            box-shadow 0.25s var(--ease-out);
+    }
+
+    .layout-card:hover {
+        transform: translateY(-3px);
+        border-color: var(--accent-line);
+        box-shadow: var(--shadow);
+    }
+
+    .layout-card__glyph {
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+        width: 3.1rem;
+        height: 3.1rem;
+        font-size: 1.5rem;
+        line-height: 1;
+        color: var(--accent-strong);
+        background:
+            radial-gradient(
+                120% 120% at 30% 20%,
+                color-mix(in srgb, var(--lime) 30%, transparent),
+                transparent 70%
+            ),
+            var(--accent-soft);
+        border: 1px solid var(--accent-line);
+        border-radius: 1rem;
+    }
+
+    .layout-card h3 {
+        margin-bottom: 0.3rem;
+        font-size: 1.0625rem;
+    }
+
+    .layout-card p {
+        font-size: 0.9375rem;
+    }
+
+    .pillars {
+        display: grid;
+        gap: clamp(0.9rem, 2.5vw, 1.25rem);
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    }
+
+    .pillar {
+        padding: clamp(1.35rem, 3vw, 1.75rem);
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .pillar__icon {
+        display: inline-grid;
+        place-items: center;
+        width: 2.9rem;
+        height: 2.9rem;
+        margin-bottom: 1rem;
+        color: var(--accent-strong);
+        background: var(--accent-soft);
+        border: 1px solid var(--accent-line);
+        border-radius: 999px;
+    }
+
+    .pillar h3 {
+        margin-bottom: 0.35rem;
+        font-size: 1.0625rem;
+    }
+
+    .pillar p {
+        font-size: 0.9375rem;
+    }
+
+    .sinhala {
+        font-family: "Noto Sans Sinhala", var(--font-sans);
+    }
+</style>

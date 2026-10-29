@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="CleanBoard — the private, offline Sinhala and English Android keyboard with a built-in Singlish transliteration engine.">
+    <defs>
+        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#0b1220" />
+            <stop offset="55%" stop-color="#020617" />
+            <stop offset="100%" stop-color="#052e26" />
+        </linearGradient>
+        <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#10b981" stop-opacity="0.28" />
+            <stop offset="100%" stop-color="#10b981" stop-opacity="0" />
+        </radialGradient>
+        <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#34d399" />
+            <stop offset="100%" stop-color="#10b981" />
+        </linearGradient>
+        <clipPath id="logoClip">
+            <rect x="72" y="70" width="128" height="128" rx="34" />
+        </clipPath>
+        <clipPath id="cardClip">
+            <rect x="72" y="474" width="1056" height="104" rx="22" />
+        </clipPath>
+    </defs>
+
+    <rect width="1200" height="630" fill="url(#bg)" />
+    <circle cx="1080" cy="90" r="320" fill="url(#glow)" />
+    <circle cx="120" cy="600" r="240" fill="url(#glow)" />
+
+    <!-- App icon -->
+    <g clip-path="url(#logoClip)">
+        <image href="{{LOGO}}" x="72" y="70" width="128" height="128" preserveAspectRatio="xMidYMid slice" />
+    </g>
+    <rect x="72" y="70" width="128" height="128" rx="34" fill="none" stroke="#ffffff" stroke-opacity="0.14" stroke-width="2" />
+
+    <!-- Wordmark -->
+    <text x="228" y="152" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="54" font-weight="700" fill="#f8fafc" letter-spacing="-1.5">CleanBoard</text>
+
+    <!-- Headline -->
+    <text x="72" y="304" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="66" font-weight="700" fill="#f8fafc" letter-spacing="-2">The Sinhala keyboard</text>
+    <text x="72" y="378" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="66" font-weight="700" fill="url(#accent)" letter-spacing="-2">that stays offline.</text>
+
+    <!-- Sub-heading -->
+    <text x="72" y="432" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="25" font-weight="500" fill="#a3b1c6">Free &#183; No ads &#183; No tracking &#183; No internet permission</text>
+
+    <!-- Converter card -->
+    <g clip-path="url(#cardClip)">
+        <rect x="72" y="474" width="1056" height="104" fill="#ffffff" />
+    </g>
+    <rect x="72" y="474" width="1056" height="104" rx="22" fill="none" stroke="#ffffff" stroke-opacity="0.18" stroke-width="1.5" />
+
+    <text x="112" y="514" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#64748b" letter-spacing="1.4">ENGLISH</text>
+    <text x="112" y="550" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="27" font-weight="600" fill="#0f172a">kohomada hodai</text>
+
+    <g transform="translate(392 508)">
+        <path d="M0 12h34M26 3l10 9-10 9" stroke="#059669" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+
+    <text x="470" y="514" font-family="Noto Sans Sinhala, Helvetica Neue, Arial, sans-serif" font-size="15" font-weight="700" fill="#64748b" letter-spacing="1.4">SINHALA</text>
+    <text x="470" y="552" font-family="Noto Sans Sinhala, Helvetica Neue, Arial, sans-serif" font-size="31" font-weight="600" fill="#047857">කොහොමද හොඳයි</text>
+
+    <!-- Official "Get it on Google Play" badge -->
+    <image href="{{BADGE}}" x="880" y="492" width="216" height="84" preserveAspectRatio="xMidYMid meet" />
+</svg>

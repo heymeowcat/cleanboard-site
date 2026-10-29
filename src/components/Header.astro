@@ -1,0 +1,585 @@
+---
+/**
+ * Site header: logo, primary navigation, language switch, theme control and
+ * the install CTA.
+ *
+ * The mobile menu is a plain `<button>` + `aria-expanded` toggle. The theme
+ * control cycles auto → light → dark and stores the choice; with no stored
+ * choice it follows the operating system.
+ */
+import { navItems } from "../data/nav";
+import PlayStoreIcon from "./PlayStoreIcon.astro";
+import { BASE_PATH, PLAY_STORE_URL, SITE_NAME, localizedPath } from "../lib/site";
+
+interface Props {
+    /** "en" or "si" — controls the labels. */
+    lang: "en" | "si";
+    /** Current path (site-relative, no base path) used for the active state. */
+    path: string;
+    /** Where the language switch should point; omit when there is no translation. */
+    altPath?: string;
+    /** Label for the language switch button pointing at the other language. */
+    altLabel: string;
+}
+
+const { lang, path, altPath, altLabel } = Astro.props;
+
+/** Locale-aware href for a nav entry, base path included. */
+const hrefFor = (itemPath: string) =>
+    `${BASE_PATH}${localizedPath(lang, itemPath)}`;
+
+/** The current page without the `/si` prefix, so active states match nav paths. */
+const currentPath =
+    lang === "si" ? path.replace(/^\/si(?=\/|$)/, "") || "/" : path;
+
+const isActive = (itemPath: string) =>
+    itemPath === "/" ? currentPath === "/" : currentPath.startsWith(itemPath);
+---
+
+<header class="site-header">
+    <div class="container header__inner">
+        <a
+            class="brand"
+            href={hrefFor("/")}
+            aria-label={`${SITE_NAME} — ${lang === "si" ? "මුල් පිටුව" : "home"}`}
+        >
+            <img
+                src={`${BASE_PATH}/cleanboard-logo.png`}
+                alt=""
+                width="36"
+                height="36"
+                loading="eager"
+                decoding="async"
+            />
+            <span class="brand__name">{SITE_NAME}</span>
+        </a>
+
+        <nav
+            class="primary-nav"
+            id="primary-nav"
+            aria-label={lang === "si" ? "ප්‍රධාන navigation" : "Primary"}
+        >
+            <ul class="primary-nav__list">
+                {
+                    navItems.map((item) => (
+                        <li>
+                            <a
+                                href={hrefFor(item.path)}
+                                aria-current={
+                                    isActive(item.path) ? "page" : undefined
+                                }
+                                class:list={[
+                                    "primary-nav__link",
+                                    { "is-active": isActive(item.path) },
+                                ]}
+                            >
+                                {lang === "si" ? item.si : item.en}
+                            </a>
+                        </li>
+                    ))
+                }
+            </ul>
+
+            <div class="primary-nav__actions">
+                {
+                    altPath && (
+                        <a
+                            class="lang-switch"
+                            href={`${BASE_PATH}${altPath}`}
+                            hreflang={lang === "en" ? "si" : "en"}
+                            lang={lang === "en" ? "si" : "en"}
+                        >
+                            {altLabel}
+                        </a>
+                    )
+                }
+                <a
+                    class="btn btn--store"
+                    href={PLAY_STORE_URL}
+                    rel="noopener"
+                    target="_blank"
+                >
+                    <PlayStoreIcon size={16} />
+                    <span>Google Play</span>
+                </a>
+            </div>
+        </nav>
+
+        <div class="header__tools">
+            <button
+                class="theme-toggle"
+                id="theme-toggle"
+                type="button"
+                data-mode="auto"
+                lang={lang}
+                aria-label={lang === "si" ? "Theme auto" : "Theme: auto"}
+                title={lang === "si" ? "Theme auto" : "Theme: auto"}
+            >
+                <svg
+                    class="theme-toggle__icon theme-toggle__icon--auto"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    aria-hidden="true"
+                >
+                    <circle cx="12" cy="12" r="8.5"></circle>
+                    <path d="M12 3.5a8.5 8.5 0 0 0 0 17Z" fill="currentColor" stroke="none"></path>
+                </svg>
+                <svg
+                    class="theme-toggle__icon theme-toggle__icon--light"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    aria-hidden="true"
+                >
+                    <circle cx="12" cy="12" r="4.2"></circle>
+                    <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4"></path>
+                </svg>
+                <svg
+                    class="theme-toggle__icon theme-toggle__icon--dark"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                >
+                    <path d="M20 14.2A8.4 8.4 0 0 1 9.8 4a8.5 8.5 0 1 0 10.2 10.2Z"></path>
+                </svg>
+            </button>
+
+            <button
+                class="nav-toggle"
+                id="nav-toggle"
+                type="button"
+                aria-expanded="false"
+                aria-controls="primary-nav"
+            >
+                <span class="visually-hidden">
+                    {lang === "si" ? "Menu එක" : "Menu"}
+                </span>
+                <span class="nav-toggle__bar" aria-hidden="true"></span>
+            </button>
+        </div>
+    </div>
+</header>
+
+<script>
+    const THEME_KEY = "cleanboard-theme";
+    const root = document.documentElement;
+    const themeButton = document.getElementById("theme-toggle");
+    const themeMeta = document.querySelector<HTMLMetaElement>(
+        'meta[name="theme-color"]',
+    );
+    const colorScheme = window.matchMedia("(prefers-color-scheme: dark)");
+    const modes = ["auto", "light", "dark"] as const;
+    type Mode = (typeof modes)[number];
+
+    const copy = {
+        en: {
+            auto: "Theme: auto",
+            light: "Theme: light",
+            dark: "Theme: dark",
+            next: {
+                auto: "Switch to light theme",
+                light: "Switch to dark theme",
+                dark: "Switch to auto theme",
+            },
+        },
+        si: {
+            auto: "Theme auto",
+            light: "Theme light",
+            dark: "Theme dark",
+            next: {
+                auto: "Light theme එකට switch වෙන්න",
+                light: "Dark theme එකට switch වෙන්න",
+                dark: "Auto theme එකට switch වෙන්න",
+            },
+        },
+    } as const;
+
+    const labels = themeButton?.lang === "si" ? copy.si : copy.en;
+
+    const storedMode = (): Mode => {
+        try {
+            const stored = localStorage.getItem(THEME_KEY);
+            return stored === "light" || stored === "dark" ? stored : "auto";
+        } catch {
+            return "auto";
+        }
+    };
+
+    let mode: Mode = storedMode();
+
+    const applyTheme = (next: Mode, persist: boolean) => {
+        mode = next;
+        if (next === "auto") {
+            root.removeAttribute("data-theme");
+        } else {
+            root.setAttribute("data-theme", next);
+        }
+
+        if (themeButton) {
+            themeButton.dataset.mode = next;
+            themeButton.setAttribute(
+                "aria-label",
+                `${labels[next]}. ${labels.next[next]}.`,
+            );
+            themeButton.title = `${labels[next]} · ${labels.next[next]}`;
+        }
+
+        if (themeMeta) {
+            const dark = next === "dark" || (next === "auto" && colorScheme.matches);
+            themeMeta.content = dark ? "#07130e" : "#f7f4ea";
+        }
+
+        if (persist) {
+            try {
+                if (next === "auto") localStorage.removeItem(THEME_KEY);
+                else localStorage.setItem(THEME_KEY, next);
+            } catch {
+                // Storage can be unavailable in private modes; the theme
+                // still applies for this page view.
+            }
+        }
+    };
+
+    if (themeButton) {
+        applyTheme(mode, false);
+
+        themeButton.addEventListener("click", () => {
+            const index = modes.indexOf(mode);
+            applyTheme(modes[(index + 1) % modes.length], true);
+        });
+
+        colorScheme.addEventListener("change", () => {
+            if (mode === "auto") applyTheme("auto", false);
+        });
+    }
+
+    const toggle = document.getElementById("nav-toggle");
+    const nav = document.getElementById("primary-nav");
+
+    if (toggle && nav) {
+        const setOpen = (open: boolean) => {
+            toggle.setAttribute("aria-expanded", String(open));
+            nav.toggleAttribute("data-open", open);
+            document.body.classList.toggle("nav-open", open);
+        };
+
+        toggle.addEventListener("click", () => {
+            setOpen(toggle.getAttribute("aria-expanded") !== "true");
+        });
+
+        // Close the menu when a link is followed or the viewport grows.
+        nav.addEventListener("click", (event) => {
+            if ((event.target as HTMLElement).closest("a")) setOpen(false);
+        });
+
+        const mq = window.matchMedia("(min-width: 52rem)");
+        mq.addEventListener("change", (e) => {
+            if (e.matches) setOpen(false);
+        });
+
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape") setOpen(false);
+        });
+    }
+</script>
+
+<style>
+    .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        background: color-mix(in srgb, var(--background) 92%, transparent);
+        backdrop-filter: blur(14px) saturate(1.2);
+        border-bottom: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+        padding-top: env(safe-area-inset-top);
+    }
+
+    .header__inner {
+        min-height: var(--header-height);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-weight: 700;
+        font-size: 1.0625rem;
+        letter-spacing: -0.025em;
+        color: var(--foreground);
+        text-decoration: none;
+        flex-shrink: 0;
+    }
+
+    .brand img {
+        border-radius: 28%;
+        background: var(--surface-2);
+    }
+
+    .header__tools {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .theme-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.75rem;
+        height: 2.75rem;
+        flex-shrink: 0;
+        border: 1px solid var(--border);
+        border-radius: 0.8rem;
+        background: var(--surface);
+        color: var(--muted-foreground);
+        cursor: pointer;
+        transition:
+            background-color 0.18s ease,
+            border-color 0.18s ease,
+            color 0.18s ease,
+            transform 0.18s var(--ease-out);
+    }
+
+    .theme-toggle:hover {
+        color: var(--foreground);
+        border-color: var(--accent);
+        transform: translateY(-1px);
+    }
+
+    .theme-toggle__icon {
+        display: none;
+    }
+
+    .theme-toggle[data-mode="auto"] .theme-toggle__icon--auto,
+    .theme-toggle[data-mode="light"] .theme-toggle__icon--light,
+    .theme-toggle[data-mode="dark"] .theme-toggle__icon--dark {
+        display: block;
+    }
+
+    :global(html:not(.js)) .theme-toggle {
+        display: none;
+    }
+
+    .nav-toggle {
+        display: none;
+        width: 2.75rem;
+        height: 2.75rem;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        border-radius: 0.8rem;
+        cursor: pointer;
+        position: relative;
+        flex-shrink: 0;
+    }
+
+    .nav-toggle__bar,
+    .nav-toggle__bar::before,
+    .nav-toggle__bar::after {
+        position: absolute;
+        left: 50%;
+        width: 1.125rem;
+        height: 2px;
+        background: var(--foreground);
+        border-radius: 2px;
+        transform: translateX(-50%);
+        transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .nav-toggle__bar {
+        top: 50%;
+        margin-top: -1px;
+    }
+
+    .nav-toggle__bar::before {
+        content: "";
+        top: -6px;
+    }
+
+    .nav-toggle__bar::after {
+        content: "";
+        top: 6px;
+    }
+
+    .nav-toggle[aria-expanded="true"] .nav-toggle__bar {
+        background: transparent;
+    }
+
+    .nav-toggle[aria-expanded="true"] .nav-toggle__bar::before {
+        transform: translateX(-50%) translateY(6px) rotate(45deg);
+    }
+
+    .nav-toggle[aria-expanded="true"] .nav-toggle__bar::after {
+        transform: translateX(-50%) translateY(-6px) rotate(-45deg);
+    }
+
+    .primary-nav {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        margin-left: auto;
+    }
+
+    .primary-nav__list {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        list-style: none;
+    }
+
+    .primary-nav__link {
+        display: inline-flex;
+        align-items: center;
+        min-height: 2.4rem;
+        padding: 0 0.8rem;
+        border-radius: 999px;
+        font-size: 0.9375rem;
+        font-weight: 500;
+        color: var(--muted-foreground);
+        text-decoration: none;
+        white-space: nowrap;
+        transition:
+            color 0.18s ease,
+            background-color 0.18s ease;
+    }
+
+    .primary-nav__link:hover {
+        color: var(--foreground);
+        background: var(--surface-2);
+    }
+
+    .primary-nav__link.is-active {
+        color: var(--accent-strong);
+        background: var(--accent-soft);
+        font-weight: 600;
+    }
+
+    .primary-nav__actions {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .lang-switch {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 2.4rem;
+        padding: 0 0.8rem;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--muted-foreground);
+        text-decoration: none;
+        white-space: nowrap;
+        transition:
+            color 0.18s ease,
+            border-color 0.18s ease;
+    }
+
+    .lang-switch:hover {
+        color: var(--foreground);
+        border-color: var(--accent);
+    }
+
+    /* A compact, authentic-looking store button: the official Google Play
+       mark on a high-contrast pill. */
+    .btn--store {
+        min-height: 2.4rem;
+        padding: 0.3rem 0.9rem 0.3rem 0.65rem;
+        font-size: 0.875rem;
+        background: var(--foreground);
+        color: var(--background);
+        border-radius: 0.65rem;
+    }
+
+    .btn--store:hover {
+        background: var(--foreground);
+        color: var(--background);
+        opacity: 0.88;
+    }
+
+    @media (max-width: 64rem) {
+        .primary-nav__link {
+            padding: 0 0.55rem;
+        }
+
+        .primary-nav {
+            gap: 0.75rem;
+        }
+    }
+
+    @media (max-width: 52rem) {
+        .header__tools {
+            margin-left: auto;
+        }
+
+        .nav-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .primary-nav {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 100%;
+            margin-left: 0;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0;
+            padding: 0.75rem clamp(1rem, 4vw, 2rem) 1.25rem;
+            background: var(--background);
+            border-bottom: 1px solid var(--border);
+            box-shadow: var(--shadow-lg);
+            display: none;
+        }
+
+        .primary-nav[data-open] {
+            display: flex;
+        }
+
+        .primary-nav__list {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.125rem;
+        }
+
+        .primary-nav__link {
+            min-height: 2.9rem;
+            padding: 0 0.8rem;
+            border-radius: 0.7rem;
+            font-size: 1rem;
+        }
+
+        .primary-nav__actions {
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--border);
+            justify-content: space-between;
+        }
+
+        .lang-switch,
+        .primary-nav__actions .btn {
+            min-height: 2.75rem;
+        }
+    }
+</style>

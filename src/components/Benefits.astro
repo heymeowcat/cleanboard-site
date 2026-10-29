@@ -1,0 +1,129 @@
+---
+/**
+ * A green checklist panel used to explain why the converter is worth using.
+ * The "100% on-device" stamp is a decorative summary of the list.
+ */
+interface Props {
+    items: readonly string[];
+}
+
+const { items } = Astro.props;
+---
+
+<div class="benefits">
+    <ul class="benefits__list">
+        {
+            items.map((item) => (
+                <li>
+                    <span class="benefits__check" aria-hidden="true">
+                        <svg
+                            width="12"
+                            height="12"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="3"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path d="M20 6 9 17l-5-5" />
+                        </svg>
+                    </span>
+                    <span>{item}</span>
+                </li>
+            ))
+        }
+    </ul>
+
+    <div class="benefits__stamp" aria-hidden="true">
+        <span class="benefits__stamp-value">100%</span>
+        <span class="benefits__stamp-label">on-device</span>
+    </div>
+</div>
+
+<style>
+    .benefits {
+        position: relative;
+        display: grid;
+        gap: clamp(1.5rem, 4vw, 2.5rem);
+        padding: clamp(1.5rem, 4vw, 2.5rem);
+        background:
+            radial-gradient(80% 120% at 100% 0%, color-mix(in srgb, var(--lime) 22%, transparent), transparent 60%),
+            var(--accent-soft);
+        border: 1px solid var(--accent-line);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+    }
+
+    @media (min-width: 56rem) {
+        .benefits {
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: center;
+        }
+    }
+
+    .benefits__list {
+        list-style: none;
+        display: grid;
+        gap: 0.85rem 2rem;
+    }
+
+    @media (min-width: 70rem) {
+        .benefits__list {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    .benefits__list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.65rem;
+        font-size: 0.9375rem;
+        color: var(--foreground);
+        line-height: 1.55;
+    }
+
+    .benefits__check {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 1.35rem;
+        height: 1.35rem;
+        margin-top: 0.05rem;
+        border-radius: 999px;
+        background: var(--accent-button);
+        color: var(--accent-foreground);
+    }
+
+    .benefits__stamp {
+        justify-self: start;
+        display: grid;
+        place-content: center;
+        justify-items: center;
+        width: 7.5rem;
+        height: 7.5rem;
+        border: 2px dashed var(--accent-strong);
+        border-radius: 50%;
+        color: var(--accent-strong);
+        background: color-mix(in srgb, var(--surface) 55%, transparent);
+        transform: rotate(-7deg);
+        flex-shrink: 0;
+    }
+
+    .benefits__stamp-value {
+        font-family: var(--font-display);
+        font-size: 1.75rem;
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.04em;
+    }
+
+    .benefits__stamp-label {
+        margin-top: 0.25rem;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+</style>

@@ -1,0 +1,31 @@
+---
+import Layout from "../layouts/Layout.astro";
+import HomeContent from "../components/HomeContent.astro";
+import { faqs } from "../data/nav";
+import {
+    faqSchema,
+    organizationSchema,
+    softwareApplicationSchema,
+    webSiteSchema,
+} from "../lib/schema";
+
+const lang = "en" as const;
+
+const jsonLd = [
+    organizationSchema(),
+    webSiteSchema(),
+    softwareApplicationSchema(),
+    faqSchema(faqs.en.map((f) => ({ question: f.question, answer: f.answer }))),
+];
+---
+
+<Layout
+    title="Sinhala & English Keyboard — Free & Private"
+    description="Type Singlish and get සිංහල instantly. CleanBoard is a free, private, offline-first Sinhala and English Android keyboard. No ads or tracking."
+    path="/"
+    lang={lang}
+    alternates={{ en: "/", si: "/si/" }}
+    jsonLd={jsonLd}
+>
+    <HomeContent lang={lang} toolId="home-transliterator" />
+</Layout>

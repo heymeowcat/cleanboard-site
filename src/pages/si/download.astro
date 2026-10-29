@@ -1,0 +1,30 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import DownloadContent from "../../components/DownloadContent.astro";
+import { breadcrumbSchema, howToSchema, organizationSchema } from "../../lib/schema";
+import { installSteps } from "../../data/content";
+
+const jsonLd = [
+    organizationSchema(),
+    breadcrumbSchema([
+        { name: "Home", path: "/si/" },
+        { name: "Download", path: "/si/download/" },
+    ]),
+    howToSchema(
+        "Android එකට CleanBoard Sinhala keyboard එක install කරන විදිහ",
+        "Google Play එකෙන් CleanBoard install කරලා steps 4කින් default keyboard එක කරන්න.",
+        installSteps.si.map((step) => ({ name: step.name, text: step.text })),
+    ),
+];
+---
+
+<Layout
+    title="CleanBoard download — Free Sinhala keyboard"
+    description="Free CleanBoard Sinhala සහ English Android keyboard එක download කරන්න. Offline typing, Sinhala layouts 4ක් සහ built-in Singlish engine — optional features off."
+    path="/si/download/"
+    lang="si"
+    alternates={{ en: "/download/", si: "/si/download/" }}
+    jsonLd={jsonLd}
+>
+    <DownloadContent lang="si" />
+</Layout>

@@ -1,0 +1,17 @@
+# Dependencies
+/node_modules
+
+# Astro's generated types and content cache
+/.astro
+
+# Build output — the CI workflow builds this from source
+/dist
+
+# macOS
+.DS_Store
+Thumbs.db
+
+# Local environment
+.env
+.env.production
+.env.local

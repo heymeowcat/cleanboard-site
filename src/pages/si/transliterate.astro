@@ -1,0 +1,36 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import TransliterateContent from "../../components/TransliterateContent.astro";
+import { faqs } from "../../data/nav";
+import {
+    breadcrumbSchema,
+    faqSchema,
+    organizationSchema,
+    webApplicationSchema,
+} from "../../lib/schema";
+
+const jsonLd = [
+    organizationSchema(),
+    {
+        ...webApplicationSchema(),
+        "@id": "https://heymeowcat.is-a.dev/cleanboard-site/#webapp-si",
+        inLanguage: "si",
+    },
+    breadcrumbSchema([
+        { name: "Home", path: "/si/" },
+        { name: "English → සිංහල", path: "/si/transliterate/" },
+    ]),
+    faqSchema(faqs.si.map((f) => ({ question: f.question, answer: f.answer }))),
+];
+---
+
+<Layout
+    title="English → සිංහල converter — Free"
+    description="English (Singlish) type කරලා ඉක්මනට සිංහල ලබාගන්න. මේක CleanBoard Android keyboard එකේ තියෙන එකම engine එක — free, private, on-device."
+    path="/si/transliterate/"
+    lang="si"
+    alternates={{ en: "/transliterate/", si: "/si/transliterate/" }}
+    jsonLd={jsonLd}
+>
+    <TransliterateContent lang="si" toolId="si-transliterate-tool" />
+</Layout>

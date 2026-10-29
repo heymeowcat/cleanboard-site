@@ -1,0 +1,347 @@
+---
+/**
+ * The feature bento. Each card is a real <article> so the list reads
+ * correctly to screen readers and to search engines. The first and fourth
+ * cards are wider, which gives the grid its editorial rhythm.
+ */
+import { features } from "../data/content";
+
+interface Props {
+    lang?: "en" | "si";
+    /** Heading level for each card title. */
+    as?: "h2" | "h3";
+}
+
+const { lang = "en", as: Heading = "h3" } = Astro.props;
+const items = features[lang];
+
+const size: Record<string, string> = {
+    singlish: "wide",
+    offline: "narrow",
+    privacy: "narrow",
+    layouts: "wide",
+    gestures: "half",
+    custom: "half",
+};
+
+const tone: Record<string, string> = {
+    singlish: "dark",
+    offline: "plain",
+    privacy: "lime",
+    layouts: "plain",
+    gestures: "plain",
+    custom: "wash",
+};
+---
+
+<div class="bento">
+    {
+        items.map((feature) => (
+            <article
+                class:list={[
+                    "feature",
+                    `feature--${size[feature.id] ?? "half"}`,
+                    `feature--${tone[feature.id] ?? "plain"}`,
+                ]}
+                id={`feature-${feature.id}`}
+            >
+                <span class="feature__icon" aria-hidden="true">
+                    <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        {feature.icon === "keyboard" && (
+                            <path d="M3 6h18v12H3zM7 10h.01M11 10h.01M15 10h.01M7 14h10" />
+                        )}
+                        {feature.icon === "cloud-off" && (
+                            <path d="M2 2l20 20M5.8 5.8A6 6 0 0 0 6 18h11M18.7 16.7A4.5 4.5 0 0 0 18 8h-1.3A6 6 0 0 0 10.5 4" />
+                        )}
+                        {feature.icon === "shield" && (
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
+                        )}
+                        {feature.icon === "grid" && (
+                            <path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z" />
+                        )}
+                        {feature.icon === "swipe" && (
+                            <path d="M5 12l-3 3 3 3M2 15h11a4 4 0 0 0 4-4V8M14 4l3 3-3 3" />
+                        )}
+                        {feature.icon === "sparkles" && (
+                            <path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3ZM19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9L19 15Z" />
+                        )}
+                    </svg>
+                </span>
+
+                <Heading>{feature.title}</Heading>
+                <p>{feature.body}</p>
+
+                {feature.id === "singlish" && (
+                    <div class="mini" aria-hidden="true">
+                        <span class="mini__key">kohomada</span>
+                        <span class="mini__arrow">→</span>
+                        <span class="mini__out sinhala">කොහොමද</span>
+                    </div>
+                )}
+
+                {feature.id === "layouts" && (
+                    <div class="layout-chips" aria-hidden="true">
+                        <span>Classic</span>
+                        <span>Wijesekara</span>
+                        <span>Efficient</span>
+                        <span>Phonetic</span>
+                    </div>
+                )}
+
+                {feature.id === "custom" && (
+                    <div class="swatches" aria-hidden="true">
+                        <span class="swatches__dot swatches__dot--a"></span>
+                        <span class="swatches__dot swatches__dot--b"></span>
+                        <span class="swatches__dot swatches__dot--c"></span>
+                        <span class="swatches__label">Accent colours</span>
+                    </div>
+                )}
+            </article>
+        ))
+    }
+</div>
+
+<style>
+    .bento {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: clamp(0.9rem, 2vw, 1.25rem);
+    }
+
+    .feature {
+        grid-column: span 6;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        padding: clamp(1.35rem, 3vw, 1.9rem);
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+        transition:
+            transform 0.25s var(--ease-out),
+            border-color 0.2s ease,
+            box-shadow 0.25s var(--ease-out);
+    }
+
+    .feature:hover {
+        transform: translateY(-3px);
+        border-color: var(--accent);
+        box-shadow: var(--shadow);
+    }
+
+    @media (min-width: 40rem) {
+        .feature--wide {
+            grid-column: span 6;
+        }
+
+        .feature--narrow,
+        .feature--half {
+            grid-column: span 3;
+        }
+    }
+
+    @media (min-width: 60rem) {
+        .feature--wide {
+            grid-column: span 4;
+        }
+
+        .feature--narrow {
+            grid-column: span 2;
+        }
+
+        .feature--half {
+            grid-column: span 3;
+        }
+    }
+
+    .feature__icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.75rem;
+        height: 2.75rem;
+        flex-shrink: 0;
+        border-radius: 0.85rem;
+        background: var(--accent-soft);
+        color: var(--accent-strong);
+        margin-bottom: 1rem;
+    }
+
+    .feature :global(h2),
+    .feature :global(h3) {
+        font-size: 1.15rem;
+        margin-bottom: 0.45rem;
+    }
+
+    .feature p {
+        font-size: 0.9375rem;
+    }
+
+    /* The wide Singlish card is the dark paint panel of the grid. */
+    .feature--dark {
+        background:
+            radial-gradient(90% 140% at 100% 0%, #175638, transparent 60%),
+            #0b2f20;
+        border-color: transparent;
+        color: #eef6ec;
+    }
+
+    .feature--dark :global(h2),
+    .feature--dark :global(h3) {
+        color: #f4faf1;
+    }
+
+    .feature--dark p {
+        color: #b9d1c1;
+    }
+
+    .feature--dark .feature__icon {
+        background: rgb(221 244 122 / 14%);
+        color: var(--lime);
+    }
+
+    .feature--dark:hover {
+        border-color: color-mix(in srgb, var(--lime) 45%, transparent);
+    }
+
+    .feature--lime {
+        background: var(--lime-soft);
+        border-color: color-mix(in srgb, var(--lime) 55%, var(--border));
+    }
+
+    .feature--lime :global(h2),
+    .feature--lime :global(h3),
+    .feature--lime p {
+        color: var(--lime-ink);
+    }
+
+    .feature--lime p {
+        opacity: 0.82;
+    }
+
+    .feature--lime .feature__icon {
+        background: color-mix(in srgb, var(--lime-ink) 10%, transparent);
+        color: var(--lime-ink);
+    }
+
+    .feature--wash {
+        background:
+            radial-gradient(80% 120% at 0% 0%, color-mix(in srgb, var(--lime) 16%, transparent), transparent 60%),
+            var(--accent-soft);
+        border-color: var(--accent-line);
+    }
+
+    /* A tiny live-looking demo inside the Singlish card. */
+    .mini {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.55rem;
+        margin-top: auto;
+        padding-top: 1.35rem;
+    }
+
+    .mini__key {
+        padding: 0.4rem 0.7rem;
+        border: 1px solid rgb(255 255 255 / 18%);
+        border-radius: 0.6rem;
+        background: rgb(255 255 255 / 7%);
+        color: #e9f4e6;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.8125rem;
+    }
+
+    .mini__arrow {
+        color: rgb(255 255 255 / 45%);
+        font-size: 0.9rem;
+    }
+
+    .mini__out {
+        position: relative;
+        color: var(--lime);
+        font-size: 1.3rem;
+        font-weight: 600;
+        padding-right: 0.45rem;
+    }
+
+    .mini__out::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 0.15em;
+        width: 2px;
+        height: 1em;
+        background: var(--lime);
+        animation: caret 1.2s steps(1) infinite;
+    }
+
+    @keyframes caret {
+        50% {
+            opacity: 0;
+        }
+    }
+
+    .layout-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        margin-top: auto;
+        padding-top: 1.15rem;
+    }
+
+    .layout-chips span {
+        padding: 0.3rem 0.65rem;
+        border: 1px solid var(--accent-line);
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: var(--accent-strong);
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .swatches {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        margin-top: auto;
+        padding-top: 1.15rem;
+        color: var(--muted-foreground);
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .swatches__dot {
+        width: 1.1rem;
+        height: 1.1rem;
+        border-radius: 999px;
+        border: 2px solid var(--surface);
+        box-shadow: 0 0 0 1px var(--border);
+    }
+
+    .swatches__dot--a {
+        background: #0b6a41;
+    }
+
+    .swatches__dot--b {
+        background: #16965b;
+    }
+
+    .swatches__dot--c {
+        background: var(--lime);
+    }
+
+    .swatches__label {
+        margin-left: 0.35rem;
+    }
+</style>

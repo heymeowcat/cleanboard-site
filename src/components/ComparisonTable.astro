@@ -1,0 +1,136 @@
+---
+/**
+ * The CleanBoard vs. typical keyboard comparison, shared by the home and
+ * features pages so the two tables cannot drift apart.
+ */
+import { comparison } from "../data/content";
+
+interface Props {
+    lang: "en" | "si";
+}
+
+const { lang } = Astro.props;
+const data = comparison[lang];
+---
+
+<div
+    class="table-wrap"
+    role="region"
+    tabindex="0"
+    aria-label="Feature comparison"
+>
+    <table class="compare">
+        <caption class="visually-hidden">
+            {
+                lang === "si"
+                    ? "CleanBoard සහ සාමාන්‍ය Android keyboard එකක් අතර feature comparison"
+                    : "Feature comparison between CleanBoard and a typical Android keyboard"
+            }
+        </caption>
+        <thead>
+            <tr>
+                {data.headers.map((header) => <th scope="col">{header}</th>)}
+            </tr>
+        </thead>
+        <tbody>
+            {
+                data.rows.map((row) => (
+                    <tr>
+                        <th scope="row">{row[0]}</th>
+                        <td class="compare__good">
+                            <svg
+                                width="14"
+                                height="14"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="3"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                aria-hidden="true"
+                            >
+                                <path d="M20 6 9 17l-5-5" />
+                            </svg>
+                            <span>{row[1]}</span>
+                        </td>
+                        <td>{row[2]}</td>
+                    </tr>
+                ))
+            }
+        </tbody>
+    </table>
+</div>
+
+<style>
+    .table-wrap {
+        overflow-x: auto;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        background: var(--surface);
+        box-shadow: var(--shadow-sm);
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .table-wrap:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: 3px;
+    }
+
+    .compare {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9375rem;
+        min-width: 34rem;
+    }
+
+    .compare th,
+    .compare td {
+        text-align: left;
+        padding: 0.85rem 1rem;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .compare thead th {
+        background: var(--surface-2);
+        color: var(--foreground);
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .compare thead th:nth-child(2) {
+        background: var(--accent-soft);
+        color: var(--accent-strong);
+    }
+
+    .compare tbody th {
+        font-weight: 500;
+        color: var(--muted-foreground);
+    }
+
+    .compare tbody td {
+        color: var(--muted-foreground);
+    }
+
+    .compare tbody tr:hover th,
+    .compare tbody tr:hover td {
+        background: color-mix(in srgb, var(--accent-soft) 35%, transparent);
+    }
+
+    .compare tbody tr:last-child th,
+    .compare tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+    .compare__good {
+        color: var(--accent-strong) !important;
+        font-weight: 600;
+        background: color-mix(in srgb, var(--accent-soft) 55%, transparent);
+        white-space: nowrap;
+    }
+
+    .compare__good svg {
+        display: inline-block;
+        margin-right: 0.4rem;
+        vertical-align: -2px;
+    }
+</style>

@@ -1,0 +1,48 @@
+{
+    "name": "CleanBoard — Sinhala & English Keyboard",
+    "short_name": "CleanBoard",
+    "description": "A free, private, offline Android keyboard for Sinhala and English, with a built-in Singlish transliteration engine.",
+    "id": "/cleanboard-site/",
+    "start_url": "/cleanboard-site/",
+    "scope": "/cleanboard-site/",
+    "display": "standalone",
+    "orientation": "portrait",
+    "background_color": "#07130e",
+    "theme_color": "#0b6a41",
+    "lang": "en",
+    "dir": "ltr",
+    "categories": ["utilities", "productivity"],
+    "icons": [
+        {
+            "src": "/cleanboard-site/favicon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/cleanboard-site/favicon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/cleanboard-site/favicon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "English to Sinhala converter",
+            "short_name": "Converter",
+            "url": "/cleanboard-site/transliterate/",
+            "icons": [{ "src": "/cleanboard-site/favicon-192.png", "sizes": "192x192" }]
+        },
+        {
+            "name": "Download CleanBoard",
+            "short_name": "Download",
+            "url": "/cleanboard-site/download/",
+            "icons": [{ "src": "/cleanboard-site/favicon-192.png", "sizes": "192x192" }]
+        }
+    ]
+}

@@ -1,0 +1,385 @@
+---
+/**
+ * The body of the English → Sinhala converter page, shared by
+ * `/transliterate/` and `/si/transliterate/`.
+ */
+import Transliterator from "./Transliterator.astro";
+import Faq from "./Faq.astro";
+import PaintSplash from "./PaintSplash.astro";
+import BrushUnderline from "./BrushUnderline.astro";
+import Steps from "./Steps.astro";
+import Benefits from "./Benefits.astro";
+import { benefits, steps } from "../data/content";
+import { BASE_PATH } from "../lib/site";
+
+interface Props {
+    lang: "en" | "si";
+    toolId: string;
+}
+
+const { lang, toolId } = Astro.props;
+
+const base = lang === "si" ? `${BASE_PATH}/si` : BASE_PATH;
+
+const examples = {
+    en: [
+        ["ayubowan", "ආයුබෝවන්", "Hello / welcome"],
+        ["kohomada hodai", "කොහොමද හොඳයි", "How are you?"],
+        ["kaemathi", "කැමති", "Like"],
+        ["api yamu", "අපි යමු", "Let's go"],
+        ["oyata sthuthi", "ඔයාට ස්තූති", "Thank you"],
+        ["subha divasak", "සුභ දවසක්", "Good day"],
+        ["karunakara", "කරුණාකර", "Please"],
+        ["hari lassanai", "හරි ලස්සනයි", "Very beautiful"],
+        ["sri lanka", "ශ්‍රී ලංකා", "Sri Lanka"],
+    ],
+} as const;
+---
+
+<section class="tool-hero">
+    <PaintSplash class="tool-hero__paint" />
+    <div class="container">
+        <div class="tool-hero__head">
+            <h1>
+                {
+                    lang === "si" ? (
+                        <>
+                            English අකුරු type කරන්න,{" "}
+                            <span class="mark">
+                                සිංහල
+                                <BrushUnderline />
+                            </span>{" "}
+                            ලැබෙන්න
+                        </>
+                    ) : (
+                        <>
+                            English to{" "}
+                            <span class="mark">
+                                Sinhala
+                                <BrushUnderline />
+                            </span>{" "}
+                            transliteration
+                        </>
+                    )
+                }
+            </h1>
+            <p class="lede">
+                {
+                    lang === "si"
+                        ? "CleanBoard keyboard එකේ Singlish engine එක මෙතනම try කරන්න — install කරන්නේ නැතුව. මේක අපේ Android keyboard එක ඇතුළේ තියෙන ඇත්තම engine එක. Install කරාම WhatsApp, Messages වගේ ඕනම app එකක මේ විදිහටම type කරන්න පුළුවන්."
+                        : "Try CleanBoard's Singlish engine right here, no install needed. It is the exact same transliteration inside our Android keyboard — install it and type this way in WhatsApp, Messages or anywhere else."
+                }
+            </p>
+        </div>
+
+        <div class="tool-hero__converter">
+            <div class="tool-hero__converter-head">
+                <span class="live-dot" aria-hidden="true"></span>
+                Live · on-device
+            </div>
+            <Transliterator lang={lang} id={toolId} />
+        </div>
+
+        <p class="tool-hero__note">
+            {
+                lang === "si"
+                    ? "මේක demo එක විතරයි."
+                    : "This page is just the demo."
+            }
+            <a href={`${base}/download/`}>
+                {lang === "si" ? "Android එකට CleanBoard ගන්න" : "Get CleanBoard for Android"}
+            </a>
+            {
+                lang === "si"
+                    ? " — ඕනම app එකක මේ විදිහටම type කරන්න."
+                    : " and type like this in every app."
+            }
+        </p>
+    </div>
+</section>
+
+<section class="section section--alt" aria-labelledby="benefits-heading">
+    <div class="container benefits-layout">
+        <div class="section__head">
+            <p class="eyebrow">
+                {
+                    lang === "si"
+                        ? "මේ page එකෙන් keyboard එකට"
+                        : "From this page to your keyboard"
+                }
+            </p>
+            <h2 id="benefits-heading">
+                {
+                    lang === "si"
+                        ? "මෙතන try කරන්න. ඕනම තැනක type කරන්න."
+                        : "Try it here. Type it everywhere."
+                }
+            </h2>
+            <p>
+                {
+                    lang === "si"
+                        ? "මේ converter එක CleanBoard engine එකේ live demo එකක් — වෙනම product එකක් නෙවෙයි. Keyboard එක install කරාම ඔයා type කරන හැම තැනකම ඒ conversion එකම ලැබෙනවා."
+                        : "This converter is a live demo of CleanBoard's engine, not a separate product. Install the keyboard and the same conversion follows you everywhere you type."
+                }
+            </p>
+        </div>
+
+        <Benefits items={benefits[lang]} />
+    </div>
+</section>
+
+<section class="section" aria-labelledby="how-heading">
+    <div class="container">
+        <div class="section__head section__head--split">
+            <div>
+                <p class="eyebrow">
+                    {lang === "si" ? "වැඩ කරන විදිහ" : "How it works"}
+                </p>
+                <h2 id="how-heading">
+                    {
+                        lang === "si"
+                            ? "English වලින් සිංහලට convert කරන විදිහ"
+                            : "How to convert English to Sinhala"
+                    }
+                </h2>
+            </div>
+            <p>
+                {
+                    lang === "si"
+                        ? "Rules ටික ඔයා දැනටමත් දන්නවා — වචනය අහන විදිහට English අකුරුවලින් ලියන්න, engine එක ඒක හරි සිංහල අකුරුවලට හරවනවා."
+                        : "The rules are the ones Sinhala speakers already use: write the word the way it sounds, and the engine turns it into the correct Sinhala spelling."
+                }
+            </p>
+        </div>
+
+        <Steps steps={steps[lang]} />
+    </div>
+</section>
+
+<section class="section section--alt" aria-labelledby="examples-heading">
+    <div class="container">
+        <div class="section__head">
+            <p class="eyebrow">
+                {lang === "si" ? "Try කරලා බලන්න" : "Try it out"}
+            </p>
+            <h2 id="examples-heading">
+                {lang === "si" ? "එදිනෙදා උදාහරණ" : "Everyday examples"}
+            </h2>
+            <p>
+                {
+                    lang === "si"
+                        ? "මේ words ටික උඩ converter එකට type කරලා බලන්න — හැම එකක්ම ඔයා type කරන ගමන්ම හැරෙනවා."
+                        : "Type any of these into the converter above — each one is converted as you type."
+                }
+            </p>
+        </div>
+
+        <div class="examples">
+            <div class="table-wrap" role="region" tabindex="0" aria-label="Transliteration examples">
+                <table class="examples__table">
+                    <caption class="visually-hidden">
+                        {
+                            lang === "si"
+                                ? "ඉංග්‍රීසි (Singlish) වචන සහ ඒවාගේ සිංහල රූපය"
+                                : "Common English (Singlish) phrases and their Sinhala transliteration"
+                        }
+                    </caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">English (Singlish)</th>
+                            <th scope="col">සිංහල</th>
+                            <th scope="col">
+                                {lang === "si" ? "අර්ථය" : "Meaning"}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            examples.en.map((row) => (
+                                <tr>
+                                    <td class="examples__roman">{row[0]}</td>
+                                    <td class="sinhala">{row[1]}</td>
+                                    <td>{row[2]}</td>
+                                </tr>
+                            ))
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section" aria-labelledby="faq-heading">
+    <div class="container container--narrow">
+        <div class="section__head">
+            <p class="eyebrow">FAQ</p>
+            <h2 id="faq-heading">
+                {lang === "si" ? "නිතර අහන ප්‍රශ්න" : "Frequently asked questions"}
+            </h2>
+        </div>
+        <Faq lang={lang} />
+    </div>
+</section>
+
+<style>
+    .tool-hero {
+        position: relative;
+        isolation: isolate;
+        overflow: hidden;
+        padding-block: clamp(2.5rem, 6vw, 4.25rem) clamp(3rem, 7vw, 5rem);
+    }
+
+    .tool-hero::before {
+        content: "";
+        position: absolute;
+        inset: -20% -10% auto;
+        height: 80%;
+        z-index: -1;
+        background: radial-gradient(
+            50% 70% at 50% 20%,
+            color-mix(in srgb, var(--accent-soft) 75%, transparent),
+            transparent 70%
+        );
+    }
+
+    .tool-hero__paint {
+        top: -17rem;
+        right: -15rem;
+        width: min(52rem, 115vw);
+        opacity: 0.42;
+        transform: rotate(-8deg);
+    }
+
+    .tool-hero__head {
+        max-width: 46rem;
+        margin-inline: auto;
+        text-align: center;
+    }
+
+    .tool-hero h1 {
+        font-size: clamp(1.9rem, 5.4vw, 3.1rem);
+    }
+
+    .tool-hero__head .lede {
+        margin-top: 0.95rem;
+    }
+
+    .tool-hero__converter {
+        max-width: 58rem;
+        margin: clamp(1.85rem, 4vw, 2.6rem) auto 0;
+        text-align: left;
+    }
+
+    .tool-hero__converter-head {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.6rem;
+        padding-left: 0.4rem;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted-foreground);
+    }
+
+    .live-dot {
+        width: 0.48rem;
+        height: 0.48rem;
+        border-radius: 999px;
+        background: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    .tool-hero__note {
+        margin-top: 1.3rem;
+        text-align: center;
+        font-size: 0.9375rem;
+        color: var(--muted-foreground);
+    }
+
+    .tool-hero__note a {
+        font-weight: 600;
+    }
+
+    .benefits-layout {
+        display: grid;
+        gap: clamp(1.5rem, 4vw, 3rem);
+        align-items: start;
+    }
+
+    .benefits-layout .section__head {
+        margin-bottom: 0;
+    }
+
+    @media (min-width: 62rem) {
+        .benefits-layout {
+            grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.65fr);
+            gap: clamp(2rem, 4vw, 3.5rem);
+        }
+
+        .benefits-layout .section__head {
+            position: sticky;
+            top: calc(var(--header-height) + 2rem);
+        }
+    }
+
+    .examples {
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .table-wrap {
+        overflow-x: auto;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        background: var(--surface);
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .table-wrap:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: 3px;
+    }
+
+    .examples__table {
+        width: 100%;
+        min-width: 34rem;
+        border-collapse: collapse;
+        font-size: 0.9375rem;
+    }
+
+    .examples__table th,
+    .examples__table td {
+        text-align: left;
+        padding: 0.8rem 1.1rem;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .examples__table thead th {
+        background: var(--surface);
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .examples__table tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+    .examples__table tbody tr:hover td {
+        background: color-mix(in srgb, var(--accent-soft) 40%, transparent);
+    }
+
+    .examples__roman {
+        font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+        font-size: 0.875rem;
+        color: var(--accent-strong);
+    }
+
+    .examples__table .sinhala {
+        font-family: "Noto Sans Sinhala", var(--font-sans);
+        font-size: 1.0625rem;
+        color: var(--foreground);
+    }
+</style>

@@ -1,0 +1,30 @@
+---
+import Layout from "../layouts/Layout.astro";
+import DownloadContent from "../components/DownloadContent.astro";
+import { breadcrumbSchema, howToSchema, organizationSchema } from "../lib/schema";
+import { installSteps } from "../data/content";
+
+const jsonLd = [
+    organizationSchema(),
+    breadcrumbSchema([
+        { name: "Home", path: "/" },
+        { name: "Download", path: "/download/" },
+    ]),
+    howToSchema(
+        "How to install the CleanBoard Sinhala keyboard on Android",
+        "Install CleanBoard from Google Play and enable it as your default keyboard in four steps.",
+        installSteps.en.map((step) => ({ name: step.name, text: step.text })),
+    ),
+];
+---
+
+<Layout
+    title="Download CleanBoard — Free Sinhala Keyboard"
+    description="Download CleanBoard, the free Sinhala and English Android keyboard. Offline typing, four layouts, a Singlish engine, and optional features off by default."
+    path="/download/"
+    lang="en"
+    alternates={{ en: "/download/", si: "/si/download/" }}
+    jsonLd={jsonLd}
+>
+    <DownloadContent lang="en" />
+</Layout>

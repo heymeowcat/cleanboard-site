@@ -1,0 +1,64 @@
+---
+/**
+ * Decorative green paint splash. Position it from the parent and keep the
+ * content above it with `position: relative; z-index: 1`.
+ */
+interface Props {
+    class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<svg
+    class:list={["paint-splash", className]}
+    viewBox="0 0 640 640"
+    aria-hidden="true"
+    focusable="false"
+>
+    <path
+        class="paint-splash__wash"
+        fill="var(--accent)"
+        d="M528 78c58 38 82 109 62 173-19 61-68 117-124 142-57 25-121 19-172-17-52-36-91-102-84-165 7-64 61-125 123-147 62-22 137-24 195 14Z"
+    ></path>
+    <path
+        class="paint-splash__wash2"
+        fill="var(--lime)"
+        d="M470 330c44 21 65 74 52 120-12 45-57 84-107 92-51 8-108-16-132-57-24-40-16-99 19-130 35-31 124-46 168-25Z"
+    ></path>
+    <path
+        class="paint-splash__stroke"
+        fill="var(--accent)"
+        d="M111 454c89-23 170-19 229 4 10 4 12 18 2 23-55 27-130 37-215 31-20-1-31-24-16-38Z"
+    ></path>
+    <circle class="paint-splash__dot" cx="120" cy="150" r="14" fill="var(--accent)"></circle>
+    <circle class="paint-splash__dot" cx="88" cy="196" r="6" fill="var(--accent)"></circle>
+    <circle class="paint-splash__dot" cx="560" cy="560" r="9" fill="var(--lime)"></circle>
+</svg>
+
+<style>
+    .paint-splash {
+        position: absolute;
+        width: min(46rem, 80vw);
+        height: auto;
+        pointer-events: none;
+        z-index: 0;
+        opacity: 0.55;
+    }
+
+    .paint-splash__wash {
+        opacity: 0.14;
+    }
+
+    .paint-splash__wash2 {
+        opacity: 0.2;
+    }
+
+    .paint-splash__stroke {
+        opacity: 0.1;
+    }
+
+    .paint-splash__dot {
+        opacity: 0.32;
+    }
+</style>

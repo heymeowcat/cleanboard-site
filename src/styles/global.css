@@ -1,0 +1,541 @@
+/* ==========================================================================
+   CleanBoard — global styles
+   ========================================================================== */
+
+:root {
+    color-scheme: light dark;
+
+    /* Surfaces: warm paper in light, deep forest in dark. The plain value
+       before each light-dark() keeps older browsers on a sensible light
+       palette instead of rendering transparent colours. */
+    --background: #f7f4ea;
+    --background: light-dark(#f7f4ea, #07130e);
+    --background-alt: #efe9da;
+    --background-alt: light-dark(#efe9da, #0a1a13);
+    --surface: #fffdf7;
+    --surface: light-dark(#fffdf7, #0e2018);
+    --surface-2: #ece6d5;
+    --surface-2: light-dark(#ece6d5, #14291f);
+    --foreground: #0f231a;
+    --foreground: light-dark(#0f231a, #f3f7ef);
+    --muted-foreground: #4b5f54;
+    --muted-foreground: light-dark(#4b5f54, #a8bdb0);
+    --border: #ddd5c1;
+    --border: light-dark(#ddd5c1, #1e3529);
+    --border-strong: #c8bda3;
+    --border-strong: light-dark(#c8bda3, #2d4a3b);
+
+    /* Brand greens. --accent is decorative; --accent-strong is the
+       text-safe green (≥5.5:1 on both paper and forest). */
+    --accent: #16965b;
+    --accent: light-dark(#16965b, #4ade80);
+    --accent-strong: #0a6a41;
+    --accent-strong: light-dark(#0a6a41, #6ee7a0);
+    --accent-button: #0b6a41;
+    --accent-button: light-dark(#0b6a41, #4ade80);
+    --accent-button-hover: #085331;
+    --accent-button-hover: light-dark(#085331, #86efac);
+    --accent-foreground: #ffffff;
+    --accent-foreground: light-dark(#ffffff, #04170d);
+    --accent-soft: #e2f0e1;
+    --accent-soft: light-dark(#e2f0e1, #112f22);
+    --accent-line: #bfe0c9;
+    --accent-line: light-dark(#bfe0c9, #1d4a33);
+    --ring: #16965b;
+    --ring: light-dark(#16965b, #6ee7a0);
+
+    /* Lime paint accent, used sparingly on dark and green panels. */
+    --lime: #ddf47a;
+    --lime-soft: #edf8bb;
+    --lime-soft: light-dark(#edf8bb, #20351a);
+    --lime-ink: #20330f;
+    --lime-ink: light-dark(#20330f, #eef9c8);
+
+    /* The footer is always the deep green anchor of the page. */
+    --footer-bg: #0b2c1e;
+    --footer-bg: light-dark(#0b2c1e, #05140d);
+    --footer-bg-2: #10402b;
+    --footer-bg-2: light-dark(#10402b, #0a2417);
+    --footer-fg: #f2f8ef;
+    --footer-muted: #b8ccbc;
+    --footer-border: rgb(255 255 255 / 14%);
+    --footer-accent: #d8f36d;
+
+    --radius-sm: 0.75rem;
+    --radius: 1.125rem;
+    --radius-md: 1rem;
+    --radius-lg: 1.75rem;
+    --radius-xl: 2.25rem;
+    --shadow-sm: 0 1px 2px rgb(15 35 26 / 5%);
+    --shadow: 0 16px 40px -22px rgb(15 35 26 / 32%);
+    --shadow-lg: 0 36px 80px -36px rgb(11 44 30 / 38%);
+    --container: 74rem;
+    --header-height: 4.25rem;
+
+    --font-sans: "Outfit", "Noto Sans Sinhala", system-ui, -apple-system,
+        "Segoe UI", sans-serif;
+    --font-display: "Outfit", "Noto Sans Sinhala", system-ui, sans-serif;
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --duration: 180ms;
+}
+
+/* Manual choices override the OS preference; "auto" removes data-theme and
+   falls back to `color-scheme: light dark`. */
+:root[data-theme="light"] {
+    color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+    color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--header-height) + 1.25rem);
+    background: var(--background);
+}
+
+body {
+    font-family: var(--font-sans);
+    background-color: var(--background);
+    color: var(--foreground);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow-wrap: break-word;
+}
+
+::selection {
+    background: var(--accent);
+    color: var(--accent-foreground);
+}
+
+main {
+    flex: 1;
+}
+
+img,
+picture,
+svg,
+video {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+a {
+    color: var(--accent-strong);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    transition: color 0.18s ease;
+}
+
+a:hover {
+    color: var(--foreground);
+}
+
+:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 3px;
+    border-radius: 6px;
+}
+
+h1,
+h2,
+h3,
+h4 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.032em;
+    color: var(--foreground);
+    text-wrap: balance;
+}
+
+h1 {
+    line-height: 1.06;
+    letter-spacing: -0.04em;
+}
+
+p {
+    color: var(--muted-foreground);
+    text-wrap: pretty;
+}
+
+ul,
+ol {
+    color: var(--muted-foreground);
+}
+
+code,
+kbd,
+samp {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    font-size: 0.9em;
+}
+
+kbd {
+    padding: 0.12em 0.4em;
+    border: 1px solid var(--border);
+    border-bottom-width: 2px;
+    border-radius: 0.35rem;
+    background: var(--surface-2);
+    color: var(--foreground);
+}
+
+.sinhala {
+    font-family: "Noto Sans Sinhala", var(--font-sans);
+}
+
+/* --- Layout primitives -------------------------------------------------- */
+
+.container {
+    width: 100%;
+    max-width: var(--container);
+    margin-inline: auto;
+    padding-inline: clamp(1rem, 4vw, 2rem);
+}
+
+.container--narrow {
+    max-width: 50rem;
+}
+
+.container--reading {
+    max-width: 45rem;
+}
+
+.section {
+    position: relative;
+    padding-block: clamp(3.25rem, 8vw, 5.75rem);
+}
+
+.section--alt {
+    background: var(--background-alt);
+}
+
+.section--tight {
+    padding-block: clamp(2.25rem, 5vw, 3.5rem);
+}
+
+.section__head {
+    max-width: 46rem;
+    margin-bottom: clamp(1.75rem, 4vw, 2.75rem);
+}
+
+.section__head > p {
+    margin-top: 0.85rem;
+    font-size: 1.0625rem;
+}
+
+.section__head--split {
+    max-width: none;
+    display: grid;
+    gap: 0.75rem 3rem;
+    align-items: end;
+}
+
+.section__head--split > p {
+    margin-top: 0;
+}
+
+@media (min-width: 56rem) {
+    .section__head--split {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 24rem);
+    }
+}
+
+.eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--accent-strong);
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    padding: 0.32rem 0.8rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+}
+
+.eyebrow::before {
+    content: "";
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 999px;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.lede {
+    font-size: clamp(1.0625rem, 2.2vw, 1.1875rem);
+    line-height: 1.7;
+    color: var(--muted-foreground);
+}
+
+/* Inline brush highlight used behind a few words in display headings. */
+.mark {
+    position: relative;
+    display: inline-block;
+    isolation: isolate;
+    color: var(--accent-strong);
+}
+
+/* --- Buttons ------------------------------------------------------------ */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    min-height: 2.9rem;
+    padding: 0.7rem 1.35rem;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    font-family: inherit;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.2;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+        transform 0.2s var(--ease-out),
+        background-color 0.18s ease,
+        border-color 0.18s ease,
+        color 0.18s ease,
+        box-shadow 0.2s var(--ease-out);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn--primary {
+    background: var(--accent-button);
+    color: var(--accent-foreground);
+    box-shadow: 0 12px 24px -14px color-mix(in srgb, var(--accent-button) 70%, transparent);
+}
+
+.btn--primary:hover {
+    background: var(--accent-button-hover);
+    color: var(--accent-foreground);
+}
+
+.btn--ghost {
+    background: color-mix(in srgb, var(--surface) 72%, transparent);
+    color: var(--foreground);
+    border-color: var(--border-strong);
+}
+
+.btn--ghost:hover {
+    background: var(--surface);
+    border-color: var(--accent);
+    color: var(--foreground);
+}
+
+.btn--lime {
+    background: var(--lime);
+    color: var(--lime-ink);
+    box-shadow: 0 12px 24px -16px rgb(0 0 0 / 40%);
+}
+
+.btn--lime:hover {
+    background: #e8fb9a;
+    color: var(--lime-ink);
+}
+
+.btn--lg {
+    min-height: 3.3rem;
+    padding: 0.9rem 1.7rem;
+    font-size: 1rem;
+}
+
+.btn--sm {
+    min-height: 2.4rem;
+    padding: 0.42rem 0.85rem;
+    font-size: 0.875rem;
+}
+
+@media (max-width: 48rem) {
+    .btn--sm {
+        min-height: 2.75rem;
+    }
+}
+
+/* --- Cards -------------------------------------------------------------- */
+
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: clamp(1.35rem, 3vw, 1.9rem);
+    box-shadow: var(--shadow-sm);
+}
+
+.card h3 {
+    font-size: 1.125rem;
+    margin-bottom: 0.5rem;
+}
+
+.card p {
+    font-size: 0.9375rem;
+}
+
+.grid {
+    display: grid;
+    gap: clamp(1rem, 2.5vw, 1.5rem);
+}
+
+.grid--2 {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+}
+
+.grid--3 {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16.5rem), 1fr));
+}
+
+/* --- Prose (privacy policy, terms) --------------------------------------- */
+
+.prose {
+    font-size: 1rem;
+}
+
+.prose > * + * {
+    margin-top: 1rem;
+}
+
+.prose h2 {
+    font-size: 1.3rem;
+    margin-top: 2.5rem;
+    scroll-margin-top: calc(var(--header-height) + 1rem);
+}
+
+.prose h3 {
+    font-size: 1.0625rem;
+    margin-top: 1.75rem;
+}
+
+.prose ul,
+.prose ol {
+    padding-left: 1.25rem;
+}
+
+.prose li + li {
+    margin-top: 0.4rem;
+}
+
+.prose table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+    display: block;
+    overflow-x: auto;
+}
+
+.prose th,
+.prose td {
+    text-align: left;
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+}
+
+.prose th {
+    color: var(--foreground);
+    font-weight: 600;
+    background: var(--surface-2);
+}
+
+.prose .sinhala {
+    font-size: 1.125rem;
+}
+
+/* --- Utilities ---------------------------------------------------------- */
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}
+
+.skip-link {
+    position: absolute;
+    left: 0.5rem;
+    top: -100%;
+    z-index: 200;
+    background: var(--accent-button);
+    color: var(--accent-foreground);
+    padding: 0.75rem 1rem;
+    border-radius: 0 0 0.5rem 0.5rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.skip-link:focus {
+    top: 0;
+    color: var(--accent-foreground);
+}
+
+.text-center {
+    text-align: center;
+}
+
+.stack {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.cluster {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+/* Respect the user's motion preference. */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+    }
+}

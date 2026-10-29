@@ -1,0 +1,368 @@
+---
+/**
+ * The body of the download page, shared by `/download/` and `/si/download/`.
+ */
+import PlayBadge from "./PlayBadge.astro";
+import PaintSplash from "./PaintSplash.astro";
+import { installSteps, requirements } from "../data/content";
+import { PLAY_STORE_URL } from "../lib/site";
+
+interface Props {
+    lang: "en" | "si";
+}
+
+const { lang } = Astro.props;
+
+const quickFacts =
+    lang === "si"
+        ? [
+              "Android 7.0 සහ ඊට අලුත්",
+              "Offline typing සහ dictionaries",
+              "Ads හරි tracking හරි නැහැ",
+              "Open source",
+          ]
+        : [
+              "Android 7.0 and newer",
+              "Offline typing and dictionaries",
+              "No ads or tracking",
+              "Open source",
+          ];
+
+---
+
+<section class="download-hero">
+    <PaintSplash class="download-hero__paint" />
+    <div class="container download-hero__inner">
+        <div class="download-hero__copy">
+            <p class="eyebrow">
+                {lang === "si" ? "Google Play එකේ Free" : "Free on Google Play"}
+            </p>
+            <h1>
+                {
+                    lang === "si"
+                        ? "CleanBoard download කරන්න"
+                        : "Download CleanBoard"
+                }
+            </h1>
+            <p class="lede">
+                {
+                    lang === "si"
+                        ? "Sinhala සහ English වලට හදපු free, private, offline-first Android keyboard එකක්. Ads නැහැ, in-app purchases නැහැ, data collection නැහැ. GIFs, stickers සහ voice ඔයා on කරනකම් off."
+                        : "A free, private, offline-first Android keyboard for Sinhala and English. No ads, no in-app purchases, no data collection. Optional GIFs, stickers and voice are off by default."
+                }
+            </p>
+
+            <div class="download-hero__badge">
+                <a
+                    href={PLAY_STORE_URL}
+                    rel="noopener"
+                    target="_blank"
+                    aria-label={
+                        lang === "si"
+                            ? "Google Play හරහා CleanBoard බාගන්න"
+                            : "Get CleanBoard on Google Play"
+                    }
+                >
+                    <PlayBadge lang={lang} priority />
+                </a>
+            </div>
+
+            <ul class="quick-facts">
+                {
+                    quickFacts.map((fact) => (
+                        <li>
+                            <svg
+                                aria-hidden="true"
+                                width="15"
+                                height="15"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2.5"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <path d="M20 6 9 17l-5-5" />
+                            </svg>
+                            {fact}
+                        </li>
+                    ))
+                }
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section class="section" aria-labelledby="install-heading">
+    <div class="container">
+        <div class="section__head section__head--split">
+            <div>
+                <p class="eyebrow">
+                    {lang === "si" ? "Setup එක" : "Setup"}
+                </p>
+                <h2 id="install-heading">
+                    {
+                        lang === "si"
+                            ? "Steps 4කින් install කරන්න"
+                            : "Install in four steps"
+                    }
+                </h2>
+            </div>
+            <p>
+                {
+                    lang === "si"
+                        ? "Install කරලා, Android settings වලින් on කරලා, default keyboard එක කරන්න. විනාඩියක් වගේ යන වැඩක්."
+                        : "Install it, enable it in Android settings and make it your default. The whole setup takes about a minute."
+                }
+            </p>
+        </div>
+
+        <ol class="install">
+            {
+                installSteps[lang].map((step, index) => (
+                    <li class="install__step">
+                        <span class="install__num" aria-hidden="true">
+                            {String(index + 1).padStart(2, "0")}
+                        </span>
+                        <div>
+                            <h3>{step.name}</h3>
+                            <p>{step.text}</p>
+                        </div>
+                    </li>
+                ))
+            }
+        </ol>
+    </div>
+</section>
+
+<section class="section section--alt" aria-labelledby="requirements-heading">
+    <div class="container">
+        <div class="section__head section__head--split">
+            <div>
+                <p class="eyebrow">
+                    {lang === "si" ? "අවශ්‍ය දේවල්" : "Before you start"}
+                </p>
+                <h2 id="requirements-heading">Requirements</h2>
+            </div>
+        </div>
+        <ul class="requirements">
+            {
+                requirements[lang].map((item) => (
+                    <li>
+                        <span class="requirements__icon" aria-hidden="true">
+                            <svg
+                                width="14"
+                                height="14"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2.5"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <path d="M20 6 9 17l-5-5" />
+                            </svg>
+                        </span>
+                        <div>
+                            <strong>{item.strong}</strong>
+                            <p>{item.body}</p>
+                        </div>
+                    </li>
+                ))
+            }
+        </ul>
+    </div>
+</section>
+
+<style>
+    .download-hero {
+        position: relative;
+        isolation: isolate;
+        overflow: hidden;
+        padding-block: clamp(2.5rem, 6vw, 4.25rem) clamp(3rem, 7vw, 5rem);
+    }
+
+    .download-hero::before {
+        content: "";
+        position: absolute;
+        inset: -25% -10% auto;
+        height: 90%;
+        z-index: -1;
+        background: radial-gradient(
+            50% 70% at 30% 20%,
+            color-mix(in srgb, var(--accent-soft) 80%, transparent),
+            transparent 70%
+        );
+    }
+
+    .download-hero__paint {
+        top: -18rem;
+        right: -16rem;
+        width: min(50rem, 112vw);
+        opacity: 0.4;
+        transform: rotate(-10deg);
+    }
+
+    .download-hero__copy {
+        max-width: 46rem;
+        margin-inline: auto;
+        text-align: center;
+    }
+
+    .download-hero h1 {
+        font-size: clamp(1.9rem, 5.2vw, 3.15rem);
+    }
+
+    .download-hero .lede {
+        margin: 0.9rem auto 0;
+        max-width: 40rem;
+    }
+
+    .download-hero__badge {
+        display: inline-block;
+        margin-top: clamp(1.5rem, 3vw, 2rem);
+        border-radius: 0.55rem;
+        transition: transform 0.2s var(--ease-out);
+    }
+
+    .download-hero__badge:hover {
+        transform: translateY(-2px);
+    }
+
+    .quick-facts {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.55rem 1.4rem;
+        margin-top: clamp(1.5rem, 3vw, 2rem);
+        font-size: 0.8125rem;
+        font-weight: 500;
+        color: var(--muted-foreground);
+    }
+
+    .quick-facts li {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .quick-facts svg {
+        flex-shrink: 0;
+        color: var(--accent-strong);
+    }
+
+    .install {
+        list-style: none;
+        display: grid;
+        gap: clamp(0.9rem, 2.5vw, 1.25rem);
+        grid-template-columns: 1fr;
+    }
+
+    @media (min-width: 48rem) {
+        .install {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (min-width: 80rem) {
+        .install {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+    }
+
+    .install__step {
+        position: relative;
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: clamp(1.25rem, 3vw, 1.6rem);
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        transition:
+            transform 0.25s var(--ease-out),
+            border-color 0.2s ease,
+            box-shadow 0.25s var(--ease-out);
+    }
+
+    .install__step:hover {
+        transform: translateY(-3px);
+        border-color: var(--accent-line);
+        box-shadow: var(--shadow);
+    }
+
+    .install__num {
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+        width: 2.6rem;
+        height: 2.6rem;
+        font-family: var(--font-display);
+        font-size: 1.05rem;
+        font-weight: 800;
+        color: var(--accent-foreground);
+        background:
+            radial-gradient(
+                120% 120% at 30% 20%,
+                color-mix(in srgb, var(--lime) 40%, transparent),
+                transparent 65%
+            ),
+            var(--accent-button);
+        border-radius: 0.9rem;
+    }
+
+    .install__step h3 {
+        margin-bottom: 0.3rem;
+        font-size: 1.0625rem;
+    }
+
+    .install__step p {
+        font-size: 0.9375rem;
+    }
+
+    .requirements {
+        list-style: none;
+        display: grid;
+        gap: clamp(0.9rem, 2.5vw, 1.25rem);
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+    }
+
+    .requirements li {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.85rem;
+        padding: 1.25rem;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+    }
+
+    .requirements__icon {
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+        width: 1.6rem;
+        height: 1.6rem;
+        margin-top: 0.1rem;
+        color: var(--accent-foreground);
+        background: var(--accent-button);
+        border-radius: 999px;
+    }
+
+    .requirements strong {
+        display: block;
+        margin-bottom: 0.15rem;
+        font-size: 0.9375rem;
+        color: var(--foreground);
+    }
+
+    .requirements p {
+        font-size: 0.875rem;
+    }
+
+    .sinhala {
+        font-family: "Noto Sans Sinhala", var(--font-sans);
+    }
+</style>

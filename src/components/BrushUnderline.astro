@@ -1,0 +1,39 @@
+---
+/**
+ * A loose paint stroke used behind a few words in display headings.
+ * Place it inside an element with the global `.mark` class.
+ */
+---
+
+<svg
+    class="brush-underline"
+    viewBox="0 0 300 26"
+    preserveAspectRatio="none"
+    aria-hidden="true"
+    focusable="false"
+>
+    <path
+        d="M8 18C45 8 91 4 137 6c44 2 89 1 133-3 9 5 15 10 20 15-31 7-73 9-116 8-51-1-103 0-148 6-7-3-12-7-18-14Z"
+        fill="currentColor"></path>
+</svg>
+
+<style>
+    .brush-underline {
+        position: absolute;
+        left: -1.5%;
+        right: -1.5%;
+        bottom: 0.02em;
+        width: 103%;
+        height: 0.3em;
+        color: var(--accent);
+        opacity: 0.32;
+        z-index: -1;
+        pointer-events: none;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :global(:root:not([data-theme="light"])) .brush-underline {
+            opacity: 0.42;
+        }
+    }
+</style>

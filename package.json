@@ -1,0 +1,35 @@
+{
+  "name": "cleanboard-site",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check": "astro check",
+    "sync:transliterator": "node scripts/sync-transliterator.mjs",
+    "build:frequencies": "node scripts/build-sinhala-frequencies.mjs",
+    "build:dictionary": "node scripts/build-dictionary.mjs",
+    "fetch:fonts": "node scripts/fetch-fonts.mjs",
+    "optimize:images": "node scripts/optimize-images.mjs",
+    "test:transliterator": "node scripts/test-transliterator.mjs",
+    "test:links": "node scripts/check-links.mjs",
+    "audit:seo": "node scripts/check-seo.mjs",
+    "verify:gsc": "node scripts/verify-search-console.mjs",
+    "verify": "npm run test:transliterator && npm run build && npm run test:links && npm run audit:seo"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^7.4.4"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "esbuild": "^0.28.2",
+    "parse5": "^8.0.1",
+    "sharp": "^0.35.5",
+    "typescript": "^5.9.3"
+  }
+}
