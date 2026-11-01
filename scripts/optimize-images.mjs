@@ -8,7 +8,8 @@
  *  - play-badge.png / .webp        — the official Google Play badge, self-hosted
  *                                    so the page makes no third-party request
  *  - og-image.png / .webp          — the 1200×630 social share card
- *  - apple-touch-icon.png          — 180×180 home-screen icon
+ *  - favicon-*.png / favicon.ico   — browser tab icons rendered from favicon.svg
+ *  - apple-touch-icon.png / .webp  — 180×180 home-screen icon
  *
  * Run with `npm run optimize:images`.
  */
@@ -91,45 +92,74 @@ if (!existsSync(logoSource)) {
 const logoBuffer = readFileSync(logoSource);
 console.log("▸ App icon");
 await writePair("cleanboard-logo", logoBuffer, { width: 512 });
-await writePair("apple-touch-icon", logoBuffer, { width: 180 });
 
 // --- Favicons --------------------------------------------------------------
-// The app logo is a green square with a black mark on top and the wordmark
-// underneath. For the favicon we crop out just the mark and centre it on a
-// square green field, so the icon reads clearly even at 16×16.
+// favicon.svg is the single source of truth: a lime tile with a black
+// "සිං" glyph. Every raster icon and the multi-size .ico are rendered from it,
+// so the tab icon always matches the vector original.
 console.log("▸ Favicons");
-const MARK_CROP = { left: 88, top: 98, width: 336, height: 214 };
-const CANVAS = 336;
-const GREEN = { r: 137, g: 249, b: 79, alpha: 1 };
+const faviconSource = resolve(publicDir, "favicon.svg");
+if (!existsSync(faviconSource)) {
+    console.error(`✖ Missing source icon: ${faviconSource}`);
+    process.exit(1);
+}
+const faviconSvg = readFileSync(faviconSource);
 
-// sharp applies `extend` *after* `resize`, so the square field is built with
-// an explicit composite instead.
-const field = await sharp({
-    create: {
-        width: CANVAS,
-        height: CANVAS,
-        channels: 4,
-        background: GREEN,
-    },
-})
-    .png()
-    .toBuffer();
-
-const mark = await sharp(logoBuffer).extract(MARK_CROP).png().toBuffer();
-
-const markCanvas = await sharp(field)
-    .composite([{ input: mark, top: 61, left: 0 }])
-    .png()
-    .toBuffer();
-
-for (const size of [16, 32, 48, 180, 192, 512]) {
-    const buffer = await sharp(markCanvas)
+async function renderFavicon(size) {
+    return sharp(faviconSvg, { density: 384 })
         .resize(size, size, { fit: "cover" })
         .png({ compressionLevel: 9, palette: true })
         .toBuffer();
+}
+
+const faviconPngs = new Map();
+for (const size of [16, 32, 48, 180, 192, 512]) {
+    const buffer = await renderFavicon(size);
+    faviconPngs.set(size, buffer);
     writeFileSync(resolve(publicDir, `favicon-${size}.png`), buffer);
     report.push(`  favicon-${size}.png  ${(buffer.length / 1024).toFixed(1)} KB`);
 }
+
+writeFileSync(resolve(publicDir, "apple-touch-icon.png"), faviconPngs.get(180));
+writeFileSync(
+    resolve(publicDir, "apple-touch-icon.webp"),
+    await sharp(faviconSvg, { density: 384 })
+        .resize(180, 180, { fit: "cover" })
+        .webp({ quality: 90, effort: 6 })
+        .toBuffer(),
+);
+
+/**
+ * Packs PNG buffers into a multi-size ICO. Each directory entry points at a
+ * complete PNG, which every current browser understands.
+ */
+function packIco(images) {
+    const header = Buffer.alloc(6);
+    header.writeUInt16LE(0, 0);
+    header.writeUInt16LE(1, 2);
+    header.writeUInt16LE(images.length, 4);
+
+    let offset = 6 + images.length * 16;
+    const entries = images.map(({ size, data }) => {
+        const entry = Buffer.alloc(16);
+        entry.writeUInt8(size >= 256 ? 0 : size, 0);
+        entry.writeUInt8(size >= 256 ? 0 : size, 1);
+        entry.writeUInt8(0, 2);
+        entry.writeUInt8(0, 3);
+        entry.writeUInt16LE(1, 4);
+        entry.writeUInt16LE(32, 6);
+        entry.writeUInt32LE(data.length, 8);
+        entry.writeUInt32LE(offset, 12);
+        offset += data.length;
+        return entry;
+    });
+
+    return Buffer.concat([header, ...entries, ...images.map((i) => i.data)]);
+}
+
+const ico = packIco([16, 32, 48].map((size) => ({ size, data: faviconPngs.get(size) })));
+writeFileSync(resolve(publicDir, "favicon.ico"), ico);
+report.push(`  favicon.ico  ${(ico.length / 1024).toFixed(1)} KB`);
 
 // --- Google Play badge -----------------------------------------------------
 console.log("▸ Google Play badge");
